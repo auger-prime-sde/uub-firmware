@@ -19,9 +19,6 @@
 #include <time.h>
 #include <sys/mman.h>
 #include <string.h>
-//#include <ctype.h>
-//#include <termios.h>
-
 
 static void pabort(const char *s) {
 	perror(s);

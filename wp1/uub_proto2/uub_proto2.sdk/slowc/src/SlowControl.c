@@ -9,7 +9,7 @@
 #include "sde_sc.h"
 #define SC_ADDR		0x0f
 char buf[160];
-static const char *optString = "sStp:v:P::Aah?";
+static const char *optString = "w:W:klrsStp:v:P::Aah?";
 /* Read SlowControl serial Number */
 void sc_serial ( int file, char *b)
 {   char reg[] ={0x01, 0x00};
@@ -36,7 +36,48 @@ void sc_status (int file, char *b)
 	 }
      return ;
 }
+void sc_livetime (int file , int *l)
+{char reg [6] = {0x03, 0x00, 0x0, 0x0, 0x0, 0x0};
+ char b[4];
+	if (write(file, reg, 2) != 2) {
+        	 	exit(3);
+    }
+	usleep (100000);
+	if (read(file,b,4)!= 4) {
+		  	  	exit(4);
+	}
+//	printf("b: 0x%x 0x%x 0x%x 0x%x\n", b[0], b[1], b[2], b[3]);
+	*l =  b[0]
+		+ ( b[1] << 8 )
+		+ ( b[2] << 16 )
+		+ ( b[3] << 24 );
+}
+void sc_watchdog (int file, int value)
+{	char reg [4] = {0x07, 0x00, 0x0, 0x0};
+	reg [2] = (char) (value & 0xff);
+	if (write (file, reg, 4) != 4) {
+		exit (3);
+	}
 
+	return;
+}
+void kill( int file )
+{
+	char reg[2] = {0x0b, 0x00};
+	if (write (file, reg, 2) != 2) {
+		exit (3);
+	}
+
+}
+void radio_rst (int file)
+{
+	char reg[2] = {0x0c, 0x00};
+	if (write (file, reg, 2) != 2) {
+		exit (3);
+	}
+
+
+}
 void sc_test_reg (int file, char *b)
 {   char reg[] ={0x0a, 0x00};
      if (write(file, reg, 2) != 2) {
@@ -103,13 +144,18 @@ void sc_set_dac (int file, int chan, int value)
 //sStp:v:P::Aah?
 void display_usage( char *s )
 {
-    puts( "Usage:" );
-    printf ( "%s [-aAst] [-P[HEX]] [-p P_ARG -v V_ARG]\n", s);
+    puts( "Version 2.0 \n Usage:" );
+    printf ( "%s [-aAsStl] [-wW ARG] [-P[HEX]] [-p P_ARG -v V_ARG]\n", s);
     puts ("Options:");
     puts ("-a \t show a map of environment variables in human readable form");
     puts ("-A \t show a map of environment variables as hex raw data");
-    puts ("-s \t show content of status register in hex");
+    puts ("-S \t show content of status register in hex");
+    puts ("-s \t show serial number");
+    puts ("-l \t show lifetime [s]");
     puts ("-t \t show content of test register [0x4321]");
+    puts ("-w or -W \t Watchdog control");
+    puts ("   \t ARG = 1 Slowcontrol managing WD");
+    puts ("   \t ARG = 0 ZYNQ is managing WD");
     puts ("-P \t if [HEX] omitted show content of power control register in hex");
     puts ("   \t with [HEX] set power control register to [HEX]");
     puts ("   \t the program takes care that you cannot switch off power supplies used by FPGA");
@@ -131,21 +177,24 @@ int main( int argc, char *argv[] )
 	opt = getopt( argc, argv, optString );
   /* Geraetedatei oeffnen */
 
-  printf("Opening device... ");
+//  printf("Opening device... ");
   snprintf(filename, 19, "/dev/i2c-0");
   	file = open(filename, O_RDWR);
   	if (file < 0) {
-  			exit("no open file");
+//  			printf("error opening %s\n",filename);
+  		perror(" Error opening file");
+  			exit (1);
   	}
   	if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
-  			exit("Fail to setup slave addr!");
+  			printf("Fail to setup slave addr!\n");
+  			exit (1);
   	}
 
 
-  printf(" OK\n");
-  char dac_ok;
-  dac_ok = 0x0;
+//  printf(" OK\n");
+//  dac_ok = 0x0;
   while( opt != -1 ) {
+	  int lt;
          switch( opt ) {
              case 's': // show serial number
             	 sc_serial(file, buf);
@@ -158,6 +207,16 @@ int main( int argc, char *argv[] )
             	 printf("%.2x\n", buf[0]);
 
             	 break;
+             case 'k':
+            	 kill (file);
+            	 break;
+             case 'r':
+            	 radio_rst (file);
+            	 break;
+             case 'l':
+            	 sc_livetime (file, &lt );
+            	 printf("%d\n",lt);
+            	 break;
              case 'p': // pmt 1-6
             	 printf(" opt p val %s\n",optarg);
             	 ch = (int) strtol (optarg,NULL, 0);
@@ -167,6 +226,11 @@ int main( int argc, char *argv[] )
             	 val = (int) strtol (optarg,NULL, 0);
 
             	 sc_set_dac (file, ch, val);
+            	 break;
+             case 'w':
+             case 'W':
+            	 val = (int) strtol (optarg, NULL, 0);
+            	 sc_watchdog ( file, val);
             	 break;
              case 'A': // get adc - raw data
             	 sc_get_ADC_values (file);
@@ -194,11 +258,11 @@ int main( int argc, char *argv[] )
             	 printf ("\nPMT3");
             	 printf ("\t %.1f",(float)adc_buffer[PMT3_HVM]*LSB_TO_5V);
             	 printf ("\t %.1f",(float)adc_buffer[PMT3_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT3_TM]*LSB_TO_5V);
+            	 printf ("\t %.1f",(float)(adc_buffer[PMT3_TM]*0.3662/2.)-273.15);
             	 printf ("\nPMT4");
             	 printf ("\t %.1f",(float)adc_buffer[PMT4_HVM]*LSB_TO_5V);
             	 printf ("\t %.1f",(float)adc_buffer[PMT4_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT4_TM]*LSB_TO_5V);
+            	 printf ("\t %.1f",(float)(adc_buffer[PMT4_TM]*0.3662/.820)-273.15);
             	 printf ("\nPower supplies");
             	 printf ("\nNominal \t Actual \t Current");
             	 printf ("\n1V \t");
@@ -218,8 +282,9 @@ int main( int argc, char *argv[] )
             	 printf("\t %.1f %s",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3,"[mV] ");
             	 printf("\t %.1f %s",(float)adc_buffer[I_P5V_ANA]*LSB_TO_1V0/60.*12.2,"[mA] ");
             	 printf("\nN3V3\t");
-            	 float Ua =(float)adc_buffer[V_AN_N5V]*LSB_TO_3V3;
-            	 printf("\t %.1f %s",Ua*2.-(10./7.5 * (2500.-Ua)),"[mV] ");
+            	 float Ua =(float)adc_buffer[V_AN_N5V]*LSB_TO_1V0;
+            	 printf("\t %.1f %s",(14.*((2400.-Ua)/8.2-Ua/10.)-Ua),"[mV] ");
+            	 printf("\t %.1f %s",(Ua),"[mV] ");
             	 printf("\t %.1f %s",(float)adc_buffer[I_N5V_ANA]*LSB_TO_1V0/60.*12.2,"[mA] ");
             	 printf("\n5V\t");
             	 printf("\t %.1f %s",(float)adc_buffer[V_GPS_5V]*LSB_TO_5V,"[mV] ");
@@ -236,9 +301,9 @@ int main( int argc, char *argv[] )
             	 printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
             	 printf("\nTPCB \n");
             	 printf("BAT1/2/EXT_TEMP \t%.2f %.2f %.2f\n",
-            			 adc_buffer[BAT1_TEMP]*LSB_TO_5V,
-						 adc_buffer[BAT2_TEMP]*LSB_TO_5V,
-						 adc_buffer[EXT_TEMP]*LSB_TO_5V);
+            			 adc_buffer[BAT1_TEMP]*0.3662/2.-273.15,
+						 adc_buffer[BAT2_TEMP]*0.3662/2.-273.15,
+						 adc_buffer[EXT_TEMP]*0.3662/2.-273.15);
             	 printf("BAT_CENT/OUT\t%.2f %.2f [V]\n",
             			 (float)adc_buffer[BAT_CENT]*LSB_TO_5V*18./5000.,
 						 (float)adc_buffer[BAT_OUT]*LSB_TO_5V*36./5000.);
@@ -253,7 +318,7 @@ int main( int argc, char *argv[] )
 						 (float)adc_buffer[P12V_HI_3]);
             	 printf("\nSensors ");
             	 printf ("\nT= %d *0.1K, P= %d mBar TW = ",adc_buffer[T_AIR],adc_buffer[P_AIR]);
-            	 printf ("%d *0.1K",adc_buffer[T_WAT]);
+            	 printf ("%.1f K",adc_buffer[WAT_LVL]*0.3662/2.);
 
 
             	 printf ("\n");

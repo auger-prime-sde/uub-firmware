@@ -12,21 +12,15 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <string.h>
-
 //#include "fe_lib.h" /*this include automatically the shwr_evt_defs.h */
 //#include "fe_kernel_interface_defs.h"
 //#include "read_evt.h"
 #include "shwr_evt_defs.h"
-
 #include "xparameters.h"
 #include "sde_trigger_defs.h"
 #include "time_tagging.h"
-
-
 //#include <ctype.h>
 //#include <termios.h>
-
-
 #define SIG_WAKEUP SIGRTMIN+14
 
 #define MAP_SIZE 4096UL

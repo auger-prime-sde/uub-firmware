@@ -110,7 +110,6 @@ void *map_base, *virt_addr;
  unsigned long read_result, writeval;
 int main(int argc, char *argv[])
 {
-
 	if (argc == 3) {
 		offset = atoi (argv[2]);
 		automatic();
@@ -255,33 +254,33 @@ FeShwrRead_test(int Nev)
   int nevts,i,j,index;
   FILE *fp;
   int spread[10];
-  int mod =200;
+  int mod = 200;
 
 	temp = (gl.regs[SHWR_BASELINE0_ADDR]&0xffff)>>4;
-	spread[0] = -(mod - temp);
+	spread[0] = (mod - temp);
 	temp = (gl.regs[SHWR_BASELINE0_ADDR]>>20) & 0xFFF;
-	spread[1] = -(mod - temp);
+	spread[1] = (mod - temp);
 
 	temp = (gl.regs[SHWR_BASELINE1_ADDR]&0xffff)>>4;
-	spread[2] = -(mod - temp);
+	spread[2] = (mod - temp);
 	temp = (gl.regs[SHWR_BASELINE1_ADDR]>>20) & 0xFFF;
-	spread[3] = -(mod - temp);
+	spread[3] = (mod - temp);
 
 	temp = (gl.regs[SHWR_BASELINE2_ADDR]&0xffff)>>4;
-	spread[4] = -(mod - temp);
+	spread[4] = (mod - temp);
 	temp = (gl.regs[SHWR_BASELINE2_ADDR]>>20) & 0xFFF;
-	spread[5] = -(mod - temp);
+	spread[5] = (mod - temp);
 
 	temp = (gl.regs[SHWR_BASELINE3_ADDR]&0xffff)>>4;
-	spread[6] = -(mod - temp);
+	spread[6] = (mod - temp);
 	temp = (gl.regs[SHWR_BASELINE3_ADDR]>>20) & 0xFFF;
-	spread[7] = -(mod - temp);
+	spread[7] = (mod - temp);
 
 	temp = (gl.regs[SHWR_BASELINE4_ADDR]&0xffff)>>4;
-	spread[8] = -(mod - temp);
+	spread[8] = (mod - temp);
 
 	temp = (gl.regs[SHWR_BASELINE4_ADDR]>>20) & 0xFFF;
-	spread[9] = -(mod - temp);
+	spread[9] = (mod - temp);
 
 	printf("offset adc0A : %d - offset adc0B : %d\n",((gl.regs[SHWR_BASELINE0_ADDR]&0xffff)>>4),(gl.regs[SHWR_BASELINE0_ADDR]>>20) & 0xFFF);
 	printf ("Difference = %d ..  %d\n",spread[0],spread[1]);
@@ -301,8 +300,6 @@ FeShwrRead_test(int Nev)
 
 		  char ADC_AJAST[3] = {0x00,0x10,0x00} ; // ADC offset setting
 //if (spread[var] > 127) OR (spread[var] < -127){
-
-
 
 		  ADC_AJAST[2] = spread[var];
 		  if (write(fd, cmdchannelA, sizeof(cmdchannelA)) != sizeof(cmdchannelA)) {
@@ -492,6 +489,7 @@ if (write(fd, ADC_RESET, sizeof(ADC_RESET)) != sizeof(ADC_RESET)) {
 }
 
 if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV)) != sizeof(ADC_LVDS_INV)) {	// ADC input inverted
+//if (write(fd, ADC_LVDS, sizeof(ADC_LVDS)) != sizeof(ADC_LVDS)) {	// ADC input NOT inverted
     	exit(3);
 }
 if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {

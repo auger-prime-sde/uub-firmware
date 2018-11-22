@@ -180,25 +180,20 @@ int main( int argc, char *argv[] )
   sc_get_ADC_values (file);
 // print reply
 	 	 printf("{");
-	 	 printf ("\"PMT1_HVM\":%.1f,",(float)adc_buffer[PMT1_HVM] *LSB_TO_5V*  2.2);// aggiunta correzione !!!!!!!!!!!!!!
-	 	 printf ("\"PMT1_CM\":%.1f,",(float)adc_buffer[PMT1_CM] *LSB_TO_5V);
-//	 	 printf ("\"PMT1_TM\":%.1f,",(float)adc_buffer[PMT1_TM] *LSB_TO_5V);
+	 	 printf ("\"PMT1_HVM\":%.1f,",(float)adc_buffer[PMT1_HVM] *LSB_TO_5V/ 2.35);
+	 	 printf ("\"PMT1_CM\":%.1f,",(float)adc_buffer[PMT1_CM] *LSB_TO_5V / 48);
 
-	 	 printf ("\"PMT2_HVM\":%.1f,",(float)adc_buffer[PMT2_HVM] *LSB_TO_5V*  2.2);
-	 	 printf ("\"PMT2_CM\":%.1f,",(float)adc_buffer[PMT2_CM] *LSB_TO_5V);
-//	 	 printf ("\"PMT2_TM\":%.1f,",(float)adc_buffer[PMT2_TM] *LSB_TO_5V);
+	 	 printf ("\"PMT2_HVM\":%.1f,",(float)adc_buffer[PMT2_HVM] *LSB_TO_5V / 2.35);
+	 	 printf ("\"PMT2_CM\":%.1f,",(float)adc_buffer[PMT2_CM] *LSB_TO_5V / 48);
 
-	 	 printf ("\"PMT3_HVM\":%.1f,",(float)adc_buffer[PMT3_HVM] *LSB_TO_5V*  2.2);
-	 	 printf ("\"PMT3_CM\":%.1f,",(float)adc_buffer[PMT3_CM] *LSB_TO_5V);
-//	 	 printf ("\"PMT3_TM\":%.1f,",(float)adc_buffer[PMT3_TM] *LSB_TO_5V);
+	 	 printf ("\"PMT3_HVM\":%.1f,",(float)adc_buffer[PMT3_HVM] *LSB_TO_5V / 2.35);
+	 	 printf ("\"PMT3_CM\":%.1f,",(float)adc_buffer[PMT3_CM] *LSB_TO_5V / 48);
 
-	 	 printf ("\"PMT4_HVM\":%.1f,",(float)adc_buffer[PMT4_HVM] *LSB_TO_5V*  2.2);
-	 	 printf ("\"PMT4_CM\":%.1f,",(float)adc_buffer[PMT4_CM] *LSB_TO_5V);
-//	 	 printf ("\"PMT4_TM\":%.1f,",(float)adc_buffer[PMT4_TM] *LSB_TO_5V);
+	 	 printf ("\"PMT4_HVM\":%.1f,",(float)adc_buffer[PMT4_HVM] *LSB_TO_5V / 2.35);
+	 	 printf ("\"PMT4_CM\":%.1f,",(float)adc_buffer[PMT4_CM] *LSB_TO_5V / 48);
 
-	 	 printf ("\"PMT5_HVM\":%.1f,",(float)adc_buffer[PMT5_HVM] *LSB_TO_5V*  2.2);
-	 	 printf ("\"PMT5_CM\":%.1f,",(float)adc_buffer[PMT5_CM] *LSB_TO_5V);
-	// 	 printf ("\"PMT5_TM\":%.1f",(float)adc_buffer[PMT5_TM] *LSB_TO_5V);
+	 	 printf ("\"PMT5_HVM\":%.1f,",(float)adc_buffer[PMT5_HVM] *LSB_TO_5V / 2.35);
+	 	 printf ("\"PMT5_CM\":%.1f,",(float)adc_buffer[PMT5_CM] *LSB_TO_5V / 48);
 
 	 	 printf ("\"PMT6_HVM\":%.1f,",voltage);
 	 	 printf ("\"PMT6_CM\":%.1f,",current);
