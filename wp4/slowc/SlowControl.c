@@ -9,7 +9,7 @@
 #include "sde_sc.h"
 #define SC_ADDR		0x0f
 char buf[160];
-static const char *optString = "w:W:klrsStp:v:P::Aah?";
+static const char *optString = "w:W:klrsStp:v:V:P::Aah?";
 /* Read SlowControl serial Number */
 void sc_serial ( int file, char *b)
 {   char reg[] ={0x01, 0x00};
@@ -252,7 +252,6 @@ int main( int argc, char *argv[] )
 
                  if (ch <4 )sc_set_dac (file, ch, val);
                  break;
-             case 'V':
 
              case 'w':
              case 'W':
