@@ -125,7 +125,8 @@ void sc_powerControl_reg_w (int file, char *b)
 
 void sc_set_dac (int file, int chan, int value)
 {	char reg[4] ={0x05, 0x00, 0x0, 0x0};
-	static char ch_msk[6] = {0x00, 0x20, 0x60, 0x30, 0x40, 0x50};
+// Channels 0-5 PMT1-6, 6 &7 LED DAC
+	static char ch_msk[8] = {0x00, 0x20, 0x60, 0x30, 0x40, 0x50, 0x10, 0x70};
 		chan = chan -1;
 		if ( (chan >= 0 && chan <=5) &&
 				(value >=0 && value <= 4095) ) {
@@ -141,10 +142,28 @@ void sc_set_dac (int file, int chan, int value)
 
 
 }
+void sc_set_led_dac (int file, int chan, int value)
+{       char reg[4] ={0x08, 0x00, 0x0, 0x0};
+// Channels 0-5 PMT1-6, 6 &7 LED DAC
+                chan = chan -1;
+                if ( (chan >= 0 && chan <=5) &&
+                                (value >=0 && value <= 4095) ) {
+                 reg [2] = (char) (value & 0xff);
+                 reg [3] = ((chan<<4) & 0xf) | (char) ((value >>8) & 0x0f);
+                 printf ("DAC: 0x%.2x%.2x\n",reg[3],reg[2]);
+                 if (write(file, reg, 4) != 4) {
+                         exit(3);
+                         }
+             usleep (100000);
+                 } else printf ( "invalid value %d %d\n", chan+1, value);
+         return ;
+
+
+}
 //sStp:v:P::Aah?
 void display_usage( char *s )
 {
-    puts( "Version 2.0 \n Usage:" );
+    puts( "Version 2.1 \n Usage:" );
     printf ( "%s [-aAsStl] [-wW ARG] [-P[HEX]] [-p P_ARG -v V_ARG]\n", s);
     puts ("Options:");
     puts ("-a \t show a map of environment variables in human readable form");
@@ -277,7 +296,8 @@ int main( int argc, char *argv[] )
             	 printf("\n3V3\t");
             	 printf("\t %.1f %s",(float)adc_buffer[V_3V3]*LSB_TO_3V3,"[mV] ");
             	 printf("\t %.1f %s",(float)adc_buffer[I_3V3]*LSB_TO_3V3/60.*16.13,"[mA] "); // 16.13 = 1/0.062
-            	 printf("\t %.1f %s",(float)adc_buffer[I_3V3_SC]*LSB_TO_1V0/60.*12.2,"[mA SC] "); // 12.2 = 1/0.082
+//            	 printf("\t %.1f %s",(float)adc_buffer[I_3V3_SC]*LSB_TO_1V0/60.*12.2,"[mA SC] "); // 12.2 = 1/0.082 <= wrong reading of R84
+            	 printf("\t %.1f %s",(float)adc_buffer[I_3V3_SC]*LSB_TO_1V0/60.*1.22,"[mA SC] "); // 1.22 = 1/0.82
             	 printf("\nP3V3\t");
             	 printf("\t %.1f %s",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3,"[mV] ");
             	 printf("\t %.1f %s",(float)adc_buffer[I_P5V_ANA]*LSB_TO_1V0/60.*12.2,"[mA] ");
