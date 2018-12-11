@@ -246,6 +246,14 @@ int main( int argc, char *argv[] )
 
             	 sc_set_dac (file, ch, val);
             	 break;
+	     case 'V':
+		 printf(" opt v val %s\n",optarg);
+                 val = (int) strtol (optarg,NULL, 0);
+
+                 if (ch <4 )sc_set_dac (file, ch, val);
+                 break;
+             case 'V':
+
              case 'w':
              case 'W':
             	 val = (int) strtol (optarg, NULL, 0);
