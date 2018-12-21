@@ -4,8 +4,9 @@
 
 #include "trigger_test_options.h"
 #include "trigger_test.h"
+#include <math.h>
 
-#define VERBOSE
+//#define VERBOSE
 
 extern u32 *mem_addr, *mem_ptr;
 extern u32 start_offset[4];
@@ -16,10 +17,12 @@ extern int compat_sb_count;
 extern int compat_tot_count;
 extern int compat_totd_count;
 extern int sb_count;
+extern int compat_ext_count;
 extern int compat_sb_dlyd_count;
 extern int compat_tot_dlyd_count;
 extern int compat_totd_dlyd_count;
 extern int sb_dlyd_count;
+extern int compat_ext_dlyd_count;
 
 int peaks[4][10], areas[4][10], baselines[4][10], saturateds[4][10];
 int peak[10], area[10], baseline[10], saturated[10];
@@ -32,7 +35,7 @@ void read_shw_buffers()
   int trig_id, pps_tics, v[10];
   int seconds, tics, delta_tics;
   double time, dt;
-  int i;
+  int i, num_full;
 
 
   pps_tics = read_ttag(TTAG_SHWR_PPS_TICS_ADDR);
@@ -84,6 +87,26 @@ void read_shw_buffers()
   fflush(stdout);
 #endif
 
+#ifdef CHECK_MISSING_EVENT
+  //  printf("DT= %f  EXT_IN_PERIOD= %f  EXT_IN_TOLERANCE= %f\n",
+  //       dt, EXT_IN_PERIOD, EXT_IN_TOLERANCE);
+  if ((fabs(dt-EXT_IN_PERIOD)>EXT_IN_TOLERANCE) && nevents != 0)
+    {
+      num_full = 0x7 & (read_trig(SHWR_BUF_STATUS_ADDR)>>SHWR_BUF_NFULL_SHIFT);
+      printf("Seem to have missed trigger DT= %f at nevents=%d  num_full=%d\n",
+             dt, nevents, num_full);
+    }
+  // Are we getting a delayed EXT trigger and no EXT trigger?
+  if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_EXT<<8)) != 0)
+    {
+      printf("Delayed EXT trigger ");
+      if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_EXT) != 0)
+        printf("and  EXT trigger\n");
+      else
+        printf("and no EXT trigger\n");
+    }
+ #endif
+
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_SB) != 0)
     compat_sb_count++;
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_TOT) != 0)
@@ -92,14 +115,18 @@ void read_shw_buffers()
     compat_totd_count++;
   if ((trig_id & SHWR_BUF_TRIG_SB) != 0)
     sb_count++;
+  if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_EXT) != 0)
+    compat_ext_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_SB<<8)) != 0)
     compat_sb_dlyd_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_TOT<<8)) != 0)
     compat_tot_dlyd_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_TOTD<<8)) != 0)
     compat_totd_dlyd_count++;
-if ((trig_id & (SHWR_BUF_TRIG_SB<<8)) != 0)
+  if ((trig_id & (SHWR_BUF_TRIG_SB<<8)) != 0)
     sb_dlyd_count++;
+  if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_EXT<<8)) != 0)
+    compat_ext_dlyd_count++;
 
   // Read calculated peak, area, baseline.
 

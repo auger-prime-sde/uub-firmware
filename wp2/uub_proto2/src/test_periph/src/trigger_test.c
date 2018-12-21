@@ -34,6 +34,8 @@ volatile int compat_totd_count = 0;
 volatile int compat_totd_dlyd_count = 0;
 volatile int sb_count = 0;
 volatile int sb_dlyd_count = 0;
+volatile int compat_ext_count = 0;
+volatile int compat_ext_dlyd_count = 0;
 
 // Shower memory buffers
 volatile int readto_shw_buf_num = 0;
@@ -483,15 +485,16 @@ void trigger_test()
         if (nevents%EVENT_COUNT_INTERVAL == 0)
           {
             //  printf("Trigger_test: Read %d events\n", nevents);
-          printf("Trigger_test: Counts - Compat SB %d  Compat ToT %d",
-                 compat_sb_count, compat_tot_count);
-          printf("  Compat ToTd %d  SB %d",
-                 compat_totd_count, sb_count);
-          printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
-                 compat_sb_dlyd_count, compat_tot_dlyd_count);
-          printf("  Compat ToTd dlyd %d  SB dlyd %d\n",
-                 compat_totd_dlyd_count, sb_dlyd_count);
-          fflush(stdout);
+            printf("Trigger_test: Counts - Compat SB %d  Compat ToT %d",
+                   compat_sb_count, compat_tot_count);
+            printf("  Compat ToTd %d  SB %d  EXT %d",
+                   compat_totd_count, sb_count, compat_ext_count);
+            printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
+                   compat_sb_dlyd_count, compat_tot_dlyd_count);
+            printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d\n",
+                   compat_totd_dlyd_count, sb_dlyd_count, 
+                   compat_ext_dlyd_count);
+            fflush(stdout);
           //          compat_sb_count = 0;
           //compat_tot_count = 0;
           //compat_totd_count = 0;
@@ -640,8 +643,8 @@ void trigger_test()
   }
   // Disable shower interrupts from the sde_trigger module. --
   // For test if disable after enable works
-   SDE_TRIGGER_EnableInterrupts((int *) SDE_SHWR_TRIGGER_INTR_BASE, 0);
-   SDE_TRIGGER_EnableInterrupts((int *) SDE_MUON_TRIGGER_INTR_BASE, 0);
+  // SDE_TRIGGER_EnableInterrupts((int *) SDE_SHWR_TRIGGER_INTR_BASE, 0);
+  // SDE_TRIGGER_EnableInterrupts((int *) SDE_MUON_TRIGGER_INTR_BASE, 0);
 }
 
 
@@ -738,20 +741,22 @@ void sde_shwr_intr_handler(void *CallbackRef)
 
           printf("Trigger_test: Counts - Compat SB %d  Compat ToT %d",
                  compat_sb_count, compat_tot_count);
-          printf("  Compat ToTd %d  SB %d",
-                 compat_totd_count, sb_count);
+          printf("  Compat ToTd %d  SB %d  EXT %d",
+                 compat_totd_count, sb_count, compat_ext_count);
           printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
                  compat_sb_dlyd_count, compat_tot_dlyd_count);
-          printf("  Compat ToTd dlyd %d  SB dlyd %d\n",
-                 compat_totd_dlyd_count, sb_dlyd_count);
+          printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d\n",
+                 compat_totd_dlyd_count, sb_dlyd_count, compat_ext_dlyd_count);
           compat_sb_count = 0;
           compat_tot_count = 0;
           compat_totd_count = 0;
           sb_count = 0;
+          compat_ext_count = 0;
           compat_sb_dlyd_count = 0;
           compat_tot_dlyd_count = 0;
           compat_totd_dlyd_count = 0;
           sb_dlyd_count = 0;
+          compat_ext_dlyd_count = 0;
         }
         if (toread_shwr_buf_num != ((prev_read+1) & 0x3))
           {

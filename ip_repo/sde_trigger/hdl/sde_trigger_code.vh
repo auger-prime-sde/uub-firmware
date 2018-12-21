@@ -21,6 +21,7 @@
 //                 more slower than trigger clock.
 // 16-May-2018 DFN Add tot_40mhz trigger.
 // 18-Sep-2018 DFN Add stretch of trigger signals to avoid missing them
+// 20-Dec-2018 DFN Add synchronization of trigger in signal
 
 `include "sde_trigger_regs.vh"  // All the reg & wire declarations
 
@@ -246,6 +247,10 @@ stretch #(2) stretch_sb(.CLK(CLK120),
                          .IN(SB_TRIG),
                          .OUT(STRETCHED_SB_TRIG));
 
+// Synchronize external trigger input to clock
+synchronizer_1bit ext_trig_sync(.ASYNC_IN(TRIG_IN),.CLK(CLK120),
+                                .SYNC_OUT(TRIG_IN_SYNCED));
+
 always @(posedge CLK120) begin
    LCL_RESET <= ((LCL_COMPATIBILITY_GLOBAL_CONTROL &
                   `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0);
@@ -320,8 +325,8 @@ always @(posedge CLK120) begin
 	// 		 `MUON_BUF_TRIG_EXT_SHIFT);
 
         // Form external trigger on upward transition
-        TRIG_IN_PREV <= TRIG_IN;
-        EXT_TRIG <= TRIG_IN & !TRIG_IN_PREV;
+        TRIG_IN_PREV <= TRIG_IN_SYNCED;
+        EXT_TRIG <= TRIG_IN_SYNCED & !TRIG_IN_PREV;
 
         SOME_TRIG_OR <= |SOME_TRIG;
 	
@@ -598,9 +603,9 @@ always @(posedge CLK120) begin
 
         // Send debug output to test pins P61 through P63
 
-        //P6X[1] <= STRETCHED_SB_TRIG;
-        //P6X[2] <= STRETCHED_COMPAT_SB_TRIG;
-        //P6X[3] <= SB_TRIG;
+        P61 <= TRIG_IN_SYNCED;
+        P62 <= EXT_TRIG;
+        P63 <= STRETCHED_COMPAT_EXT_TRIG;
          
      end // else: !if(LCL_RESET)
 end

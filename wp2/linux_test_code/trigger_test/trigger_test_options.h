@@ -3,20 +3,20 @@
 // versions, allowing trigger_test.h to be common.
 //
 // 06-Feb-2017 DFN Initial version extracted from trigger_test.h
-// 17-May-2018 DFN Add compatibility tot trigger option
-// 26-Jun-2018 DFN Add compatibility totd trigger option
-
+// 04-Dec-2018 DFN Add check for possible missing external triggers
 
 //#define STAND_ALONE
-#define MAX_EVENTS 1000
-#define EVENT_COUNT_INTERVAL 1
+#define MAX_EVENTS 1000000
+#define CHECK_MISSING_EVENT
+#define EXT_IN_PERIOD 0.02
+#define EXT_IN_TOLERANCE 0.00001
+#define EVENT_COUNT_INTERVAL 10000
 //#define VERBOSE_BUFFERS  // Print more buffer status if set
 
 //#define ADJUST_BASELINE
 //#define TOGGLE_WATCHDOG
-//#define TOGGLE_ADCPWD
 //#define USE_FAKE_MUON
-#define USE_FAKE_SIGNAL
+//#define USE_FAKE_SIGNAL
 #define PMT0_DLY 0
 #define PMT1_DLY 0
 #define PMT2_DLY 0
@@ -25,6 +25,8 @@
 #define EXP_DECAY 0
 #define FAKE_SIGNAL_MODE (7 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 //#define RAMP
+
+
 #define USE_FAKE_GPS
 //#define DO_LED_PULSE
 //#define DO_LED_NOW
@@ -33,37 +35,22 @@
 #define LED_PULSWID0 10
 #define LED_PULSWID1 20
 
-#define TRIG_THR0 512
-#define TRIG_THR1 512
-#define TRIG_THR2 512
-#define TRIG_SSD 4095
-#define LPMT_THR0 0000   // Software large PMT threshold for small PMT cal
-#define LPMT_THR1 0000
-#define LPMT_THR2 0000
+#define TRIG_THR0 4095
+#define TRIG_THR1 3000
+#define TRIG_THR2 3000
+#define TRIG_SSD 400
+#define LPMT_THR0 0   // Software large PMT threshold for small PMT cal
+#define LPMT_THR1 0
+#define LPMT_THR2 0
 
 #define SHWR_TRIGGERS
 
 #ifdef SHWR_TRIGGERS 
-  #define COMPAT_SB_TRIGGER
-  #define COMPAT_TOT_TRIGGER
-  #define COMPAT_TOT_TRIG_OCC 1
-   #define COMPAT_TOTD_TRIGGER
-   #define COMPAT_TOTD_TRIG_OCC 1
-  //   #define COMPAT_TOTD_FD 42  // 60ns decay constant
-  //   #define COMPAT_TOTD_FN 47
-     #define COMPAT_TOTD_FD 32  // 17ns decay constant
-     #define COMPAT_TOTD_FN 32
-     #define COMPAT_TOTD_UP0 4095
-     #define COMPAT_TOTD_UP1 4095
-     #define COMPAT_TOTD_UP2 4095
-     #define COMPAT_TOTD_INT  5
-  #define SB_TRIGGER
+//  #define COMPAT_SB_TRIGGER
+//  #define SB_TRIGGER
 //  #define SSD_AND	
-  #define SB_COINC_LVL 3
-  #define SB_COINC_OVLP 3
-  #define SB_CONSEC_BINS 0
-  #define SSD_DELAY 0
-//  #define EXT_TRIGGER
+//  #define SSD_DELAY 5
+  #define EXT_TRIGGER
 //  #define PRESCALE_EXT_TRIGGER
 //  #define PRESCALE_COMPAT_SB_TRIGGER
 //  #define LED_TRIGGER
@@ -80,7 +67,7 @@
 
 // PDT mode. Read shower/muon buffers using simple memory mapped access.
 // This is the only option that works in Linux currently.
- #define PDT
+#define PDT
 
 // If DMA & SIMPLE are defined then readout polls for completion of read from 
 // each of the memory blocks before continuing.  This is sufficient to test

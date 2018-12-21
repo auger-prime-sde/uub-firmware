@@ -1363,17 +1363,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>RD_SER_DATA1_CTL</spirit:name>
+          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1393,7 +1383,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
+          <spirit:name>RD_SER_DATA1_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1403,27 +1393,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_XFR_CLK_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
+          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1443,13 +1413,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>EXT0_DAT7</spirit:name>
+          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1459,7 +1423,33 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT6</spirit:name>
+          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_XFR_CLK_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT5</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1479,7 +1469,17 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT5</spirit:name>
+          <spirit:name>EXT0_DAT6</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT7</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -2202,18 +2202,18 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_0_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_0" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="RD_XFR_CLK_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
         <spirit:externalPortReference spirit:portRef="ENABLE_RD_XFR_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_XFR_CLK_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>xlconstant_3_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_3" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA1_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
         <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA1_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>fake_rd_block_SERIAL_FAKE_OUT</spirit:name>
@@ -2228,31 +2228,35 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_2_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_2" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT5"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
         <spirit:externalPortReference spirit:portRef="EXT0_DAT7"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT5"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>RD_XFR_CLK_1</spirit:name>
         <spirit:externalPortReference spirit:portRef="RD_XFR_CLK"/>
-        <spirit:externalPortReference spirit:portRef="P63"/>
         <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="SERIAL_CLK_IN"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>fake_rd_block_DEBUG1</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="DEBUG1"/>
-        <spirit:externalPortReference spirit:portRef="P61"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>fake_rd_block_DEBUG2</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="DEBUG2"/>
-        <spirit:externalPortReference spirit:portRef="P62"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>fake_rd_block_FAKE_RD_XFR_CLK</spirit:name>
         <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="FAKE_RD_XFR_CLK"/>
         <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>trigger_memory_block_P61</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P61"/>
+        <spirit:externalPortReference spirit:portRef="P61"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>trigger_memory_block_P62</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P62"/>
+        <spirit:externalPortReference spirit:portRef="P62"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>trigger_memory_block_P63</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P63"/>
+        <spirit:externalPortReference spirit:portRef="P63"/>
       </spirit:adHocConnection>
     </spirit:adHocConnections>
     <spirit:hierConnections>
@@ -2472,7 +2476,7 @@
           <spirit:configurableElementValue spirit:referenceId="PRIMITIVE">PLL</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USE_PHASE_ALIGNMENT">false</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="SECONDARY_SOURCE">Single_ended_clock_capable_pin</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_REQUESTED_OUT_FREQ">30</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_REQUESTED_OUT_FREQ">50</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="CLKOUT1_REQUESTED_PHASE">0.00</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="PRIM_SOURCE">Single_ended_clock_capable_pin</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="CLKOUT1_DRIVES">BUFG</spirit:configurableElementValue>
@@ -2484,12 +2488,12 @@
           <spirit:configurableElementValue spirit:referenceId="CLKOUT7_DRIVES">BUFG</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USE_LOCKED">false</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="USE_RESET">false</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MMCM_DIVCLK_DIVIDE">4</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKFBOUT_MULT_F">27</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_DIVCLK_DIVIDE">3</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKFBOUT_MULT_F">20</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="MMCM_COMPENSATION">ZHOLD</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKOUT0_DIVIDE_F">27</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_JITTER">305.524</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_PHASE_ERROR">251.823</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="MMCM_CLKOUT0_DIVIDE_F">16</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_JITTER">235.587</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="CLKOUT1_PHASE_ERROR">208.802</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
       <spirit:componentInstance>
@@ -4114,16 +4118,6 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>P6X</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>3</spirit:left>
-              <spirit:right>1</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
           <spirit:name>MUON_IRQ</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
@@ -4131,6 +4125,24 @@
         </spirit:port>
         <spirit:port>
           <spirit:name>SHWR_IRQ</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>P61</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>P62</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>P63</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
           </spirit:wire>
@@ -4186,9 +4198,9 @@
       <spirit:adHocConnection>
         <spirit:name>TRIGGER_CLK_3</spirit:name>
         <spirit:externalPortReference spirit:portRef="TRIGGER_CLK"/>
-        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="CLK120"/>
         <spirit:internalPortReference spirit:componentRef="muon_memory_block" spirit:portRef="CLK120"/>
         <spirit:internalPortReference spirit:componentRef="shower_memory_block" spirit:portRef="CLK120"/>
+        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="CLK120"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>TRIG_IN_1</spirit:name>
@@ -4198,20 +4210,20 @@
       <spirit:adHocConnection>
         <spirit:name>S_AXI_CLK_3</spirit:name>
         <spirit:externalPortReference spirit:portRef="S_AXI_CLK"/>
+        <spirit:internalPortReference spirit:componentRef="muon_memory_block" spirit:portRef="s_axi_aclk"/>
+        <spirit:internalPortReference spirit:componentRef="shower_memory_block" spirit:portRef="s_axi_aclk"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s00_axi_aclk"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s_axi_intr_aclk"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s1_axi_intr_aclk"/>
-        <spirit:internalPortReference spirit:componentRef="muon_memory_block" spirit:portRef="s_axi_aclk"/>
-        <spirit:internalPortReference spirit:componentRef="shower_memory_block" spirit:portRef="s_axi_aclk"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>S_AXI_ARESETN_3</spirit:name>
         <spirit:externalPortReference spirit:portRef="S_AXI_ARESETN"/>
+        <spirit:internalPortReference spirit:componentRef="muon_memory_block" spirit:portRef="s_axi_aresetn"/>
+        <spirit:internalPortReference spirit:componentRef="shower_memory_block" spirit:portRef="s_axi_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s00_axi_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s_axi_intr_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="s1_axi_intr_aresetn"/>
-        <spirit:internalPortReference spirit:componentRef="muon_memory_block" spirit:portRef="s_axi_aresetn"/>
-        <spirit:internalPortReference spirit:componentRef="shower_memory_block" spirit:portRef="s_axi_aresetn"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>sde_trigger_0_SHWR_ADDR</spirit:name>
@@ -4365,11 +4377,6 @@
         <spirit:externalPortReference spirit:portRef="SHWR_TRIG_FAST"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
-        <spirit:name>sde_trigger_0_P6X</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="P6X"/>
-        <spirit:externalPortReference spirit:portRef="P6X"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
         <spirit:name>sde_trigger_0_MUON_IRQ</spirit:name>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="MUON_IRQ"/>
         <spirit:externalPortReference spirit:portRef="MUON_IRQ"/>
@@ -4378,6 +4385,21 @@
         <spirit:name>sde_trigger_0_SHWR_IRQ</spirit:name>
         <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="SHWR_IRQ"/>
         <spirit:externalPortReference spirit:portRef="SHWR_IRQ"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>sde_trigger_0_P61</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="P61"/>
+        <spirit:externalPortReference spirit:portRef="P61"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>sde_trigger_0_P62</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="P62"/>
+        <spirit:externalPortReference spirit:portRef="P62"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>sde_trigger_0_P63</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="sde_trigger_0" spirit:portRef="P63"/>
+        <spirit:externalPortReference spirit:portRef="P63"/>
       </spirit:adHocConnection>
     </spirit:adHocConnections>
     <spirit:hierConnections>
@@ -10400,7 +10422,7 @@
     <spirit:interconnections>
       <spirit:interconnection>
         <spirit:name>xbar_to_i00_couplers</spirit:name>
-        <spirit:activeInterface spirit:busRef="M02_AXI" spirit:componentRef="xbar"/>
+        <spirit:activeInterface spirit:busRef="M00_AXI" spirit:componentRef="xbar"/>
         <spirit:activeInterface spirit:busRef="S_AXI" spirit:componentRef="i00_couplers"/>
       </spirit:interconnection>
       <spirit:interconnection>
@@ -10420,7 +10442,7 @@
       </spirit:interconnection>
       <spirit:interconnection>
         <spirit:name>xbar_to_i02_couplers</spirit:name>
-        <spirit:activeInterface spirit:busRef="M00_AXI" spirit:componentRef="xbar"/>
+        <spirit:activeInterface spirit:busRef="M02_AXI" spirit:componentRef="xbar"/>
         <spirit:activeInterface spirit:busRef="S_AXI" spirit:componentRef="i02_couplers"/>
       </spirit:interconnection>
       <spirit:interconnection>
@@ -18826,24 +18848,6 @@
             <spirit:range>64K</spirit:range>
           </spirit:segment>
           <spirit:segment>
-            <spirit:name>SEG_sde_trigger_0_S_AXI_INTR_reg</spirit:name>
-            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S_AXI_INTR/S_AXI_INTR_reg</spirit:displayName>
-            <spirit:addressOffset>0x43C10000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
-            <spirit:name>SEG_sde_trigger_0_S00_AXI_reg</spirit:name>
-            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S00_AXI/S00_AXI_reg</spirit:displayName>
-            <spirit:addressOffset>0x43C20000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
-            <spirit:name>SEG_sde_trigger_0_reg0</spirit:name>
-            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S1_AXI_INTR/reg0</spirit:displayName>
-            <spirit:addressOffset>0x43C50000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
             <spirit:name>SEG_axi_bram_ctrl_0_Mem01</spirit:name>
             <spirit:displayName>/fake_rd_block/axi_bram_ctrl_0/S_AXI/Mem0</spirit:displayName>
             <spirit:addressOffset>0x52000000</spirit:addressOffset>
@@ -18859,6 +18863,24 @@
             <spirit:name>SEG_fake_rd_interface_0_S00_AXI_reg</spirit:name>
             <spirit:displayName>/fake_rd_block/fake_rd_interface_0/S00_AXI/S00_AXI_reg</spirit:displayName>
             <spirit:addressOffset>0x43C60000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>SEG_sde_trigger_0_S_AXI_INTR_reg</spirit:name>
+            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S_AXI_INTR/S_AXI_INTR_reg</spirit:displayName>
+            <spirit:addressOffset>0x43C10000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>SEG_sde_trigger_0_S00_AXI_reg</spirit:name>
+            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S00_AXI/S00_AXI_reg</spirit:displayName>
+            <spirit:addressOffset>0x43C20000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>SEG_sde_trigger_0_reg0</spirit:name>
+            <spirit:displayName>/trigger_memory_block/sde_trigger_0/S1_AXI_INTR/reg0</spirit:displayName>
+            <spirit:addressOffset>0x43C50000</spirit:addressOffset>
             <spirit:range>64K</spirit:range>
           </spirit:segment>
         </spirit:segments>

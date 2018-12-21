@@ -30,11 +30,11 @@ int main()
   map_rd();
   sleep(1);
 
-  for (loop=0; loop<100; loop++)
+  for (loop=0; loop<1000000; loop++)
     {
       // Load rd data into memory
-      printf("Loading fake data into memory\n");
-      fflush(stdout);
+      //printf("Loading fake data into memory\n");
+      //fflush(stdout);
       mem_ptr = (u32*) fake_rd_mem_ptr[0];
       fake_rd_data = 0;
       for (i=0; i<RD_MEM_WORDS; i++)
@@ -44,9 +44,9 @@ int main()
           mem_ptr[i] = fake_rd_data & 0x1fff;
           fake_rd_mem[0][i] = fake_rd_data & 0x1fff;
         }
-      printf("Finished loading fake data\n");
-      fflush(stdout);
-      sleep(1);
+      //printf("Finished loading fake data\n");
+      //fflush(stdout);
+      //      sleep(1);
  
       // Check data is written OK.
       /* for (i=0; i<RD_MEM_WORDS; i++) */
@@ -72,9 +72,9 @@ int main()
       if (status != 0) 
         printf("Error writing rd_interface, wrote %x read %x\n", 0, status);
 
-      printf("Starting data transfer\n");
-      fflush(stdout);
-      sleep(1);
+      //printf("Starting data transfer\n");
+      //fflush(stdout);
+      //      sleep(1);
       write_rd(0, 2);  // Tell module to start transfer
       status = read_rd(0);
       if (status != 2) 
@@ -83,14 +83,14 @@ int main()
       status = read_rd(0);
       if (status != 0) 
         printf("Error writing rd_interface, wrote %x read %x\n", 0, status);
-      printf("Waiting for transfer to complete\n");
-      fflush(stdout);
+      //printf("Waiting for transfer to complete\n");
+      //fflush(stdout);
       xfr_done = 0;
       while (xfr_done == 0)  // Wait for transfer to complete
         {
         xfr_done = read_rd(1); 
-        printf("xfr_done = %x\n",xfr_done);
-        sleep(1);
+        // printf("xfr_done = %x\n",xfr_done);
+        // sleep(1);
           }
       write_rd(0,1); // Tell module transfer is complete
       status = read_rd(0);
@@ -100,21 +100,21 @@ int main()
       status = read_rd(0);
       if (status != 0) 
         printf("Error writing rd_interface, wrote %x read %x\n", 0, status);
-      printf("Finished data transfer\n");
-      fflush(stdout);
-      sleep(1);
+      //printf("Finished data transfer\n");
+      //fflush(stdout);
+      // sleep(1);
 
       // Load received rd data into memory
-      printf("Reading data from memory\n");
-      fflush(stdout);
-      sleep(1);
+      //printf("Reading data from memory\n");
+      //fflush(stdout);
+      // sleep(1);
       mem_ptr = (u32*) rd_mem_ptr[0];
       for (i=0; i<RD_MEM_WORDS; i++)
         {
           rd_mem[0][i] = mem_ptr[i];
         }
-      printf("Finished reading data from memory\n");
-      fflush(stdout);
+      //printf("Finished reading data from memory\n");
+      //fflush(stdout);
 
       // Compare what was sent to what was received
 // Starting at 1 is temporary kludge to compensate for 1 word offset
@@ -128,8 +128,11 @@ int main()
                      i-1,  fake_rd_mem[0][i-1], rd_mem[0][i]);
               //                     i,  fake_rd_mem[0][i], rd_mem[0][i]);
               fflush(stdout);
+              printf("Transfer error after %d buffer transfers\n", loop);
+              sleep(10);
             }
         }
+      if (loop%100 == 0) printf("Finished %d buffer transfers\n", loop);
     }
     
 }
