@@ -6925,11 +6925,11 @@
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>SENSITIVITY</spirit:name>
-          <spirit:value spirit:format="string" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.IRQ_F2P.SENSITIVITY">NULL:NULL:LEVEL_HIGH:NULL:NULL:LEVEL_HIGH</spirit:value>
+          <spirit:value spirit:format="string" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.IRQ_F2P.SENSITIVITY">LEVEL_HIGH:NULL:NULL:LEVEL_HIGH:NULL:NULL:LEVEL_HIGH</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>PortWidth</spirit:name>
-          <spirit:value spirit:format="string" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.IRQ_F2P.PortWidth">6</spirit:value>
+          <spirit:value spirit:format="string" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.IRQ_F2P.PortWidth">7</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
       <spirit:vendorExtensions>
@@ -10152,7 +10152,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>24397406</spirit:value>
+            <spirit:value>8a28bed4</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>customizationCRCversion</spirit:name>
@@ -10160,7 +10160,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>752a3578</spirit:value>
+            <spirit:value>df72e049</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRCversion</spirit:name>
@@ -10168,7 +10168,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Dec 20 20:55:25 UTC 2018</spirit:value>
+            <spirit:value>Sat Dec 22 02:58:56 UTC 2018</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>StaleAtRelink</spirit:name>
@@ -10187,7 +10187,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>customizationCRC</spirit:name>
-            <spirit:value>24397406</spirit:value>
+            <spirit:value>8a28bed4</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>customizationCRCversion</spirit:name>
@@ -10195,7 +10195,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRC</spirit:name>
-            <spirit:value>752a3578</spirit:value>
+            <spirit:value>df72e049</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>boundaryCRCversion</spirit:name>
@@ -10203,7 +10203,7 @@
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Thu Dec 20 20:55:25 UTC 2018</spirit:value>
+            <spirit:value>Sat Dec 22 02:58:56 UTC 2018</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>StaleAtRelink</spirit:name>
@@ -23673,7 +23673,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(MODELPARAM_VALUE.C_NUM_F2P_INTR_INPUTS)) - 1)" spirit:bitStringLength="0">5</spirit:left>
+            <spirit:left spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(MODELPARAM_VALUE.C_NUM_F2P_INTR_INPUTS)) - 1)" spirit:bitStringLength="0">6</spirit:left>
             <spirit:right spirit:bitStringLength="0">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -25979,7 +25979,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="INTEGER">
         <spirit:name>C_NUM_F2P_INTR_INPUTS</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="dependent" spirit:id="MODELPARAM_VALUE.C_NUM_F2P_INTR_INPUTS" spirit:dependency="spirit:decode(id(PARAM_VALUE.PCW_NUM_F2P_INTR_INPUTS))">6</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="dependent" spirit:id="MODELPARAM_VALUE.C_NUM_F2P_INTR_INPUTS" spirit:dependency="spirit:decode(id(PARAM_VALUE.PCW_NUM_F2P_INTR_INPUTS))">7</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="STRING">
         <spirit:name>C_IRQ_F2P_MODE</spirit:name>
@@ -34073,7 +34073,7 @@
     <spirit:parameter>
       <spirit:name>PCW_NUM_F2P_INTR_INPUTS</spirit:name>
       <spirit:displayName>PCW NUM F2P INTR INPUTS</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.PCW_NUM_F2P_INTR_INPUTS" spirit:order="62500" spirit:minimum="1" spirit:maximum="16" spirit:rangeType="long">6</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.PCW_NUM_F2P_INTR_INPUTS" spirit:order="62500" spirit:minimum="1" spirit:maximum="16" spirit:rangeType="long">7</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -40649,7 +40649,6 @@
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP0.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP1_ACLK.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP1.CLK_DOMAIN" xilinx:valueSource="default_prop"/>
-        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.IRQ_F2P.SENSITIVITY" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.PCW_NUM_F2P_INTR_INPUTS" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.PCW_S_AXI_HP0_FREQMHZ" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.PCW_S_AXI_HP1_FREQMHZ" xilinx:valueSource="propagated"/>
@@ -40716,6 +40715,7 @@
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.PCW_UIPARAM_DDR_T_RCD" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.PCW_UIPARAM_DDR_T_RP" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.FCLK_CLK1.FREQ_HZ" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.IRQ_F2P.SENSITIVITY" xilinx:valueSource="propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP0.ID_WIDTH" xilinx:valueSource="ip_propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP1.ID_WIDTH" xilinx:valueSource="ip_propagated"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXI_HP0.SUPPORTS_NARROW_BURST" xilinx:valueSource="ip_propagated"/>

@@ -17,6 +17,7 @@
 #                 individual pins instead of a vector.
 # 02-Nov-2018 DFN Change P6x[3:1] to P61 ... P63.  Vivado kept changing vector
 #                 from [3:1] to [2:0] which then failed placement.
+# 21-Dec-2018 DFN Steal pins from hconf for I2C.
 
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RD_XFR_CLK_IBUF]
 
@@ -25,7 +26,15 @@ set_property IOSTANDARD LVCMOS33 [get_ports TRIG_OUT]
 set_property IOSTANDARD LVCMOS33 [get_ports GPS_PPS]
 set_property IOSTANDARD LVCMOS33 [get_ports GPS_TX]
 set_property IOSTANDARD LVCMOS33 [get_ports GPS_RX]
-set_property IOSTANDARD LVCMOS33 [get_ports {hconf[*]}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {hconf[*]}]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF0]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF1]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF2]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF3]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF4]
+set_property IOSTANDARD LVCMOS33 [get_ports HCONF5]
+set_property IOSTANDARD LVCMOS33 [get_ports I2C_SDA]
+set_property IOSTANDARD LVCMOS33 [get_ports I2C_SCL]
 set_property IOSTANDARD LVCMOS33 [get_ports WATCHDOG]
 set_property IOSTANDARD LVCMOS33 [get_ports RADIO_RST_IN]
 set_property IOSTANDARD LVCMOS33 [get_ports RADIO_RST_OUT]
@@ -163,14 +172,15 @@ set_property PACKAGE_PIN A16 [get_ports {adc4_p[10]}]
 set_property PACKAGE_PIN B21 [get_ports {adc4_p[11]}]
 #set_property PACKAGE_PIN F16 [get_ports {adc4_p[12]}]
 
-set_property PACKAGE_PIN AA12 [get_ports {hconf[0]}]
-set_property PACKAGE_PIN AB12 [get_ports {hconf[1]}]
-set_property PACKAGE_PIN V12 [get_ports {hconf[2]}]
-set_property PACKAGE_PIN W12 [get_ports {hconf[3]}]
-set_property PACKAGE_PIN U9 [get_ports {hconf[4]}]
-set_property PACKAGE_PIN U11 [get_ports {hconf[5]}]
-set_property PACKAGE_PIN U12 [get_ports {hconf[6]}]
-set_property PACKAGE_PIN U10 [get_ports {hconf[7]}]
+# Note ports not in same order in V1 and V2
+set_property PACKAGE_PIN AA12 [get_ports HCONF0]
+set_property PACKAGE_PIN AB12 [get_ports HCONF1]
+set_property PACKAGE_PIN V12 [get_ports I2C_SDA]
+set_property PACKAGE_PIN W12 [get_ports I2C_SCL]
+set_property PACKAGE_PIN U9 [get_ports HCONF2]
+set_property PACKAGE_PIN U11 [get_ports HCONF3]
+set_property PACKAGE_PIN U12 [get_ports HCONF4]
+set_property PACKAGE_PIN U10 [get_ports HCONF5]
 
 set_property PACKAGE_PIN AB10 [get_ports AMIGA_LTS_OUT]
 set_property PACKAGE_PIN Y11  [get_ports AMIGA_CLOCK_OUT]
