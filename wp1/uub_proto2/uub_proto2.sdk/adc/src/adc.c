@@ -97,7 +97,11 @@ int main(int argc, char *argv[])
 	unsigned long read_result, writeval;
 	off_t target;
 
-	printf ("Setup for ADC bbegin\n");
+	// ADC POWER DOWN PIN
+	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
+	printf("Initialization of ADC PWD... OK\n\r");
+
+	printf ("Setup for ADC begin\n");
 	if (argc == 3) {
 		printf ("Setup for ADC begin\n");
 			if (!strcmp(argv[2],"-r")) {
@@ -135,7 +139,7 @@ int main(int argc, char *argv[])
 	}
 
 
-
+	//close (fd); controllare
 
 
 
@@ -165,9 +169,12 @@ if (write(fd, ADC_RESET, sizeof(ADC_RESET)) != sizeof(ADC_RESET)) {
 		exit(3);
 }
 
-if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV)) != sizeof(ADC_LVDS_INV)) {	// ADC input inverted
+//if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV)) != sizeof(ADC_LVDS_INV)) {	// ADC input inverted
+if (write(fd, ADC_LVDS, sizeof(ADC_LVDS)) != sizeof(ADC_LVDS)) {	// ADC input not inverted
     	exit(3);
 }
+
+
 if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {
 		exit(3);
 }

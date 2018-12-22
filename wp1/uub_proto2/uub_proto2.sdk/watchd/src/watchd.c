@@ -1,4 +1,4 @@
-// Process to control WATCHDOG on UUB
+// Process to control WATCHDOG on UUB_V1
 // written by Roberto Assiro december 2016
 // this process controls internal and external watchdog
 // feb 10th modification to use internal zynq's watchdog only for engineering array. External watchdog code was commented

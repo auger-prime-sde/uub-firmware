@@ -211,21 +211,19 @@ int main( int argc, char *argv[] )
 // print reply with data for javascript request
   	  	  	  	 printf("{");
 
-	 			 printf ("\"T_AIR\":%.1f,",adc_buffer[T_AIR]);
+	 			 printf ("\"T_AIR\":%d,",adc_buffer[T_AIR]);
 	 			 printf ("\"EXT_TEMP\":%.1f,",adc_buffer[EXT_TEMP]*LSB_TO_5V);
 
-	 			 printf ("\"T_WAT\":%.1f,",adc_buffer[T_WAT]);
-	 			 printf ("\"P_AIR\":%.1f,",adc_buffer[P_AIR]);
-
-	 			 printf ("\"LOADCURR\":%.1f,",adc_buffer[LOADCURR]*LSB_TO_5V/48.);
-	 			 printf ("\"SP_VOLT\":%.1f,",adc_buffer[SP_VOLT]*LSB_TO_5V*50./5000);
-	 			 printf ("\"SP_CURR\":%.1f",adc_buffer[SP_CURR]*LSB_TO_5V*5./1000.);
-
-	 		 	 printf ("\nT= %d *0.1K, P= %d ",adc_buffer[T_AIR],adc_buffer[P_AIR]);
-	 			            	 printf ("%d *0.1K",adc_buffer[T_WAT]);
+	 			 printf ("\"T_WAT\":%d,",adc_buffer[T_WAT]);
+	 			 printf ("\"P_AIR\":%d",adc_buffer[P_AIR]);
 
 
 	 			 printf("}");
+
+	 		 //	 printf ("\nT= %d *0.1K, P= %d ",adc_buffer[T_AIR],adc_buffer[P_AIR]);
+	 			  //          	 printf ("%d *0.1K",adc_buffer[T_WAT]);
+
+
 
 /*
 

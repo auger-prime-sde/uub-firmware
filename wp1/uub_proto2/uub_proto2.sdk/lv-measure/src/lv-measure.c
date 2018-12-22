@@ -241,9 +241,13 @@ int main( int argc, char *argv[] )
 
 	 		   	printf ("\"V_AN_P5V\":%.2f,",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3/1000);
 	 		   	printf ("\"I_P5V_ANA\":%.2f,",(float)adc_buffer[I_P5V_ANA]*LSB_TO_1V0/60.*12.2);
+
+
 	 		   	float Ua =(float)adc_buffer[V_AN_N5V]*LSB_TO_3V3;
-	 		    printf ("\"V_N5V_ANA\":%.2f,",Ua*2.-(10./7.5 * (2500.-Ua)/1000));
- //printf ("\"V_N5V_ANA\":%.2f,",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3/1000);
+
+	// 		    printf ("\"V_N5V_ANA\":%.2f,",Ua*2.-(10./7.5 * (2500.-Ua)/1000));
+	 		   	printf ("\"V_N5V_ANA\":%.2f,",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3/1000);
+
 	 		   	printf ("\"I_N5V_ANA\":%.2f,",(float)adc_buffer[I_N5V_ANA]*LSB_TO_1V0/60.*12.2);
 
 	 		    printf ("\"V_GPS_5V\":%.2f,",(float)adc_buffer[V_GPS_5V]*LSB_TO_5V/1000);
@@ -263,10 +267,6 @@ int main( int argc, char *argv[] )
 
 
 	 		 	printf ("\"T_AIR\":%.1f",adc_buffer[T_AIR]);
-
-
-
-
 
 
 	 	 printf("}");
