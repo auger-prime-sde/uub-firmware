@@ -653,6 +653,29 @@
 
 /******************************************************************/
 
+/* Definitions for driver IIC */
+#define XPAR_XIIC_NUM_INSTANCES 1
+
+/* Definitions for peripheral ZYNC_BLOCK_AXI_IIC_0 */
+#define XPAR_ZYNC_BLOCK_AXI_IIC_0_DEVICE_ID 0
+#define XPAR_ZYNC_BLOCK_AXI_IIC_0_BASEADDR 0x41600000
+#define XPAR_ZYNC_BLOCK_AXI_IIC_0_HIGHADDR 0x4160FFFF
+#define XPAR_ZYNC_BLOCK_AXI_IIC_0_TEN_BIT_ADR 0
+#define XPAR_ZYNC_BLOCK_AXI_IIC_0_GPO_WIDTH 1
+
+
+/******************************************************************/
+
+/* Canonical definitions for peripheral ZYNC_BLOCK_AXI_IIC_0 */
+#define XPAR_IIC_0_DEVICE_ID XPAR_ZYNC_BLOCK_AXI_IIC_0_DEVICE_ID
+#define XPAR_IIC_0_BASEADDR 0x41600000
+#define XPAR_IIC_0_HIGHADDR 0x4160FFFF
+#define XPAR_IIC_0_TEN_BIT_ADR 0
+#define XPAR_IIC_0_GPO_WIDTH 1
+
+
+/******************************************************************/
+
 /* Definitions for driver IICPS */
 #define XPAR_XIICPS_NUM_INSTANCES 2
 
@@ -730,6 +753,7 @@
 #define XPAR_FABRIC_ZYNC_BLOCK_AXI_CDMA_1_CDMA_INTROUT_INTR 64
 #define XPAR_FABRIC_TRIGGER_MEMORY_BLOCK_SDE_TRIGGER_0_MUON_IRQ_INTR 65
 #define XPAR_FABRIC_AXI_UARTLITE_1_INTERRUPT_INTR 66
+#define XPAR_FABRIC_ZYNC_BLOCK_AXI_IIC_0_IIC2INTC_IRPT_INTR 67
 
 /******************************************************************/
 

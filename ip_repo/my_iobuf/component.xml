@@ -17,7 +17,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c35962f1</spirit:value>
+            <spirit:value>fa0c5fb3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -32,7 +32,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c35962f1</spirit:value>
+            <spirit:value>fa0c5fb3</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -84,7 +84,7 @@
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:typeName>wire</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -112,7 +112,7 @@
       <spirit:file>
         <spirit:name>my_iobuf.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_c35962f1</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_fa0c5fb3</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -149,7 +149,7 @@
       </xilinx:taxonomies>
       <xilinx:displayName>my_iobuf_v1_0</xilinx:displayName>
       <xilinx:coreRevision>1</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-12-21T23:57:48Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2019-01-22T19:50:06Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="nopcore"/>
         <xilinx:tag xilinx:name="auger.org:auger:my_iobuf:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/my_iobuf</xilinx:tag>
@@ -157,8 +157,8 @@
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c5334843"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="1ef7bcfe"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="dafed903"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="214b2e64"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="c9f3a57a"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

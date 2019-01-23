@@ -26,6 +26,12 @@
         <spirit:abstractionType spirit:library="display_processing_system7" spirit:name="fixedio_rtl" spirit:vendor="xilinx.com" spirit:version="1.0"/>
       </spirit:busInterface>
       <spirit:busInterface>
+        <spirit:name>iic_rtl</spirit:name>
+        <spirit:master/>
+        <spirit:busType spirit:library="interface" spirit:name="iic" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+        <spirit:abstractionType spirit:library="interface" spirit:name="iic_rtl" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+      </spirit:busInterface>
+      <spirit:busInterface>
         <spirit:name>CLK.FPGA_CK_N</spirit:name>
         <spirit:displayName>Clk</spirit:displayName>
         <spirit:description>Clock</spirit:description>
@@ -1035,6 +1041,42 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
+          <spirit:name>HCONF0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>HCONF1</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>HCONF2</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>HCONF3</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>HCONF4</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>HCONF5</spirit:name>
+          <spirit:wire>
+            <spirit:direction>in</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
           <spirit:name>FPGA_CK_N</spirit:name>
           <spirit:wire>
             <spirit:direction>in</spirit:direction>
@@ -1485,7 +1527,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>P63</spirit:name>
+          <spirit:name>FAKE_RD_XFR_CLK</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
           </spirit:wire>
@@ -1503,57 +1545,9 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_XFR_CLK</spirit:name>
+          <spirit:name>P63</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>I2C_SDA</spirit:name>
-          <spirit:wire>
-            <spirit:direction>inout</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>I2C_SCL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>inout</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF0</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF1</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF2</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF3</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF4</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>HCONF5</spirit:name>
-          <spirit:wire>
-            <spirit:direction>in</spirit:direction>
           </spirit:wire>
         </spirit:port>
       </spirit:ports>
@@ -2286,34 +2280,24 @@
         <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
-        <spirit:name>trigger_memory_block_P61</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P61"/>
-        <spirit:externalPortReference spirit:portRef="P61"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>trigger_memory_block_P62</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P62"/>
-        <spirit:externalPortReference spirit:portRef="P62"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>trigger_memory_block_P63</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="P63"/>
-        <spirit:externalPortReference spirit:portRef="P63"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>Net1</spirit:name>
-        <spirit:externalPortReference spirit:portRef="I2C_SCL"/>
-        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="I2C_SCL"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>Net2</spirit:name>
-        <spirit:externalPortReference spirit:portRef="I2C_SDA"/>
-        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="I2C_SDA"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
         <spirit:name>xlconstant_4_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_4" spirit:portRef="dout"/>
         <spirit:internalPortReference spirit:componentRef="interface_uub_dfn3_0" spirit:portRef="HCONF"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>zync_block_DBG1</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG1"/>
+        <spirit:externalPortReference spirit:portRef="P61"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>zync_block_DBG2</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG2"/>
+        <spirit:externalPortReference spirit:portRef="P62"/>
+      </spirit:adHocConnection>
+      <spirit:adHocConnection>
+        <spirit:name>zync_block_DBG3</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG3"/>
+        <spirit:externalPortReference spirit:portRef="P63"/>
       </spirit:adHocConnection>
     </spirit:adHocConnections>
     <spirit:hierConnections>
@@ -2322,6 +2306,9 @@
       </spirit:hierConnection>
       <spirit:hierConnection spirit:interfaceRef="FIXED_IO/processing_system7_0_FIXED_IO">
         <spirit:activeInterface spirit:busRef="FIXED_IO" spirit:componentRef="zync_block"/>
+      </spirit:hierConnection>
+      <spirit:hierConnection spirit:interfaceRef="iic_rtl/zync_block_IIC">
+        <spirit:activeInterface spirit:busRef="IIC" spirit:componentRef="zync_block"/>
       </spirit:hierConnection>
     </spirit:hierConnections>
   </spirit:design>
@@ -6207,6 +6194,12 @@
         <spirit:abstractionType spirit:library="interface" spirit:name="aximm_rtl" spirit:vendor="xilinx.com" spirit:version="1.0"/>
       </spirit:busInterface>
       <spirit:busInterface>
+        <spirit:name>IIC</spirit:name>
+        <spirit:master/>
+        <spirit:busType spirit:library="interface" spirit:name="iic" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+        <spirit:abstractionType spirit:library="interface" spirit:name="iic_rtl" spirit:vendor="xilinx.com" spirit:version="1.0"/>
+      </spirit:busInterface>
+      <spirit:busInterface>
         <spirit:name>CLK.FCLK_CLK0</spirit:name>
         <spirit:displayName>Clk</spirit:displayName>
         <spirit:description>Clock</spirit:description>
@@ -6353,15 +6346,21 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>I2C_SCL</spirit:name>
+          <spirit:name>DBG1</spirit:name>
           <spirit:wire>
-            <spirit:direction>inout</spirit:direction>
+            <spirit:direction>out</spirit:direction>
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>I2C_SDA</spirit:name>
+          <spirit:name>DBG2</spirit:name>
           <spirit:wire>
-            <spirit:direction>inout</spirit:direction>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>DBG3</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
           </spirit:wire>
         </spirit:port>
       </spirit:ports>
@@ -6520,20 +6519,7 @@
         <spirit:componentRef spirit:library="ip" spirit:name="axi_iic" spirit:vendor="xilinx.com" spirit:version="2.0"/>
         <spirit:configurableElementValues>
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_proto2_axi_iic_0_0</spirit:configurableElementValue>
-        </spirit:configurableElementValues>
-      </spirit:componentInstance>
-      <spirit:componentInstance>
-        <spirit:instanceName>my_iobuf_0</spirit:instanceName>
-        <spirit:componentRef spirit:library="auger" spirit:name="my_iobuf" spirit:vendor="auger.org" spirit:version="1.0"/>
-        <spirit:configurableElementValues>
-          <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_proto2_my_iobuf_0_0</spirit:configurableElementValue>
-        </spirit:configurableElementValues>
-      </spirit:componentInstance>
-      <spirit:componentInstance>
-        <spirit:instanceName>my_iobuf_1</spirit:instanceName>
-        <spirit:componentRef spirit:library="auger" spirit:name="my_iobuf" spirit:vendor="auger.org" spirit:version="1.0"/>
-        <spirit:configurableElementValues>
-          <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_proto2_my_iobuf_0_1</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="IIC_FREQ_KHZ">400</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
     </spirit:componentInstances>
@@ -6607,6 +6593,7 @@
         <spirit:internalPortReference spirit:componentRef="processing_system7_0" spirit:portRef="S_AXI_HP0_ACLK"/>
         <spirit:internalPortReference spirit:componentRef="processing_system7_0" spirit:portRef="S_AXI_HP1_ACLK"/>
         <spirit:internalPortReference spirit:componentRef="proc_sys_reset_0" spirit:portRef="slowest_sync_clk"/>
+        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="s_axi_aclk"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_1" spirit:portRef="ACLK"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_1" spirit:portRef="S00_ACLK"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_1" spirit:portRef="S01_ACLK"/>
@@ -6647,7 +6634,6 @@
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M20_ACLK"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M21_ACLK"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M22_ACLK"/>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="s_axi_aclk"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>processing_system7_0_FCLK_RESET0_N</spirit:name>
@@ -6695,6 +6681,7 @@
       <spirit:adHocConnection>
         <spirit:name>proc_sys_reset_0_interconnect_aresetn</spirit:name>
         <spirit:internalPortReference spirit:componentRef="proc_sys_reset_0" spirit:portRef="interconnect_aresetn"/>
+        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="s_axi_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M16_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M15_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M14_ARESETN"/>
@@ -6735,7 +6722,6 @@
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M20_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M21_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="axi_interconnect_0" spirit:portRef="M22_ARESETN"/>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="s_axi_aresetn"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>proc_sys_reset_0_peripheral_aresetn</spirit:name>
@@ -6764,46 +6750,6 @@
         <spirit:name>axi_iic_0_iic2intc_irpt</spirit:name>
         <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="iic2intc_irpt"/>
         <spirit:internalPortReference spirit:componentRef="xlconcat_0" spirit:portRef="In6"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>my_iobuf_0_io_in</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_0" spirit:portRef="io_in"/>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="sda_i"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>Net</spirit:name>
-        <spirit:externalPortReference spirit:portRef="I2C_SDA"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_0" spirit:portRef="io_pad"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>axi_iic_0_sda_o</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="sda_o"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_0" spirit:portRef="io_out"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>axi_iic_0_sda_t</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="sda_t"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_0" spirit:portRef="io_tri"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>axi_iic_0_scl_t</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="scl_t"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_1" spirit:portRef="io_tri"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>Net1</spirit:name>
-        <spirit:externalPortReference spirit:portRef="I2C_SCL"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_1" spirit:portRef="io_pad"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>my_iobuf_1_io_in</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_1" spirit:portRef="io_in"/>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="scl_i"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>axi_iic_0_scl_o</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="axi_iic_0" spirit:portRef="scl_o"/>
-        <spirit:internalPortReference spirit:componentRef="my_iobuf_1" spirit:portRef="io_out"/>
       </spirit:adHocConnection>
     </spirit:adHocConnections>
     <spirit:hierConnections>
@@ -6893,6 +6839,9 @@
       </spirit:hierConnection>
       <spirit:hierConnection spirit:interfaceRef="RD_IFC/axi_interconnect_0_M21_AXI">
         <spirit:activeInterface spirit:busRef="M21_AXI" spirit:componentRef="axi_interconnect_0"/>
+      </spirit:hierConnection>
+      <spirit:hierConnection spirit:interfaceRef="IIC/Conn1">
+        <spirit:activeInterface spirit:busRef="IIC" spirit:componentRef="axi_iic_0"/>
       </spirit:hierConnection>
     </spirit:hierConnections>
   </spirit:design>
@@ -10648,7 +10597,7 @@
     <spirit:interconnections>
       <spirit:interconnection>
         <spirit:name>xbar_to_i00_couplers</spirit:name>
-        <spirit:activeInterface spirit:busRef="M00_AXI" spirit:componentRef="xbar"/>
+        <spirit:activeInterface spirit:busRef="M02_AXI" spirit:componentRef="xbar"/>
         <spirit:activeInterface spirit:busRef="S_AXI" spirit:componentRef="i00_couplers"/>
       </spirit:interconnection>
       <spirit:interconnection>
@@ -10668,7 +10617,7 @@
       </spirit:interconnection>
       <spirit:interconnection>
         <spirit:name>xbar_to_i02_couplers</spirit:name>
-        <spirit:activeInterface spirit:busRef="M02_AXI" spirit:componentRef="xbar"/>
+        <spirit:activeInterface spirit:busRef="M00_AXI" spirit:componentRef="xbar"/>
         <spirit:activeInterface spirit:busRef="S_AXI" spirit:componentRef="i02_couplers"/>
       </spirit:interconnection>
       <spirit:interconnection>
