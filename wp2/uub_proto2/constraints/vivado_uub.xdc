@@ -273,6 +273,6 @@ set_property PACKAGE_PIN H17 [get_ports ADC_PWD]
 set_property PACKAGE_PIN H18 [get_ports P65]
 
 create_clock -name IIC_SCL_CLOCK -period 2500 [get_ports iic_rtl_scl_io]
-create_clock -name IIC_SCL_CLOCK -period 2500 [get_ports iic_rtl_sda_io]
+#create_clock -name IIC_SCL_CLOCK -period 2500 [get_ports iic_rtl_sda_io]
 
 

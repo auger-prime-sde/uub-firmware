@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Jan 23 16:41:56 2019" VIVADOVERSION="2015.2">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Fri Jan 25 17:01:53 2019" VIVADOVERSION="2015.2">
 
   <SYSTEMINFO ARCH="zynq" DEVICE="7z020" NAME="uub_proto2" PACKAGE="clg484" SPEEDGRADE="-1"/>
 
@@ -237,12 +237,7 @@
         <CONNECTION INSTANCE="fake_rd_block_fake_rd_interface_0" PORT="ENABLE_FAKE_XFR"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="RD_XFR_CLK_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" LEFT="0" NAME="RD_SER_DATA0_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+    <PORT DIR="O" LEFT="0" NAME="ENABLE_RD_XFR_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
       </CONNECTIONS>
@@ -252,17 +247,17 @@
         <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="ENABLE_RD_XFR_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
+    <PORT DIR="O" LEFT="0" NAME="RD_SER_DATA0_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_SER_DATA1_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
+    <PORT DIR="O" LEFT="0" NAME="RD_XFR_CLK_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
       <CONNECTIONS>
-        <CONNECTION INSTANCE="xlconstant_3" PORT="dout"/>
+        <CONNECTION INSTANCE="xlconstant_0" PORT="dout"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_SER_DATA0_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
+    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_XFR_CLK_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_3" PORT="dout"/>
       </CONNECTIONS>
@@ -272,7 +267,12 @@
         <CONNECTION INSTANCE="xlconstant_3" PORT="dout"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_XFR_CLK_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
+    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_SER_DATA0_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="xlconstant_3" PORT="dout"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="0" NAME="FAKE_RD_SER_DATA1_CTL" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_3" PORT="dout"/>
       </CONNECTIONS>
@@ -282,12 +282,7 @@
         <CONNECTION INSTANCE="fake_rd_block_fake_rd_interface_0" PORT="SERIAL_FAKE_OUT"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT5" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
-      <CONNECTIONS>
-        <CONNECTION INSTANCE="xlconstant_2" PORT="dout"/>
-      </CONNECTIONS>
-    </PORT>
-    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT4" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
+    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT7" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_2" PORT="dout"/>
       </CONNECTIONS>
@@ -297,7 +292,12 @@
         <CONNECTION INSTANCE="xlconstant_2" PORT="dout"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT7" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
+    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT4" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="xlconstant_2" PORT="dout"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" LEFT="0" NAME="EXT0_DAT5" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
       <CONNECTIONS>
         <CONNECTION INSTANCE="xlconstant_2" PORT="dout"/>
       </CONNECTIONS>
@@ -375,7 +375,7 @@
         <PORTMAP PHYSICAL="FIXED_IO_ps_porb"/>
       </PORTMAPS>
     </BUSINTERFACE>
-    <BUSINTERFACE BUSNAME="zync_block_axi_iic_0_IIC" NAME="iic_rtl" TYPE="INITIATOR">
+    <BUSINTERFACE BUSNAME="iic_filter_0_iic_m" NAME="iic_rtl" TYPE="INITIATOR">
       <PORTMAPS>
         <PORTMAP PHYSICAL="iic_rtl_scl_i"/>
         <PORTMAP PHYSICAL="iic_rtl_scl_o"/>
@@ -4001,6 +4001,85 @@
         </PORT>
       </PORTS>
       <BUSINTERFACES/>
+    </MODULE>
+    <MODULE FULLNAME="/iic_filter_0" HWVERSION="1.0" INSTANCE="iic_filter_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="iic_filter" VLNV="auger.org:auger:iic_filter:1.0">
+      <DOCUMENTS/>
+      <PARAMETERS>
+        <PARAMETER NAME="SCL_INERTIAL_DELAY" VALUE="5"/>
+        <PARAMETER NAME="SDA_INERTIAL_DELAY" VALUE="5"/>
+        <PARAMETER NAME="Component_Name" VALUE="uub_proto2_iic_filter_0_1"/>
+        <PARAMETER NAME="EDK_IPTYPE" VALUE="PERIPHERAL"/>
+      </PARAMETERS>
+      <PORTS>
+        <PORT DIR="I" NAME="Sysclk" SIGIS="undef" SIGNAME="util_ds_buf_0_IBUF_OUT">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="util_ds_buf_0" PORT="IBUF_OUT"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="Rst" SIGIS="rst" SIGNAME="zync_block_proc_sys_reset_0_peripheral_aresetn">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_proc_sys_reset_0" PORT="peripheral_aresetn"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="Scl_noisy" SIGIS="undef"/>
+        <PORT DIR="O" NAME="Scl_clean" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="scl_i"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="Sda_noisy" SIGIS="undef"/>
+        <PORT DIR="O" NAME="Sda_clean" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="sda_i"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="Scl_noisy_out" SIGIS="undef"/>
+        <PORT DIR="O" NAME="Scl_noisy_t" SIGIS="undef"/>
+        <PORT DIR="I" NAME="Scl_clean_in" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean_in">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="scl_o"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="Scl_clean_t" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean_t">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="scl_t"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="Sda_noisy_out" SIGIS="undef"/>
+        <PORT DIR="O" NAME="Sda_noisy_t" SIGIS="undef"/>
+        <PORT DIR="I" NAME="Sda_clean_in" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean_in">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="sda_o"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="Sda_clean_t" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean_t">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="zync_block_axi_iic_0" PORT="sda_t"/>
+          </CONNECTIONS>
+        </PORT>
+      </PORTS>
+      <BUSINTERFACES>
+        <BUSINTERFACE BUSNAME="iic_filter_0_iic_m" NAME="iic_m" TYPE="INITIATOR">
+          <PORTMAPS>
+            <PORTMAP PHYSICAL="Sda_noisy_t"/>
+            <PORTMAP PHYSICAL="Sda_noisy_out"/>
+            <PORTMAP PHYSICAL="Scl_noisy"/>
+            <PORTMAP PHYSICAL="Scl_noisy_t"/>
+            <PORTMAP PHYSICAL="Scl_noisy_out"/>
+            <PORTMAP PHYSICAL="Sda_noisy"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+        <BUSINTERFACE BUSNAME="zync_block_axi_iic_0_IIC" NAME="iic_s" TYPE="TARGET">
+          <PORTMAPS>
+            <PORTMAP PHYSICAL="Scl_clean_t"/>
+            <PORTMAP PHYSICAL="Sda_clean_in"/>
+            <PORTMAP PHYSICAL="Sda_clean"/>
+            <PORTMAP PHYSICAL="Scl_clean_in"/>
+            <PORTMAP PHYSICAL="Scl_clean"/>
+            <PORTMAP PHYSICAL="Sda_clean_t"/>
+          </PORTMAPS>
+        </BUSINTERFACE>
+      </BUSINTERFACES>
     </MODULE>
     <MODULE FULLNAME="/interface_uub_dfn3_0" HWVERSION="1.0" INSTANCE="interface_uub_dfn3_0" IPTYPE="PERIPHERAL" IS_ENABLE="1" MODCLASS="PERIPHERAL" MODTYPE="interface_uub_dfn3" VLNV="auger.org:auger:interface_uub_dfn3:1.0">
       <DOCUMENTS/>
@@ -24098,6 +24177,7 @@
             <CONNECTION INSTANCE="test_control_block_blk_mem_gen_0" PORT="clkb"/>
             <CONNECTION INSTANCE="test_control_block_fake_signal_0" PORT="CLK"/>
             <CONNECTION INSTANCE="fake_rd_block_clk_wiz_0" PORT="clk_in1"/>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Sysclk"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -24114,10 +24194,10 @@
       <PORTS>
         <PORT DIR="O" LEFT="0" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_0_dout">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="ENABLE_RD_XFR_CTL"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="RD_SER_DATA1_CTL"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="RD_SER_DATA0_CTL"/>
             <CONNECTION INSTANCE="External_Ports" PORT="RD_XFR_CLK_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="RD_SER_DATA0_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="RD_SER_DATA1_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="ENABLE_RD_XFR_CTL"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -24151,10 +24231,10 @@
       <PORTS>
         <PORT DIR="O" LEFT="0" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_2_dout">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT7"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT6"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT4"/>
             <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT5"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT4"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT6"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="EXT0_DAT7"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -24171,10 +24251,10 @@
       <PORTS>
         <PORT DIR="O" LEFT="0" NAME="dout" RIGHT="0" SIGIS="undef" SIGNAME="xlconstant_3_dout">
           <CONNECTIONS>
-            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_RD_XFR_CLK_CTL"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_ENABLE_RD_XFR_CTL"/>
-            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_RD_SER_DATA0_CTL"/>
             <CONNECTION INSTANCE="External_Ports" PORT="FAKE_RD_SER_DATA1_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_RD_SER_DATA0_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_ENABLE_RD_XFR_CTL"/>
+            <CONNECTION INSTANCE="External_Ports" PORT="FAKE_RD_XFR_CLK_CTL"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -25480,12 +25560,36 @@
             <CONNECTION INSTANCE="zync_block_axi_interconnect_0" PORT="M22_AXI_rready"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" NAME="sda_i" SIGIS="undef"/>
-        <PORT DIR="O" NAME="sda_o" SIGIS="undef"/>
-        <PORT DIR="O" NAME="sda_t" SIGIS="undef"/>
-        <PORT DIR="I" NAME="scl_i" SIGIS="undef"/>
-        <PORT DIR="O" NAME="scl_o" SIGIS="undef"/>
-        <PORT DIR="O" NAME="scl_t" SIGIS="undef"/>
+        <PORT DIR="I" NAME="sda_i" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Sda_clean"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="sda_o" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean_in">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Sda_clean_in"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="sda_t" SIGIS="undef" SIGNAME="iic_filter_0_Sda_clean_t">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Sda_clean_t"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" NAME="scl_i" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Scl_clean"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="scl_o" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean_in">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Scl_clean_in"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" NAME="scl_t" SIGIS="undef" SIGNAME="iic_filter_0_Scl_clean_t">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Scl_clean_t"/>
+          </CONNECTIONS>
+        </PORT>
         <PORT DIR="O" LEFT="0" NAME="gpo" RIGHT="0" SIGIS="undef"/>
       </PORTS>
       <BUSINTERFACES>
@@ -33771,6 +33875,7 @@
             <CONNECTION INSTANCE="fake_rd_block_axi_bram_ctrl_0" PORT="s_axi_aresetn"/>
             <CONNECTION INSTANCE="fake_rd_block_axi_bram_ctrl_1" PORT="s_axi_aresetn"/>
             <CONNECTION INSTANCE="fake_rd_block_fake_rd_interface_0" PORT="s00_axi_aresetn"/>
+            <CONNECTION INSTANCE="iic_filter_0" PORT="Rst"/>
             <CONNECTION INSTANCE="zync_block_axi_cdma_1" PORT="s_axi_lite_aresetn"/>
             <CONNECTION INSTANCE="zync_block_axi_cdma_0" PORT="s_axi_lite_aresetn"/>
           </CONNECTIONS>
@@ -33887,7 +33992,7 @@
         <PARAMETER NAME="C_FCLK_CLK3_BUF" VALUE="false"/>
         <PARAMETER NAME="C_PACKAGE_NAME" VALUE="clg484"/>
         <PARAMETER NAME="PCW_DDR_RAM_BASEADDR" VALUE="0x00100000"/>
-        <PARAMETER NAME="PCW_DDR_RAM_HIGHADDR" VALUE="0x3FFFFFFF"/>
+        <PARAMETER NAME="PCW_DDR_RAM_HIGHADDR" VALUE="0x0FFFFFFF"/>
         <PARAMETER NAME="PCW_UART0_BASEADDR" VALUE="0xE0000000"/>
         <PARAMETER NAME="PCW_UART0_HIGHADDR" VALUE="0xE0000FFF"/>
         <PARAMETER NAME="PCW_UART1_BASEADDR" VALUE="0xE0001000"/>

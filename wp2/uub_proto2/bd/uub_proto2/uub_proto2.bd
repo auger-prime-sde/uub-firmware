@@ -1395,17 +1395,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>RD_SER_DATA0_CTL</spirit:name>
+          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1425,7 +1415,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
+          <spirit:name>RD_SER_DATA0_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1435,27 +1425,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA1_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
+          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1475,13 +1445,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>EXT0_DAT5</spirit:name>
+          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1491,7 +1455,33 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT4</spirit:name>
+          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_SER_DATA1_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT7</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1511,7 +1501,17 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT7</spirit:name>
+          <spirit:name>EXT0_DAT4</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT5</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1679,6 +1679,13 @@
           <spirit:configurableElementValue spirit:referenceId="CONST_VAL">0</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
+      <spirit:componentInstance>
+        <spirit:instanceName>iic_filter_0</spirit:instanceName>
+        <spirit:componentRef spirit:library="auger" spirit:name="iic_filter" spirit:vendor="auger.org" spirit:version="1.0"/>
+        <spirit:configurableElementValues>
+          <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_proto2_iic_filter_0_1</spirit:configurableElementValue>
+        </spirit:configurableElementValues>
+      </spirit:componentInstance>
     </spirit:componentInstances>
     <spirit:interconnections>
       <spirit:interconnection>
@@ -1816,6 +1823,11 @@
         <spirit:activeInterface spirit:busRef="RD_IFC" spirit:componentRef="zync_block"/>
         <spirit:activeInterface spirit:busRef="SOO_AXI" spirit:componentRef="fake_rd_block"/>
       </spirit:interconnection>
+      <spirit:interconnection>
+        <spirit:name>zync_block_IIC</spirit:name>
+        <spirit:activeInterface spirit:busRef="IIC" spirit:componentRef="zync_block"/>
+        <spirit:activeInterface spirit:busRef="iic_s" spirit:componentRef="iic_filter_0"/>
+      </spirit:interconnection>
     </spirit:interconnections>
     <spirit:adHocConnections>
       <spirit:adHocConnection>
@@ -1840,6 +1852,7 @@
         <spirit:internalPortReference spirit:componentRef="filter_block" spirit:portRef="CLK"/>
         <spirit:internalPortReference spirit:componentRef="test_control_block" spirit:portRef="CLK"/>
         <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="FAKE_RD_CLK"/>
+        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="Sysclk"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>RADIO_CTS_1</spirit:name>
@@ -1862,6 +1875,7 @@
         <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="S_AXI_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="test_control_block" spirit:portRef="s00_axi_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="S00_AXI_ARESETN"/>
+        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="Rst"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>proc_sys_reset_0_peripheral_reset</spirit:name>
@@ -2238,18 +2252,18 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_0_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_0" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="ENABLE_RD_XFR_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
         <spirit:externalPortReference spirit:portRef="RD_XFR_CLK_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
+        <spirit:externalPortReference spirit:portRef="ENABLE_RD_XFR_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>xlconstant_3_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_3" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
         <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA1_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>fake_rd_block_SERIAL_FAKE_OUT</spirit:name>
@@ -2264,10 +2278,10 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_2_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_2" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT7"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
         <spirit:externalPortReference spirit:portRef="EXT0_DAT5"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT7"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>RD_XFR_CLK_1</spirit:name>
@@ -2307,8 +2321,8 @@
       <spirit:hierConnection spirit:interfaceRef="FIXED_IO/processing_system7_0_FIXED_IO">
         <spirit:activeInterface spirit:busRef="FIXED_IO" spirit:componentRef="zync_block"/>
       </spirit:hierConnection>
-      <spirit:hierConnection spirit:interfaceRef="iic_rtl/zync_block_IIC">
-        <spirit:activeInterface spirit:busRef="IIC" spirit:componentRef="zync_block"/>
+      <spirit:hierConnection spirit:interfaceRef="iic_rtl/iic_filter_0_iic_m">
+        <spirit:activeInterface spirit:busRef="iic_m" spirit:componentRef="iic_filter_0"/>
       </spirit:hierConnection>
     </spirit:hierConnections>
   </spirit:design>
@@ -6840,7 +6854,7 @@
       <spirit:hierConnection spirit:interfaceRef="RD_IFC/axi_interconnect_0_M21_AXI">
         <spirit:activeInterface spirit:busRef="M21_AXI" spirit:componentRef="axi_interconnect_0"/>
       </spirit:hierConnection>
-      <spirit:hierConnection spirit:interfaceRef="IIC/Conn1">
+      <spirit:hierConnection spirit:interfaceRef="IIC/axi_iic_0_IIC">
         <spirit:activeInterface spirit:busRef="IIC" spirit:componentRef="axi_iic_0"/>
       </spirit:hierConnection>
     </spirit:hierConnections>
