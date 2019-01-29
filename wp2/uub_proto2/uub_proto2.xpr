@@ -25,6 +25,14 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_iic_filter_0_1/uub_proto2_iic_filter_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_0_4/uub_proto2_xlconstant_0_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_iic_0_0/uub_proto2_axi_iic_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_clk_wiz_0_0/uub_proto2_clk_wiz_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_proc_sys_reset_0_1/uub_proto2_proc_sys_reset_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_6_1/uub_proto2_xlconstant_6_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_0_3/uub_proto2_xlconstant_0_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_5_2/uub_proto2_xlconstant_5_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_1_0/uub_proto2_xlconstant_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_amiga_trigger_0_0/uub_proto2_amiga_trigger_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_fake_signal_0_0/uub_proto2_fake_signal_0_0.xci"/>
@@ -35,19 +43,13 @@
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_util_ds_buf_0_0/uub_proto2_util_ds_buf_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_clock_1pps_0_0/uub_proto2_clock_1pps_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_uartlite_0_0/uub_proto2_axi_uartlite_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_iic_0_0/uub_proto2_axi_iic_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_clk_wiz_0_0/uub_proto2_clk_wiz_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_proc_sys_reset_0_1/uub_proto2_proc_sys_reset_0_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_6_1/uub_proto2_xlconstant_6_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_0_3/uub_proto2_xlconstant_0_3.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_5_2/uub_proto2_xlconstant_5_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_6_0/uub_proto2_xlconstant_6_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_blk_mem_gen_1_2/uub_proto2_blk_mem_gen_1_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_blk_mem_gen_0_2/uub_proto2_blk_mem_gen_0_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_bram_ctrl_1_2/uub_proto2_axi_bram_ctrl_1_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_bram_ctrl_0_4/uub_proto2_axi_bram_ctrl_0_4.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_fake_rd_interface_0_0/uub_proto2_fake_rd_interface_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_5_1/uub_proto2_xlconstant_5_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_4_1/uub_proto2_xlconstant_4_1.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_bram_ctrl_0_3/uub_proto2_axi_bram_ctrl_0_3.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_4_0/uub_proto2_xlconstant_4_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_blk_mem_gen_1_1/uub_proto2_blk_mem_gen_1_1.xci"/>
@@ -60,12 +62,13 @@
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_cdma_1_0/uub_proto2_axi_cdma_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_interconnect_2_0/uub_proto2_axi_interconnect_2_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_interconnect_0_0/uub_proto2_axi_interconnect_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_blk_mem_gen_1_2/uub_proto2_blk_mem_gen_1_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_cdma_0_0/uub_proto2_axi_cdma_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconcat_0_1/uub_proto2_xlconcat_0_1.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_proc_sys_reset_0_0/uub_proto2_proc_sys_reset_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_interconnect_1_0/uub_proto2_axi_interconnect_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_ddr_synchronizer_24bit_4_0/uub_proto2_ddr_synchronizer_24bit_4_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_ddr_synchronizer_24bit_3_0/uub_proto2_ddr_synchronizer_24bit_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_4_1/uub_proto2_xlconstant_4_1.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_ddr_synchronizer_24bit_2_0/uub_proto2_ddr_synchronizer_24bit_2_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_ddr_synchronizer_24bit_1_0/uub_proto2_ddr_synchronizer_24bit_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_ddr_synchronizer_24bit_0_0/uub_proto2_ddr_synchronizer_24bit_0_0.xci"/>
@@ -122,44 +125,41 @@
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_fir_compiler_0_0/uub_proto2_fir_compiler_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_2_0/uub_proto2_xlconstant_2_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_uartlite_1_0/uub_proto2_axi_uartlite_1_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_axi_cdma_0_0/uub_proto2_axi_cdma_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_xlconstant_0_4/uub_proto2_xlconstant_0_4.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="uub_proto2.bmm"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_iic_filter_0_1/uub_proto2_iic_filter_0_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_2/uub_proto2_auto_ds_2.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_4/uub_proto2_auto_ds_4.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_1/uub_proto2_auto_us_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="uub_proto2_ooc.xdc"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_1/uub_proto2_auto_pc_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_0/uub_proto2_auto_us_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_3/uub_proto2_auto_pc_3.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_tier2_xbar_0_0/uub_proto2_tier2_xbar_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_1/uub_proto2_auto_pc_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_6/uub_proto2_auto_pc_6.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_2/uub_proto2_auto_pc_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_4/uub_proto2_auto_pc_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_7/uub_proto2_auto_pc_7.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="hdl/uub_proto2.v"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_4/uub_proto2_auto_ds_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_5/uub_proto2_auto_pc_5.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_0/uub_proto2_auto_ds_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_1/uub_proto2_auto_ds_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_0/uub_proto2_auto_pc_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_3/uub_proto2_auto_us_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_tier2_xbar_2_0/uub_proto2_tier2_xbar_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_tier2_xbar_1_0/uub_proto2_tier2_xbar_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_3/uub_proto2_auto_ds_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_8/uub_proto2_auto_pc_8.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_10/uub_proto2_auto_pc_10.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_9/uub_proto2_auto_pc_9.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_1/uub_proto2_auto_us_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_2/uub_proto2_auto_ds_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_6/uub_proto2_auto_ds_6.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_2/uub_proto2_auto_us_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_12/uub_proto2_auto_pc_12.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_11/uub_proto2_auto_pc_11.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_13/uub_proto2_auto_pc_13.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_14/uub_proto2_auto_pc_14.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_5/uub_proto2_auto_ds_5.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="hw_handoff/uub_proto2.hwh"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="hw_handoff/uub_proto2_bd.tcl"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_0/uub_proto2_auto_us_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_0/uub_proto2_auto_pc_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="hdl/uub_proto2.hwdef"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_tier2_xbar_1_0/uub_proto2_tier2_xbar_1_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_tier2_xbar_2_0/uub_proto2_tier2_xbar_2_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_1/uub_proto2_auto_ds_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_0/uub_proto2_auto_ds_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="hdl/uub_proto2.v"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_9/uub_proto2_auto_pc_9.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_10/uub_proto2_auto_pc_10.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_3/uub_proto2_auto_us_3.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_3/uub_proto2_auto_pc_3.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_6/uub_proto2_auto_pc_6.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_7/uub_proto2_auto_pc_7.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_5/uub_proto2_auto_pc_5.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_2/uub_proto2_auto_pc_2.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_6/uub_proto2_auto_ds_6.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_8/uub_proto2_auto_pc_8.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_13/uub_proto2_auto_pc_13.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_ds_5/uub_proto2_auto_ds_5.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_11/uub_proto2_auto_pc_11.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_14/uub_proto2_auto_pc_14.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_us_2/uub_proto2_auto_us_2.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_4/uub_proto2_auto_pc_4.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="ip/uub_proto2_auto_pc_12/uub_proto2_auto_pc_12.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="uub_proto2_ooc.xdc"/>
+        <CompFileExtendedInfo CompFileName="uub_proto2.bd" FileRelPathName="uub_proto2.bmm"/>
       </File>
       <File Path="$PPRDIR/bd/uub_proto2/hdl/uub_proto2_wrapper.v">
         <FileInfo>

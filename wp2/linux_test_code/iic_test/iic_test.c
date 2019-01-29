@@ -21,13 +21,13 @@ int main()
   for (loop=0; loop<5; loop++)
     {
       status = write_iic(0x100/4,0x1); // Enable IIC
-      status = write_iic(0x100/4,0x2); // Reset TX Fifo
-      status = write_iic(0x100/4,0xC); // Master & TX mode
+      status = write_iic(0x100/4,0x3); // Reset TX Fifo
+      status = write_iic(0x100/4,0xD); // Master & TX mode
 
       status = read_iic(0x104/4);  // Read status register
       printf("initial iic status reg = %x\n");
-      status = write_iic(0x40/4,0xA); // Try soft reset
-      sleep(1); 
+      //      status = write_iic(0x40/4,0xA); // Try soft reset
+      //sleep(1); 
       status = write_iic(0x108/4,0x1D8);
       status = read_iic(0x104/4);  // Read status register
       printf("iic status reg after 1st TX_FIFO write = %x\n");

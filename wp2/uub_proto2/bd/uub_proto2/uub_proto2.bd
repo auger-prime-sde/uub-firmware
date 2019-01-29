@@ -1395,17 +1395,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>RD_SER_DATA1_CTL</spirit:name>
+          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1425,7 +1415,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>RD_XFR_CLK_CTL</spirit:name>
+          <spirit:name>RD_SER_DATA1_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1435,27 +1425,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_XFR_CLK_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-            <spirit:vector>
-              <spirit:left>0</spirit:left>
-              <spirit:right>0</spirit:right>
-            </spirit:vector>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
+          <spirit:name>ENABLE_RD_XFR_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1475,13 +1445,7 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
-          <spirit:wire>
-            <spirit:direction>out</spirit:direction>
-          </spirit:wire>
-        </spirit:port>
-        <spirit:port>
-          <spirit:name>EXT0_DAT7</spirit:name>
+          <spirit:name>FAKE_RD_SER_DATA0_CTL</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1491,7 +1455,33 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT6</spirit:name>
+          <spirit:name>FAKE_ENABLE_RD_XFR_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_XFR_CLK_CTL</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>FAKE_RD_SER_DATA0</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT5</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1511,7 +1501,17 @@
           </spirit:wire>
         </spirit:port>
         <spirit:port>
-          <spirit:name>EXT0_DAT5</spirit:name>
+          <spirit:name>EXT0_DAT6</spirit:name>
+          <spirit:wire>
+            <spirit:direction>out</spirit:direction>
+            <spirit:vector>
+              <spirit:left>0</spirit:left>
+              <spirit:right>0</spirit:right>
+            </spirit:vector>
+          </spirit:wire>
+        </spirit:port>
+        <spirit:port>
+          <spirit:name>EXT0_DAT7</spirit:name>
           <spirit:wire>
             <spirit:direction>out</spirit:direction>
             <spirit:vector>
@@ -1875,13 +1875,13 @@
         <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="S_AXI_ARESETN"/>
         <spirit:internalPortReference spirit:componentRef="test_control_block" spirit:portRef="s00_axi_aresetn"/>
         <spirit:internalPortReference spirit:componentRef="fake_rd_block" spirit:portRef="S00_AXI_ARESETN"/>
-        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="Rst"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>proc_sys_reset_0_peripheral_reset</spirit:name>
         <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="peripheral_reset"/>
         <spirit:internalPortReference spirit:componentRef="trigger_memory_block" spirit:portRef="RST"/>
         <spirit:internalPortReference spirit:componentRef="test_control_block" spirit:portRef="RST"/>
+        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="Rst"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>processing_system7_0_FCLK_CLK0</spirit:name>
@@ -2252,18 +2252,18 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_0_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_0" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="RD_XFR_CLK_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
-        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
         <spirit:externalPortReference spirit:portRef="ENABLE_RD_XFR_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA1_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="RD_XFR_CLK_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>xlconstant_3_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_3" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA1_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
-        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
         <spirit:externalPortReference spirit:portRef="FAKE_RD_XFR_CLK_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_ENABLE_RD_XFR_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA0_CTL"/>
+        <spirit:externalPortReference spirit:portRef="FAKE_RD_SER_DATA1_CTL"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>fake_rd_block_SERIAL_FAKE_OUT</spirit:name>
@@ -2278,10 +2278,10 @@
       <spirit:adHocConnection>
         <spirit:name>xlconstant_2_dout</spirit:name>
         <spirit:internalPortReference spirit:componentRef="xlconstant_2" spirit:portRef="dout"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT5"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
-        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
         <spirit:externalPortReference spirit:portRef="EXT0_DAT7"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT6"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT4"/>
+        <spirit:externalPortReference spirit:portRef="EXT0_DAT5"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>RD_XFR_CLK_1</spirit:name>
@@ -2299,19 +2299,14 @@
         <spirit:internalPortReference spirit:componentRef="interface_uub_dfn3_0" spirit:portRef="HCONF"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
-        <spirit:name>zync_block_DBG1</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG1"/>
+        <spirit:name>iic_filter_0_DBG1</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="DBG1"/>
         <spirit:externalPortReference spirit:portRef="P61"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
-        <spirit:name>zync_block_DBG2</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG2"/>
+        <spirit:name>iic_filter_0_DBG2</spirit:name>
+        <spirit:internalPortReference spirit:componentRef="iic_filter_0" spirit:portRef="DBG2"/>
         <spirit:externalPortReference spirit:portRef="P62"/>
-      </spirit:adHocConnection>
-      <spirit:adHocConnection>
-        <spirit:name>zync_block_DBG3</spirit:name>
-        <spirit:internalPortReference spirit:componentRef="zync_block" spirit:portRef="DBG3"/>
-        <spirit:externalPortReference spirit:portRef="P63"/>
       </spirit:adHocConnection>
     </spirit:adHocConnections>
     <spirit:hierConnections>

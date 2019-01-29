@@ -60,6 +60,9 @@ use ieee.numeric_std.all;
 --      Scl_noisy_t
 --      Scl_clean_in
 --      Scl_clean_t
+--      DBG1
+--      DBG2
+--      DBG3
 -------------------------------------------------------------------------------
 -- Entity section
 -------------------------------------------------------------------------------
@@ -84,7 +87,10 @@ entity iic_filter is
       Sda_noisy_out : out std_logic;
       Sda_noisy_t : out std_logic;
       Sda_clean_in : in std_logic;
-      Sda_clean_t : in std_logic
+      Sda_clean_t : in std_logic;
+      DBG1 : out std_logic;
+      DBG2 : out std_logic;
+      DBG3 : out std_logic
       );
 
 end entity iic_filter;
@@ -144,6 +150,9 @@ begin
            Scl_noisy_t <= Scl_clean_t;  
            Sda_noisy_out <= Sda_clean_in;  
            Sda_noisy_t <= Sda_clean_t;  
+           DBG1 <= Sda_noisy;
+           DBG2 <= Sda_clean_t;
+           DBG3 <= Sda_clean_in;
           end if;
       
       end process INRTL_PROCESS;
