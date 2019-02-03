@@ -1440,6 +1440,7 @@ proc create_root_design { parentCell } {
 
   # Create instance: iic_filter_0, and set properties
   set iic_filter_0 [ create_bd_cell -type ip -vlnv auger.org:auger:iic_filter:1.0 iic_filter_0 ]
+  set_property -dict [ list CONFIG.SCL_INERTIAL_DELAY {3} CONFIG.SDA_INERTIAL_DELAY {3}  ] $iic_filter_0
 
   # Create instance: interface_uub_dfn3_0, and set properties
   set interface_uub_dfn3_0 [ create_bd_cell -type ip -vlnv auger.org:auger:interface_uub_dfn3:1.0 interface_uub_dfn3_0 ]
