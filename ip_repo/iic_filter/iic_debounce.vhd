@@ -64,7 +64,7 @@ library proc_common_v4_0;
 entity iic_debounce is
    
    generic (
-      C_INERTIAL_DELAY : integer range 0 to 255 := 6;
+      C_INERTIAL_DELAY : integer range 0 to 255 := 3;
       C_DEFAULT        : std_logic              := '1'
       );
 

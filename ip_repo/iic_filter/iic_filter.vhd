@@ -66,11 +66,15 @@ use ieee.numeric_std.all;
 -------------------------------------------------------------------------------
 -- Entity section
 -------------------------------------------------------------------------------
+
+-- 03-Feb-2019 DFN Change default delay to 3; with 6 does not seem to work
+--                 for LED DAC.
+
 entity iic_filter is
    
    generic (
-      SCL_INERTIAL_DELAY : integer range 0 to 255 := 5;
-      SDA_INERTIAL_DELAY : integer range 0 to 255 := 5
+      SCL_INERTIAL_DELAY : integer range 0 to 255 := 3;
+      SDA_INERTIAL_DELAY : integer range 0 to 255 := 3
       );
 
    port (
@@ -105,7 +109,7 @@ architecture RTL of iic_filter is
 component iic_debounce
    
    generic (
-      C_INERTIAL_DELAY : integer range 0 to 255 := 6;
+      C_INERTIAL_DELAY : integer range 0 to 255 := 3;
       C_DEFAULT        : std_logic              := '1'
       );
 
