@@ -24,14 +24,15 @@
          input wire SERIAL_DATA1_IN,
          input wire SERIAL_CLK_IN,
          input wire ENABLE_XFR_IN,
-         input wire [1:0] BUF_NUM,
+         input wire [1:0] BUF_WNUM,
+         input wire [1:0] BUF_RNUM,
          input wire TRIG_IN,
+         input wire RST,
          
          output wire[31:0] DATA_ADDR,
          output wire[31:0] DATA_TO_MEM,
          output wire ENABLE_MEM_WRT,
-         output wire DEBUG1,
-         output wire DEBUG2,
+         output wire TRIG_OUT,
          
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -93,9 +94,11 @@
                 .DATA_ADDR(DATA_ADDR),
                 .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
                 .DATA_TO_MEM(DATA_TO_MEM),
-                .DEBUG1(DEBUG1),
-                .DEBUG2(DEBUG2)
-	);
+                .TRIG_OUT(TRIG_OUT),
+                .RST(RST),
+                .BUF_RNUM(BUF_RNUM),
+                .BUF_WNUM(BUF_WNUM)
+ 	);
 
 	// Add user logic here
 

@@ -228,7 +228,7 @@ led_control led_control1(.RESET(LCL_RESET),
                          );
 
 // Stretch trigger out signal
-stretch stretch_trgout(.CLK(CLK120),.IN(SOME_TRIG_OR),.OUT(TRIG_OUT));
+stretch #(25) stretch_trgout(.CLK(CLK120),.IN(SOME_TRIG_OR),.OUT(TRIG_OUT));
 
 // Stretch trigger signals
 stretch #(2) stretch_compat_sb(.CLK(CLK120),
@@ -296,7 +296,7 @@ always @(posedge CLK120) begin
 
 	// Send SHWR_TRIG_FAST signal for AMIGA & possibly other use
 	// For now this is just a copy of TRIGGERED, but keep separate so
-	// we can add extra logic to this pulse, like shortening if from the
+	// we can add extra logic to this pulse, like shortening it from the
 	// current ~10us.
 	SHWR_TRIG_FAST <= TRIGGERED;
 

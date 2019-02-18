@@ -62,4 +62,6 @@ set_input_delay -clock [get_clocks ADC4_CK_P] -clock_fall -min -add_delay 5.067 
 set_clock_groups -name fake_rd_clks -asynchronous -group [get_clocks clk_fpga_0] -group [get_clocks clk_fpga_1]
 
 
-set_clock_groups -name fake_rd0_clks -asynchronous -group [get_clocks clk_fpga_1] -group [get_clocks -of_objects [get_pins uub_proto2_i/fake_rd_block/clk_wiz_0/inst/plle2_adv_inst/CLKOUT0]]
+
+
+set_clock_groups -asynchronous -group [get_clocks IN_CK_ADC] -group [get_clocks clk_out1_uub_proto2_clk_wiz_0_1]

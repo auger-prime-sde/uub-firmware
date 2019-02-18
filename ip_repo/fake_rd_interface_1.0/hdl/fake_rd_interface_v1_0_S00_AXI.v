@@ -16,20 +16,11 @@ module fake_rd_interface_v1_0_S00_AXI #
    (
     // Users to add ports here
 
-    input wire SERIAL_DATA0_IN,
-    input wire SERIAL_CLK_IN,
-    input wire ENABLE_XFR_IN,
-    input wire[31:0] FAKE_DATA,
     input wire LOCAL_CLK,
-
-    output wire ENABLE_FAKE_XFR,
-    output wire SERIAL_FAKE_OUT,
-    output wire[31:0] FAKE_DATA_ADDR,
-    output wire[31:0] DATA_ADDR,
-    output wire[31:0] DATA_TO_MEM,
-    output wire ENABLE_MEM_WRT,
-    output wire DEBUG1,
-    output wire DEBUG2,
+    input wire TRIGGER,
+    output wire ENABLE_XFR,
+    output wire SERIAL_OUT0,
+    output wire SERIAL_OUT1,
 
     // User ports ends
     // Do not modify the ports beyond this line
@@ -387,26 +378,13 @@ module fake_rd_interface_v1_0_S00_AXI #
 
    // Add user logic here
 
-   // Need to do more proper clock crossing here .....
-              
-   fake_rd_interface rf_ifc(
-                            .SERIAL_CLK_IN(SERIAL_CLK_IN),
-                            .SERIAL_DATA0_IN(SERIAL_DATA0_IN),
-                            .SERIAL_FAKE_OUT(SERIAL_FAKE_OUT),
-                            .ENABLE_XFR_IN(ENABLE_XFR_IN),
-                            .DATA_ADDR(DATA_ADDR),
-                            .DATA_TO_MEM(DATA_TO_MEM),
-                            .XFR_DONE(slv_reg1[0]),
-                            .ENABLE_FAKE_XFR(ENABLE_FAKE_XFR),
-                            .DO_FAKE_XFR(slv_reg0[1]),
-                            .XFR_DONE_ACK(slv_reg0[0]),
-                            .FAKE_DATA(FAKE_DATA),
+   fake_rd_interface rd_ifc(
+                            .ENABLE(slv_reg1[0]),
+                            .ENABLE_XFR(ENABLE_XFR),
                             .LOCAL_CLK(LOCAL_CLK),
-                            .AXI_CLK(S_AXI_ACLK),
-                            .FAKE_DATA_ADDR(FAKE_DATA_ADDR),
-                            .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
-                            .DEBUG1(DEBUG1),
-                            .DEBUG2(DEBUG2)
+                            .TRIGGER(TRIGGER),
+                            .SERIAL_OUT0(SERIAL_OUT0),
+                            .SERIAL_OUT1(SERIAL_OUT1)
                             );
 
 

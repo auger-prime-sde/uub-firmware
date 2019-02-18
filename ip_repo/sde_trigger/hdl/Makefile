@@ -13,11 +13,15 @@
 # 03-Aug-2016 DFN Add include of "time_tagging.h"
 # 14-Aug-2016 DFN Add saving of compile date in file sde_trigger_id
 # 17-Sep-2016 DFN Move time tagging stuff to time_tagging_defs.vh, h
+# 12-Feb-2019 DFN Add rd_interface_defs.vh, h
+# 15-Feb-2019 DFN Add test_control_defs.vh, h
 
 all:	sde_trigger_id sde_trigger_options.vh  \
 	../drivers/sde_trigger/src/sde_trigger_defs.h \
 	../drivers/sde_trigger/src/sde_trigger_options.h \
-	../drivers/sde_trigger/src/time_tagging_defs.h
+	../drivers/sde_trigger/src/time_tagging_defs.h \
+	../drivers/sde_trigger/src/rd_interface_defs.h \
+	../drivers/sde_trigger/src/test_control_defs.h
 
 sde_trigger_id: FORCE
 	echo "`date +%H%d%m%y`" >sde_trigger_id
@@ -58,6 +62,28 @@ sde_trigger_options.vh: FORCE
 	sed -e "s/'h/0x/" \
 	> ../drivers/sde_trigger/src/time_tagging_defs.h
 
+../drivers/sde_trigger/src/rd_interface_defs.h: 	FORCE
+	sed -e "s/\`define/\#define/" \
+	<../../rd_interface_1.0/hdl/rd_interface_defs.vh | \
+	sed -e "s/\`ifndef/\#ifndef/" | \
+	sed -e "s/\`endif/\#endif/" | \
+	sed -e "s/\`//" | \
+	sed -e "s/\`//" | \
+	sed -e "s/\`//" | \
+	sed -e "s/'h/0x/" \
+	> ../drivers/sde_trigger/src/rd_interface_defs.h
+
+../drivers/sde_trigger/src/test_control_defs.h: 	FORCE
+	sed -e "s/\`define/\#define/" \
+	<../../test_control_1.0/hdl/test_control_defs.vh | \
+	sed -e "s/\`ifndef/\#ifndef/" | \
+	sed -e "s/\`endif/\#endif/" | \
+	sed -e "s/\`//" | \
+	sed -e "s/\`//" | \
+	sed -e "s/\`//" | \
+	sed -e "s/'h/0x/" \
+	> ../drivers/sde_trigger/src/test_control_defs.h
+
 ../drivers/sde_trigger/src/sde_trigger_options.h:	sde_trigger_options.vh
 	sed -e "s/\`define/\#define/" <sde_trigger_options.vh | \
 	sed -e "s/\`ifndef/\#ifndef/" | \
@@ -69,6 +95,8 @@ clean:
 	rm -f ../drivers/sde_trigger/src/sde_trigger_defs.h
 	rm -f ../drivers/sde_trigger/src/sde_trigger_options.h
 	rm -f ../drivers/sde_trigger/src/time_tagging_defs.h
+	rm -f ../drivers/sde_trigger/src/rd_interface_defs.h
+	rm -f ../drivers/sde_trigger/src/test_control_defs.h
 	rm -f sde_trigger_options.vh
 
 FORCE:

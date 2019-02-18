@@ -1,3 +1,4 @@
+// 10-Feb-2019 DFN Add test switching of RD interface signals
 
 `timescale 1 ns / 1 ps
 
@@ -23,6 +24,20 @@ module test_control_v1_0 #
     output wire USE_FAKE_SHWR,
     output wire USE_FAKE_MUON,
     output wire[31:0] FAKE_MODE,
+    output wire USE_FAKE_RD,
+    input wire FAKE_RDCLK,
+    input wire TRUE_RDCLK,
+    output wire RDCLK,
+    input wire FAKE_ENABLE_XFR,
+    input wire TRUE_ENABLE_XFR,
+    output wire ENABLE_XFR,
+    input wire FAKE_RD_SERIAL0,
+    input wire TRUE_RD_SERIAL0,
+    output wire RD_SERIAL0,
+    input wire FAKE_RD_SERIAL1,
+    input wire TRUE_RD_SERIAL1,
+    output wire RD_SERIAL1,
+    
     
     // User ports ends
     // Do not modify the ports beyond this line
@@ -85,7 +100,20 @@ module test_control_v1_0 #
 	.PPS(PPS),
 	.USE_FAKE_SHWR(USE_FAKE_SHWR),
 	.USE_FAKE_MUON(USE_FAKE_MUON),
-        .FAKE_MODE(FAKE_MODE)
+        .FAKE_MODE(FAKE_MODE),
+        .USE_FAKE_RD(USE_FAKE_RD),
+        .FAKE_RDCLK(FAKE_RDCLK),
+        .TRUE_RDCLK(TRUE_RDCLK),
+        .RDCLK(RDCLK),
+        .FAKE_ENABLE_XFR(FAKE_ENABLE_XFR),
+        .TRUE_ENABLE_XFR(TRUE_ENABLE_XFR),
+        .ENABLE_XFR(ENABLE_XFR),
+        .FAKE_RD_SERIAL0(FAKE_RD_SERIAL0),
+        .TRUE_RD_SERIAL0(TRUE_RD_SERIAL0),
+        .RD_SERIAL0(RD_SERIAL0),
+        .FAKE_RD_SERIAL1(FAKE_RD_SERIAL1),
+        .TRUE_RD_SERIAL1(TRUE_RD_SERIAL1),
+        .RD_SERIAL1(RD_SERIAL1)
         );
 
    // Add user logic here

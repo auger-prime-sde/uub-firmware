@@ -20,14 +20,15 @@ module rd_interface_v1_0_S00_AXI #
     input wire SERIAL_DATA1_IN,
     input wire SERIAL_CLK_IN,
     input wire ENABLE_XFR_IN,
-    input wire[1:0] BUF_NUM,  // Buffer # to use (assume same as writing)
+    input wire[1:0] BUF_RNUM,  // Buffer # to use for reading
+    input wire[1:0] BUF_WNUM,  // Buffer # to use for writing
     input wire TRIG_IN,
+    input wire RST,
 
     output wire[31:0] DATA_ADDR, // Address
     output wire[31:0] DATA_TO_MEM,
     output wire ENABLE_MEM_WRT,
-    output wire DEBUG1,
-    output wire DEBUG2,
+    output wire TRIG_OUT,
 
     // User ports ends
     // Do not modify the ports beyond this line
@@ -416,19 +417,18 @@ module rd_interface_v1_0_S00_AXI #
       .SERIAL_DATA1_IN(SERIAL_DATA1_IN),
       .SERIAL_CLK_IN(SERIAL_CLK_IN),
       .ENABLE_XFR_IN(ENABLE_XFR_IN),
-      .BUF_NUM(BUF_NUM),
+      .BUF_RNUM(BUF_RNUM),
+      .BUF_WNUM(BUF_WNUM),
       .TRIG_IN(TRIG_IN),
       .AXI_CONTROL(AXI_CONTROL),
       .AXI_CONTROL_WRITTEN(AXI_CONTROL_WRITTEN),
       .STATUS(STATUS),
-      .DATAADDR(DATA_ADDR),
+      .DATA_ADDR(DATA_ADDR),
       .DATA_TO_MEM(DATA_TO_MEM),
       .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
-      .DEBUG1(DEBUG1),
-      .DEBUG2(DEBUG2)
+      .TRIG_OUT(TRIG_OUT),
+      .RST(RST)
       ); 
 
    // User logic ends
 endmodule
-
-
