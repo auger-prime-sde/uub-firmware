@@ -15,6 +15,7 @@
 #  01-Sep-2016 DFN Modified to work with GitHub
 #  18-Sep-2016 DFN Add xparameters.h and uub_proto2_wrapper.hdf
 #  10-Oct-2018 DFN Add xparameters_ps.h
+#  22-Feb-2019 DFN Add rd_interface and test_control header files & driver code
 
 VERSION="`cat  ip_repo/sde_trigger/hdl/sde_trigger_id`"
 
@@ -29,6 +30,10 @@ cp ip_repo/sde_trigger/drivers/sde_trigger/src/*.h temp/
 cp ip_repo/sde_trigger/drivers/sde_trigger/src/sde_trigger.c temp/
 cp ip_repo/time_tagging_1.0/drivers/time_tagging_v1_0/src/time_tagging.h temp/
 cp ip_repo/time_tagging_1.0/drivers/time_tagging_v1_0/src/time_tagging.c temp/
+cp ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/rd_interface.h temp/
+cp ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/rd_interface.c temp/
+cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/test_control.h temp/
+cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/test_control.c temp/
 
 WD=`pwd`
 cd wp2/uub_proto2

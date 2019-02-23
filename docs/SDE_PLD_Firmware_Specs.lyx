@@ -1,5 +1,5 @@
-#LyX 2.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 508
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
 \save_transient_properties true
@@ -21,6 +21,8 @@
 \font_osf false
 \font_sf_scale 100 100
 \font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures false
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -50,6 +52,7 @@
 \suppress_date false
 \justification true
 \use_refstyle 1
+\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -65,7 +68,10 @@
 \tocdepth 3
 \paragraph_separation indent
 \paragraph_indentation default
-\quotes_language english
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -83,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-September 24, 2018
+Feburary 21, 2019
 \end_layout
 
 \begin_layout Author
@@ -217,6 +223,11 @@ convolved (ToTd) trigger.
 24-Sep-2018 Expand interrupt module documentation.
 \end_layout
 
+\begin_layout Description
+22-Feb-2019 Add documentation of RD interface; update Test Control documentation
+; add documentation of 1pps interrupt module.
+\end_layout
+
 \begin_layout Section
 Modules
 \end_layout
@@ -240,11 +251,15 @@ Time tagging
 \end_layout
 
 \begin_layout Enumerate
-LED controller
+Test Control
 \end_layout
 
 \begin_layout Enumerate
-Digital interface to external detectors
+Radio Detector Interface
+\end_layout
+
+\begin_layout Enumerate
+AMIGA interface
 \end_layout
 
 \begin_layout Section
@@ -699,18 +714,18 @@ The trigger circuit needs to be informed when the trigger is initiated by
 \end_layout
 
 \begin_layout Subsection
-Trigger and Digital Interface
+Trigger and Digital Interfaces
 \end_layout
 
 \begin_layout Standard
 The trigger circuit needs to send a trigger signal to the digital interface
- circuit.
- Note that this is not the same signal as that sent to the time tagging
- circuit.
- The signal to the digital interface should presumably be prompt, while
- that to the time tagging is tied to a fixed bin location within the tank
- PMT trace.
- Details are to be defined if/when interfaced detector is specified.
+ circuit and in some cases buffer control hand shaking.
+ Note the trigger signal is not the same signal as that sent to the time
+ tagging circuit.
+ The signal to the digital interfaces are prompt, while that to the time
+ tagging is tied to a fixed bin location within the tank PMT trace.
+ Currently 2 interface modules are implemented: 1) AMIGA interface and 2)
+ Radio Detector interface.
 \end_layout
 
 \begin_layout Section
@@ -807,11 +822,13 @@ The compatibility mode triggers operate on a signal that has been filtered
 \end_layout
 
 \begin_layout Verbatim
+
 int fir[21] = {5,0,12,22,0,-61,-96,0,256,551,681,551,256,0,-96,-61,0,22,12,0,5};
  
 \end_layout
 
 \begin_layout Verbatim
+
 int filt[2048], unfilt[2048];
 \end_layout
 
@@ -820,26 +837,32 @@ int filt[2048], unfilt[2048];
 \end_layout
 
 \begin_layout Verbatim
+
 for (i=21; i<2048; i++) 
 \end_layout
 
 \begin_layout Verbatim
+
 { 
 \end_layout
 
 \begin_layout Verbatim
+
   filt[i] = 0;
 \end_layout
 
 \begin_layout Verbatim
+
   for (j=0; j<21; j++)
 \end_layout
 
 \begin_layout Verbatim
+
     filt[i] = filt[i] + unfilt[i-21+j]*fir[j]; 
 \end_layout
 
 \begin_layout Verbatim
+
 }
 \end_layout
 
@@ -853,6 +876,7 @@ The code snippet below indicates how to use the bit masks and shifts defined
 \end_layout
 
 \begin_layout Verbatim
+
 int wrt_word, rd_word, value1, value2;
 \end_layout
 
@@ -861,10 +885,12 @@ int wrt_word, rd_word, value1, value2;
 \end_layout
 
 \begin_layout Verbatim
+
 // Prepare information to load multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
@@ -873,14 +899,17 @@ wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 // Extract information from word read from multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 value1 = (rd_word & VALUE1_MASK) >> VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 value2 = (rd_word & VALUE2_MASK) >> VALUE2_SHIFT;
 \end_layout
 
@@ -11917,12 +11946,712 @@ The base address of the time tagging module is TIME_TAGGING_BASE = 0x43c3
 \end_layout
 
 \begin_layout Section
-Digital Trigger
+Radio Detector Interface
 \end_layout
 
 \begin_layout Standard
-Left blank for now.
- Open for future expansion.
+The Radio Detector Interface module manages communication between the FPGA
+ and the cosmic ray radio wave detector.
+ The following registers are defined:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Register
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_IFC_CONTROL
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD interface control register
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_IFC_STATUS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD interface status register
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+The bit usage for the RD_IFC_STATUS register is as follows:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit(s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit Mask (or Shift)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1:0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_RNUM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Buffer number to read
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3:2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_WNUM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Buffer number currently being written
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7:4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_FULL
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit mask of full buffers
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11:8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_BUSY
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit mask of busy buffers
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15:12
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_PARITY0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit mask of buffers with parity errors on serial stream 0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19:16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_PARITY1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit mask of buffers with parity errors on serial stream 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The bit usage for the RD_IFC_CONTROL register is as follows:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit(s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit Mask (or Shift)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1:0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_RESET
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Buffer number to reset
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The module operates as follows:
+\end_layout
+
+\begin_layout Enumerate
+
+\color black
+Receive trigger from trigger module
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+If not in middle of transfer
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+Save current write buffer number
+\end_layout
+
+\begin_layout Itemize
+
+\color black
+Pass trigger on to RD
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+
+\color black
+Otherwise, go back to step 1) to wait for next trigger
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\color black
+Get ENABLE_XFR from RD
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+Mark buffer as busy
+\end_layout
+
+\begin_layout Itemize
+
+\color black
+Transfer serial data from RD to UUB FPGA memory (data continuously checked
+ for correct parity)
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\color black
+Get end of ENABLE_XFR
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+Mark buffer as full and not busy
+\end_layout
+
+\begin_layout Itemize
+
+\color black
+Go back to step 1) wait for next trigger
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+After an event trigger is seen by the processor, the following steps need
+ to be taken by the DAQ code:
+\end_layout
+
+\begin_layout Enumerate
+
+\color black
+Transfer WCD & SSD data buffer to processor
+\end_layout
+
+\begin_layout Enumerate
+
+\color black
+Check if same buffer number is full for RD
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+If not full, but busy, wait a short while & check again
+\end_layout
+
+\begin_layout Itemize
+
+\color black
+Otherwise skip to step 4 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\color black
+Transfer RD data to processor
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+Note if parity errors flagged in transfer
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\color black
+Reset corresponding RD buffer full status 
+\end_layout
+
+\begin_layout Enumerate
+
+\color black
+Reset corresponding WCD/SSD buffer full status
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+This allows buffers to accept new traces
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+The base address of the RD interface module is RD_BASE = 0x43c6
+\begin_inset space \space{}
+\end_inset
+
+0000.
+ Symbolic register offsets and bit masks are defined in 
+\begin_inset Quotes eld
+\end_inset
+
+rd_interface_defs.h
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+RD memory organization
+\end_layout
+
+\begin_layout Standard
+
+\color black
+The organization of the data in the RD memory was chosen to simplify unpacking.
+ One memory block, containing 4 2048 word long buffers is used to store
+ the traces.
+ The format of each data word in RD_EVENT memory is shown below.
+\color inherit
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+
+\color black
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+Bits
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11:0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+RD ADC0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+15:12
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unused
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27:16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+RD ADC1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31:28
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unused
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The RD event memory is starts at RD_EVENT_BAXE=0x5200 0000.
+\end_layout
+
+\begin_layout Section
+AMIGA Interface
+\end_layout
+
+\begin_layout Standard
+The AMIGA interface does not have any control or status registers readable
+ by the CPU.
 \end_layout
 
 \begin_layout Section
@@ -12168,6 +12897,15 @@ The test control module allows enabling of some test features.
 \end_inset
 
 0000.
+ Symbolic register offsets and bit masks are defined in 
+\begin_inset Quotes eld
+\end_inset
+
+test_control_defs.h
+\begin_inset Quotes erd
+\end_inset
+
+.
  Starting with FPGA version 11270418 register 1 contains mode bits to customize
  somewhat the behavior of the fake data.
  The 5 low order mode bits apply only to the fake shower data.
@@ -12211,8 +12949,9 @@ _BASE = 0x5000
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="2">
+<lyxtabular version="3" rows="12" columns="3">
 <features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top">
 <row>
@@ -12221,6 +12960,15 @@ _BASE = 0x5000
 
 \begin_layout Plain Layout
 Register
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit
 \end_layout
 
 \end_inset
@@ -12236,11 +12984,20 @@ Description
 </cell>
 </row>
 <row>
-<cell multirow="3" alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multirow="3" alignment="center" valignment="middle" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_PPS_BIT
 \end_layout
 
 \end_inset
@@ -12265,6 +13022,15 @@ Bit 0 - Generate fake GPS PPS if 1
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_SHWR_BIT
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -12285,6 +13051,15 @@ Bit 1 - Generate fake shower data if 1
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_MUON_BIT
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -12296,11 +13071,49 @@ Bit 2 - Generate fake muon data if 1
 </cell>
 </row>
 <row>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_RD_BIT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Generate fake RD data if 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell multirow="3" alignment="center" valignment="middle" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -12317,6 +13130,15 @@ Bits 4:0 - Fake data mode bits
 </row>
 <row>
 <cell multirow="4" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -12345,6 +13167,15 @@ Bits 6:5 - WCD PMT0 delay
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -12357,6 +13188,15 @@ Bits 8:7 - WCD PMT1 delay
 </row>
 <row>
 <cell multirow="4" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -12385,6 +13225,15 @@ Bits 10:9 - WCD PMT2 delay
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -12405,6 +13254,15 @@ Bits 18-11 - Pulse width in 8.3ns bins
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -12416,6 +13274,15 @@ Bit 19 - Exponential shape if set
 </cell>
 </row>
 <row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -13058,25 +13925,14 @@ Bit 0 - Shower trigger interrupt pending
 \end_layout
 
 \begin_layout Standard
-Since the shower and muon interrupts have been split, register 1 does not
- add much functionality.
- If the Global trigger interrupt is enabled, an IRQ to the processor will
- be generated for each interrupt request from the trigger module, irregardless
- of whether or not the specific shower trigger interrupt is enabled, since
- the module only handles one interrupt now.
- The shower trigger interrupt enable only enables the interrupt pending
- information to be available in the interrupt pending register.
- Thus, if the Global trigger interrupt enable is not set, but the shower
- trigger interrupt is set, no IRQ request is passed on to the processor,
- however the trigger interrupt pending register will reflect the status
- of the interrupt request.
- However, this same interrupt pending information is also available in the
- SHWR_BUF_STATUS register.
- The register definitions are historical, left over from when the shower
- and muon interrupts generated a common IRQ to the processor and one could
- individually enable each using register 1, and test for which was pending
- using register 4.
- Basically, one probably now only needs to use register 0 and register 3.
+The interrupt module will assert bit 0 of register 2 whenever an interrupt
+ request from the trigger module is present.
+ If the trigger interrupt is enabled in register 1, this will cause bit
+ 0 of register 4 to be asserted.
+ If, furthermore, the Global interrupt is enabled, an IRQ request to the
+ processor will be generated.
+ The IRQ remains asserted until the interrupt is acknowledged by writing
+ 1 to register 3.
 \end_layout
 
 \begin_layout Subsection
@@ -13230,6 +14086,167 @@ Bit 0 - Muon trigger interrupt pending
 \begin_layout Standard
 Similar comments as those above for the Shower Trigger Interrupt Module
  apply here also.
+\end_layout
+
+\begin_layout Subsection
+Time Tagging Interrupt Module
+\end_layout
+
+\begin_layout Standard
+The time tagging interrupt module is located at base address TIME_TAGGING_INTR_B
+ASE = 0x43c7
+\begin_inset space \space{}
+\end_inset
+
+0000.
+ The following registers are defined:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Register
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="center" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0 - Global 1 PPS interrupt enable if set
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="center" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0 - Enable 1 PPS interrupt if set
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0 - 1 PPS interrupt detected
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="center" valignment="middle" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0 - 1 PPS interrupt acknowledge
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="center" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit 0 - 1 PPS interrupt pending
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The time tagging interrupt module will assert bit 0 of register 2 whenever
+ the 1 PPS signal from the GPS transitions from 0 to 1.
+ Note that unlike the shower and muon trigger interrupts, the time tagging
+ 1 PPS interrupt is edge triggered.
+ If the 1 PPS interrupt is enabled in register 1, this will cause bit 0
+ of register 4 to be asserted.
+ If, furthermore, the Global interrupt is enabled, an IRQ request to the
+ processor will be generated.
+ The IRQ remains asserted until the interrupt is acknowledged by writing
+ 1 to register 3.
 \end_layout
 
 \begin_layout Subsection

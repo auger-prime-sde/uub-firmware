@@ -782,6 +782,14 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
+      <File Name="ip/uub_proto2_axi_quad_spi_0_0/uub_proto2_axi_quad_spi_0_0.xci" Type="IP">
+        <Instance HierarchyPath="axi_quad_spi_0"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
       <File Name="ip/uub_proto2_tier2_xbar_0_0/uub_proto2_tier2_xbar_0_0.xci" Type="IP">
         <Instance HierarchyPath="zync_block/axi_interconnect_0/tier2_xbar_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
@@ -959,7 +967,7 @@
         <UsedIn Val="SIMULATION"/>
       </File>
       <File Name="ip/uub_proto2_auto_pc_11/uub_proto2_auto_pc_11.xci" Type="IP">
-        <Instance HierarchyPath="zync_block/axi_interconnect_0/m21_couplers/auto_pc"/>
+        <Instance HierarchyPath="zync_block/axi_interconnect_0/m20_couplers/auto_pc"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>
@@ -967,7 +975,7 @@
         <UsedIn Val="SIMULATION"/>
       </File>
       <File Name="ip/uub_proto2_auto_pc_12/uub_proto2_auto_pc_12.xci" Type="IP">
-        <Instance HierarchyPath="zync_block/axi_interconnect_0/m22_couplers/auto_pc"/>
+        <Instance HierarchyPath="zync_block/axi_interconnect_0/m21_couplers/auto_pc"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>
@@ -975,6 +983,22 @@
         <UsedIn Val="SIMULATION"/>
       </File>
       <File Name="ip/uub_proto2_auto_pc_13/uub_proto2_auto_pc_13.xci" Type="IP">
+        <Instance HierarchyPath="zync_block/axi_interconnect_0/m22_couplers/auto_pc"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip/uub_proto2_auto_pc_14/uub_proto2_auto_pc_14.xci" Type="IP">
+        <Instance HierarchyPath="zync_block/axi_interconnect_0/m23_couplers/auto_pc"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip/uub_proto2_auto_pc_15/uub_proto2_auto_pc_15.xci" Type="IP">
         <Instance HierarchyPath="zync_block/axi_interconnect_0/s00_couplers/auto_pc"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
@@ -998,7 +1022,7 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
-      <File Name="ip/uub_proto2_auto_pc_14/uub_proto2_auto_pc_14.xci" Type="IP">
+      <File Name="ip/uub_proto2_auto_pc_16/uub_proto2_auto_pc_16.xci" Type="IP">
         <Instance HierarchyPath="zync_block/axi_interconnect_2/m02_couplers/auto_pc"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>

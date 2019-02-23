@@ -126,4 +126,8 @@ XStatus TIME_TAGGING_Reg_SelfTest(void * baseaddr_p);
   #define TIME_TAGGING_BASE XPAR_TIME_TAGGING_0_S00_AXI_BASEADDR
 #endif
 
+#ifndef TIME_TAGGING_INTR_BASE
+  #define TIME_TAGGING_INTR_BASE 0x43c70000
+#endif
+
 #endif // TIME_TAGGING_H

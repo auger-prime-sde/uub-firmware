@@ -4,8 +4,7 @@
 // 07-Feb-2019 DFN Modified to work in conjunction with true rd_interface
 
 
-//`define MEM_SIZE 2048
-`define MEM_SIZE 32  // Temporarily smaller for behavioral simulation
+`define MEM_SIZE 2048
 
 module fake_rd 
   (
@@ -77,9 +76,9 @@ module fake_rd
              else   
                begin
                   SERIAL_OUT0 <= DATA0[11-BIT_COUNT];
-                  SERIAL_OUT1 <= DATA0[11-BIT_COUNT];
+                  SERIAL_OUT1 <= DATA1[11-BIT_COUNT];
                   PARITY0 <= PARITY0+DATA0[11-BIT_COUNT];
-                  PARITY1 <= PARITY1+DATA0[11-BIT_COUNT];
+                  PARITY1 <= PARITY1+DATA1[11-BIT_COUNT];
                   BIT_COUNT <= BIT_COUNT+1;
                end
           end // if (ENABLE_XFR)

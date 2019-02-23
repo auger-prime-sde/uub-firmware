@@ -39,7 +39,7 @@ void map_registers();
 #define FAKE_SIGNAL_WIDTH 30
 #define SIGNAL_HT 3000
 #define EXP_DECAY 0
-#define FAKE_SIGNAL_MODE (7 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
+#define FAKE_SIGNAL_MODE (8 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 
 #define TRIG_THR0 2000
 #define TRIG_THR1 4095
@@ -57,24 +57,6 @@ void map_registers();
 //  #define PRESCALE_EXT_TRIGGER
 //  #define PRESCALE_COMPAT_SB_TRIGGER
 //  #define LED_TRIGGER
-#endif
-
-// Macros
-
-#ifndef TEST_CONTROL_BASE
-  #define TEST_CONTROL_BASE XPAR_TEST_CONTROL_BLOCK_TEST_CONTROL_0_S00_AXI_BASEADDR
-#endif
-
-#ifndef INTERFACE_UUB_BASE
-  #define INTERFACE_UUB_BASE XPAR_INTERFACE_UUB_DFN3_0_S00_AXI_BASEADDR
-#endif
-
-#ifndef RD_BASE
-  #define RD_BASE XPAR_RD_BLOCK_RD_INTERFACE_0_S00_AXI_BASEADDR
-#endif
-
-#ifndef RD_EVENT_BASE
-  #define RD_EVENT_BASE  XPAR_RD_BLOCK_AXI_BRAM_CTRL_1_S_AXI_CTRL_BASEADDR
 #endif
 
 extern volatile u32 *rd_regs;
@@ -97,7 +79,7 @@ extern volatile u32 *tstctl_regs;
 extern volatile u32 shwr_mem_ptr[5];
 extern u32 shwr_mem_addr[5];
 extern volatile u32 rd_mem_ptr[1];
-extern u32 *rd_mem_addr;
+extern u32 rd_mem_addr[1];
 
 extern u32 shw_mem0[SHWR_MEM_NBUF][SHWR_MEM_WORDS];
 extern u32 shw_mem1[SHWR_MEM_NBUF][SHWR_MEM_WORDS];

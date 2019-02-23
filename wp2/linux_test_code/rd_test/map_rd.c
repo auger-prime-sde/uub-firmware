@@ -29,7 +29,8 @@ void map_rd()
     exit(1);
   }
 
-  size=256*sizeof(u32);
+  printf("map_rd: Mapping trig_regs\n"); 
+ size=256*sizeof(u32);
   if (size%sysconf(_SC_PAGE_SIZE)){
     size=(size/sysconf(_SC_PAGE_SIZE)+1)*sysconf(_SC_PAGE_SIZE);
   }
@@ -41,6 +42,7 @@ void map_rd()
     exit(1);
   }
 
+  printf("map_rd: Mapping ttag_regs\n"); 
   ttag_regs=(u32 *)mmap(NULL, size,
   			     PROT_READ | PROT_WRITE, MAP_SHARED,
   			     fd,TIME_TAGGING_BASE);
@@ -49,6 +51,7 @@ void map_rd()
     exit(1);
   }
 
+  printf("map_rd: Mapping ifc_regs\n"); 
    ifc_regs=(u32 *)mmap(NULL, size,
    			    PROT_READ | PROT_WRITE, MAP_SHARED,
    			    fd,INTERFACE_UUB_BASE);
@@ -57,7 +60,9 @@ void map_rd()
      exit(1);
    }
 
- tstctl_regs=(u32 *)mmap(NULL, size,
+
+  printf("map_rd: Mapping tstctl_regs\n"); 
+  tstctl_regs=(u32 *)mmap(NULL, size,
 			    PROT_READ | PROT_WRITE, MAP_SHARED,
 			    fd,TEST_CONTROL_BASE);
  if (tstctl_regs==MAP_FAILED){
@@ -65,6 +70,7 @@ void map_rd()
    exit(1);
  }
 
+  printf("map_rd: Mapping rd_regs\n"); 
    rd_regs=(u32 *)mmap(NULL, size,
                       PROT_READ | PROT_WRITE, MAP_SHARED,
                       fd, RD_BASE);
@@ -79,6 +85,7 @@ void map_rd()
 
   // Now map shared memory buffers
 
+  printf("map_rd: Mapping shower memory\n"); 
   size = SHWR_MEM_DEPTH*SHWR_MEM_NBUF;
   for (imem=0; imem<5; imem++)
     {
@@ -91,6 +98,7 @@ void map_rd()
       }
     }
 
+  printf("map_rd: Mapping rd memory\n"); 
   size =RD_MEM_DEPTH*RD_MEM_NBUF;
   rd_mem_ptr[0] = (u32)mmap(NULL, size,
                                PROT_WRITE|PROT_READ, MAP_SHARED,
@@ -100,7 +108,7 @@ void map_rd()
     exit(1);
   }
 
-  printf("Finished mapping fake rd buffers\n");
+  printf("Finished mapping everything\n");
   fflush(stdout);
   sleep(1);
 

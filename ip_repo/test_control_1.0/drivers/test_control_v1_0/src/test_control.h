@@ -76,4 +76,9 @@
  */
 XStatus TEST_CONTROL_Reg_SelfTest(void * baseaddr_p);
 
+// 21-Feb-2019 DFN Define shortcut to base address
+
+#ifndef TEST_CONTROL_BASE
+  #define TEST_CONTROL_BASE XPAR_TEST_CONTROL_BLOCK_TEST_CONTROL_0_S00_AXI_BASEADDR
+#endif
 #endif // TEST_CONTROL_H

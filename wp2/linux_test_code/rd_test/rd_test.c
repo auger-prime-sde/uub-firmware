@@ -16,7 +16,7 @@ volatile u32 *tstctl_regs;
 volatile u32 rd_mem_ptr[1];
 volatile u32 shwr_mem_ptr[5];
 u32 shwr_mem_addr[5];
-u32 *rd_mem_addr;
+u32 rd_mem_addr[1];
 
 // Mmemory buffers
 u32 rd_mem[RD_MEM_NBUF][RD_MEM_WORDS] __attribute__((aligned(128)));
@@ -48,6 +48,7 @@ int main()
   int parity0, parity1;
   int read0, read1;
   int expected0, expected1;
+  int nerrors = 0;
 
 #ifdef SHWR_TRIGGERS
   int trigger_mask;
@@ -64,28 +65,37 @@ int main()
 #endif
 
   // Map registers & memory buffers
+    printf("Calling map_rd\n");
   map_rd();
+    printf("Return from map_rd\n");
   sleep(1);
 
   // Select fake or true GPS for 1pps
   int test_options = 0;
 #ifdef USE_FAKE_GPS
-  test_options = 1;
+  test_options = 1<<USE_FAKE_PPS_BIT;
 #endif
+#ifdef USE_FAKE_SIGNAL
+  test_options = test_options | (1<< USE_FAKE_SHWR_BIT);
+#endif
+  test_options = test_options | (1<<USE_FAKE_RD_BIT);
 
   if (test_options != 0)
     {
-      write_tstctl(0, test_options);
-      status = read_tstctl(0);
-      //	  status = read_ifc(2);
-      //	  printf("ifc_reg = %x  ifc_reg[2] = %x\n",ifc_regs, status);
-      //	  write_ifc(2, test_options);
-      //	  status = read_ifc(2);
-	  
+      write_tstctl(USE_FAKE_ADDR, test_options);
+      status = read_tstctl(USE_FAKE_ADDR);
       if (status != test_options) 
 	printf("trigger_test: Error setting test options, wrote %x read %x\n",
 	       test_options, status);
+
+      write_tstctl(1, 0);  // Mode=0 is used as RESET
+      write_tstctl(1, FAKE_SIGNAL_MODE);
+      status = read_tstctl(1);
+      if (status != FAKE_SIGNAL_MODE)
+	printf("trigger_test: Error setting test mode, wrote %x read %x\n",
+	       FAKE_SIGNAL_MODE, status);
     }
+
 
  // Check for sane ID
   id = read_trig(ID_REG_ADDR);
@@ -129,22 +139,22 @@ int main()
         cur_rd_buf_num = RD_BUF_WNUM_MASK & 
           (rd_status >> RD_BUF_WNUM_SHIFT);
         full_rd_bufs = RD_BUF_FULL_MASK & 
-          (status >> RD_BUF_FULL_SHIFT);
+          (rd_status >> RD_BUF_FULL_SHIFT);
         busy_rd_bufs = RD_BUF_BUSY_MASK &
-          (status >> RD_BUF_BUSY_SHIFT);
+          (rd_status >> RD_BUF_BUSY_SHIFT);
         parity0 = RD_PARITY0_MASK &
-          (status >> RD_PARITY0_SHIFT);
+          (rd_status >> RD_PARITY0_SHIFT);
         parity1 = RD_PARITY1_MASK &
-          (status >> RD_PARITY1_SHIFT);
+          (rd_status >> RD_PARITY1_SHIFT);
         printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
                toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
-               parity0, parity1);
+               busy_rd_bufs, parity0, parity1);
 
         // Read RD buffer
 
-        rd_mem_addr = (u32*) rd_mem_ptr[0];
-        rd_mem_addr = rd_mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
-        mem_ptr = rd_mem_addr;
+        mem_addr = (u32*) rd_mem_ptr[0];
+        mem_addr = mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
+        mem_ptr = mem_addr;
         for (i=0; i<RD_MEM_WORDS; i++)
           {
             rd_mem[toread_rd_buf_num][i] = *mem_ptr;
@@ -158,22 +168,24 @@ int main()
   // Verify RD buffer for correctness
 
         expected0 = 0;
-        expected1 = 4096;
-    for (i=0; i<RD_MEM_WORDS; i++)
-      {  
-        read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
-        read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
-        if ((read0 != expected0) || (read1 != (expected1 & 0xfff)))
-          {
-            printf("word %d  read %x %x  expected %x %x\n",
-                   read1, read0, expected1, expected0);
-            sleep(2);
+        expected1 = 0;
+        for (i=0; i<RD_MEM_WORDS; i++)
+          {  
+            read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
+            read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
+            if ((read0 != expected0) || (read1 != expected1))
+              {
+                printf("word %d  read %x %x  expected %x %x\n",
+                       i, read0, read1, expected0, expected1);
+                sleep(2);
+                nerrors = nerrors+1;
+              }
+            expected0 = expected0 + 1;
+            expected1 = (expected1 - 1) & 0xfff;
           }
-        expected0++;
-        expected1--;
+        if (nevents%100 == 0) printf("Finished %d events, nerrors=%d\n",
+                                     nevents, nerrors);
       }
-      }
-      if (nevents%100 == 0) printf("Finished %d events\n", nevents);
   }
   
 }

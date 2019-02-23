@@ -76,4 +76,10 @@
  */
 XStatus INTERFACE_UUB_DFN3_Reg_SelfTest(void * baseaddr_p);
 
+// 21-Feb-2019 DFN Define shortcut to base address
+
+#ifndef INTERFACE_UUB_BASE
+  #define INTERFACE_UUB_BASE XPAR_INTERFACE_UUB_DFN3_0_S00_AXI_BASEADDR
+#endif
+
 #endif // INTERFACE_UUB_DFN3_H

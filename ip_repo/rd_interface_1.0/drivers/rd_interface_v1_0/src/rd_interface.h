@@ -76,4 +76,14 @@
  */
 XStatus RD_INTERFACE_Reg_SelfTest(void * baseaddr_p);
 
+// 21-Feb-2019 DFN Define shortcuts to base addresses
+
+#ifndef RD_BASE
+  #define RD_BASE XPAR_RD_BLOCK_RD_INTERFACE_0_S00_AXI_BASEADDR
+#endif
+
+#ifndef RD_EVENT_BASE
+  #define RD_EVENT_BASE  XPAR_RD_BLOCK_AXI_BRAM_CTRL_1_S_AXI_BASEADDR
+#endif
+
 #endif // RD_INTERFACE_H
