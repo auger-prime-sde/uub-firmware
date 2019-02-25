@@ -20057,9 +20057,27 @@
             <spirit:range>64K</spirit:range>
           </spirit:segment>
           <spirit:segment>
+            <spirit:name>SEG_axi_quad_spi_0_Reg</spirit:name>
+            <spirit:displayName>/axi_quad_spi_0/AXI_LITE/Reg</spirit:displayName>
+            <spirit:addressOffset>0x41E00000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
             <spirit:name>SEG_test_control_0_S00_AXI_reg</spirit:name>
             <spirit:displayName>/test_control_block/test_control_0/S00_AXI/S00_AXI_reg</spirit:displayName>
             <spirit:addressOffset>0x43C40000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>SEG_time_tagging_0_S00_AXI_reg</spirit:name>
+            <spirit:displayName>/time_tagging_0/S00_AXI/S00_AXI_reg</spirit:displayName>
+            <spirit:addressOffset>0x43C30000</spirit:addressOffset>
+            <spirit:range>64K</spirit:range>
+          </spirit:segment>
+          <spirit:segment>
+            <spirit:name>SEG_time_tagging_0_reg0</spirit:name>
+            <spirit:displayName>/time_tagging_0/s_axi_intr/reg0</spirit:displayName>
+            <spirit:addressOffset>0x43C70000</spirit:addressOffset>
             <spirit:range>64K</spirit:range>
           </spirit:segment>
           <spirit:segment>
@@ -20078,24 +20096,6 @@
             <spirit:name>SEG_sde_trigger_0_reg0</spirit:name>
             <spirit:displayName>/trigger_memory_block/sde_trigger_0/S1_AXI_INTR/reg0</spirit:displayName>
             <spirit:addressOffset>0x43C50000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
-            <spirit:name>SEG_time_tagging_0_S00_AXI_reg</spirit:name>
-            <spirit:displayName>/time_tagging_0/S00_AXI/S00_AXI_reg</spirit:displayName>
-            <spirit:addressOffset>0x43C30000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
-            <spirit:name>SEG_time_tagging_0_reg0</spirit:name>
-            <spirit:displayName>/time_tagging_0/s_axi_intr/reg0</spirit:displayName>
-            <spirit:addressOffset>0x43C70000</spirit:addressOffset>
-            <spirit:range>64K</spirit:range>
-          </spirit:segment>
-          <spirit:segment>
-            <spirit:name>SEG_axi_quad_spi_0_Reg</spirit:name>
-            <spirit:displayName>/axi_quad_spi_0/AXI_LITE/Reg</spirit:displayName>
-            <spirit:addressOffset>0x41E00000</spirit:addressOffset>
             <spirit:range>64K</spirit:range>
           </spirit:segment>
         </spirit:segments>

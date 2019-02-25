@@ -10,6 +10,7 @@
 #include "time_tagging_defs.h"
 #include "interface_uub_dfn3.h"
 #include "test_control_defs.h"
+#include "test_control.h"
 #include "rd_interface_defs.h"
 #include "rd_interface.h"
 #include "xparameters.h"  // Peripheral parameters (GPIO addresses, etc.)

@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-Feburary 21, 2019
+Feburary 24, 2019
 \end_layout
 
 \begin_layout Author
@@ -224,7 +224,7 @@ convolved (ToTd) trigger.
 \end_layout
 
 \begin_layout Description
-22-Feb-2019 Add documentation of RD interface; update Test Control documentation
+23-Feb-2019 Add documentation of RD interface; update Test Control documentation
 ; add documentation of 1pps interrupt module.
 \end_layout
 
@@ -822,13 +822,11 @@ The compatibility mode triggers operate on a signal that has been filtered
 \end_layout
 
 \begin_layout Verbatim
-
 int fir[21] = {5,0,12,22,0,-61,-96,0,256,551,681,551,256,0,-96,-61,0,22,12,0,5};
  
 \end_layout
 
 \begin_layout Verbatim
-
 int filt[2048], unfilt[2048];
 \end_layout
 
@@ -837,32 +835,26 @@ int filt[2048], unfilt[2048];
 \end_layout
 
 \begin_layout Verbatim
-
 for (i=21; i<2048; i++) 
 \end_layout
 
 \begin_layout Verbatim
-
 { 
 \end_layout
 
 \begin_layout Verbatim
-
   filt[i] = 0;
 \end_layout
 
 \begin_layout Verbatim
-
   for (j=0; j<21; j++)
 \end_layout
 
 \begin_layout Verbatim
-
     filt[i] = filt[i] + unfilt[i-21+j]*fir[j]; 
 \end_layout
 
 \begin_layout Verbatim
-
 }
 \end_layout
 
@@ -876,7 +868,6 @@ The code snippet below indicates how to use the bit masks and shifts defined
 \end_layout
 
 \begin_layout Verbatim
-
 int wrt_word, rd_word, value1, value2;
 \end_layout
 
@@ -885,12 +876,10 @@ int wrt_word, rd_word, value1, value2;
 \end_layout
 
 \begin_layout Verbatim
-
 // Prepare information to load multi-field register
 \end_layout
 
 \begin_layout Verbatim
-
 wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
@@ -899,17 +888,14 @@ wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
-
 // Extract information from word read from multi-field register
 \end_layout
 
 \begin_layout Verbatim
-
 value1 = (rd_word & VALUE1_MASK) >> VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
-
 value2 = (rd_word & VALUE2_MASK) >> VALUE2_SHIFT;
 \end_layout
 
@@ -11199,16 +11185,15 @@ Time_Tagging_Module_Specification_SDE_Upgrade_Version_3.pdf
 \end_inset
 
  is the primary documentation for the time tagging module.
- However, symbolic register addresses are also defined in the 
+ Symbolic register addresses are defined in the 
 \begin_inset Quotes eld
 \end_inset
 
-sde_trigger_defs.h
+time_tagging_defs.h
 \begin_inset Quotes erd
 \end_inset
 
- header file for the convenience of writing code that references both the
- trigger module and the time tagging module.
+ header file.
  As for the trigger module registers, the symbolic names of the addresses
  all end in 
 \begin_inset Quotes eld
@@ -12434,15 +12419,33 @@ Check if same buffer number is full for RD
 \begin_layout Itemize
 
 \color black
-If not full, but busy, wait a short while & check again
+If full, go to step 3
 \end_layout
 
 \begin_layout Itemize
 
 \color black
-Otherwise skip to step 4 
+If not full
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+
+\color black
+If busy, wait a short while & check again
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+If still busy after ~1ms, note time-out and skip to step 4
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+If not busy, mark RD buffer as empty and skip to step 4
+\end_layout
+
+\end_deeper
 \end_deeper
 \begin_layout Enumerate
 
@@ -12642,7 +12645,22 @@ Unused
 \end_layout
 
 \begin_layout Standard
-The RD event memory is starts at RD_EVENT_BAXE=0x5200 0000.
+The RD event memory is starts at RD_EVENT_BASE=0x5200 0000.
+ The RD event memory can be read via simple DMA, scatter-gather DMA, or
+ via PDT.
+\end_layout
+
+\begin_layout Standard
+Please see 
+\begin_inset Quotes eld
+\end_inset
+
+rd_test.c
+\begin_inset Quotes erd
+\end_inset
+
+, included in the sde_pld_hhddmmyy.tar file for an example of the readout
+ sequence for the RD event memory.
 \end_layout
 
 \begin_layout Section
@@ -12988,7 +13006,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-0
+0 = USE_FAKE
 \end_layout
 
 \end_inset
@@ -13104,7 +13122,7 @@ Generate fake RD data if 1
 \begin_inset Text
 
 \begin_layout Plain Layout
-1
+1 = FAKE_MODE
 \end_layout
 
 \end_inset
@@ -13787,11 +13805,8 @@ INTR_BASE = 0x43c1
 \end_inset
 
 0000.
- The following registers are defined:
-\end_layout
-
-\begin_layout Standard
-\align center
+ By convention the register names all have _ADDR appended.
+ The following registers are defined: 
 \begin_inset Tabular
 <lyxtabular version="3" rows="6" columns="2">
 <features tabularvalignment="middle">
@@ -13822,7 +13837,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-0
+0 = INTR_GLOBAL_EN
 \end_layout
 
 \end_inset
@@ -13842,7 +13857,7 @@ Bit 0 - Global trigger interrupt enable if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-1
+1 = INTR_EN
 \end_layout
 
 \end_inset
@@ -13862,7 +13877,7 @@ Bit 0 - Enable shower trigger interrupt if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-2
+2 = INTR_STATUS
 \end_layout
 
 \end_inset
@@ -13882,7 +13897,7 @@ Bit 0 - Shower trigger interrupt detected
 \begin_inset Text
 
 \begin_layout Plain Layout
-3
+3 = INTR_ACK
 \end_layout
 
 \end_inset
@@ -13902,7 +13917,7 @@ Bit 0 - Shower trigger interrupt acknowledge
 \begin_inset Text
 
 \begin_layout Plain Layout
-4
+4 = INTR_PENDING
 \end_layout
 
 \end_inset
@@ -13931,8 +13946,12 @@ The interrupt module will assert bit 0 of register 2 whenever an interrupt
  0 of register 4 to be asserted.
  If, furthermore, the Global interrupt is enabled, an IRQ request to the
  processor will be generated.
- The IRQ remains asserted until the interrupt is acknowledged by writing
- 1 to register 3.
+ The interrupt request remains asserted (register 2) until the buffer is
+ reset via the SHWR_BUF_CONTROL register.
+ The IRQ remains asserted (register 4) until the interrupt is acknowledged
+ by writing 1 to register 3.
+ If another shower memory buffer is full at that time, the interrupt detected
+ will be re-asserted.
 \end_layout
 
 \begin_layout Subsection
@@ -13946,6 +13965,7 @@ TR_BASE = 0x43c5
 \end_inset
 
 0000.
+ By convention the register names all have _ADDR appended.
  The following registers are defined:
 \end_layout
 
@@ -13981,7 +14001,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-0
+0 = INTR_GLOBAL_EN
 \end_layout
 
 \end_inset
@@ -14001,7 +14021,7 @@ Bit 0 - Global trigger interrupt enable if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-1
+1 = INTR_EN
 \end_layout
 
 \end_inset
@@ -14021,7 +14041,7 @@ Bit 0 - Enable muon trigger interrupt if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-2
+2 = INTR_STATUS
 \end_layout
 
 \end_inset
@@ -14041,7 +14061,7 @@ Bit 0 - Muon trigger interrupt detected
 \begin_inset Text
 
 \begin_layout Plain Layout
-3
+3 = INTR_ACK
 \end_layout
 
 \end_inset
@@ -14061,7 +14081,7 @@ Bit 0 - Muon trigger interrupt acknowledge
 \begin_inset Text
 
 \begin_layout Plain Layout
-4
+4 = INTR_PENDING
 \end_layout
 
 \end_inset
@@ -14099,6 +14119,7 @@ ASE = 0x43c7
 \end_inset
 
 0000.
+ By convention the register names all have _ADDR appended.
  The following registers are defined:
 \end_layout
 
@@ -14134,7 +14155,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-0
+0 = INTR_GLOBAL_EN
 \end_layout
 
 \end_inset
@@ -14154,7 +14175,7 @@ Bit 0 - Global 1 PPS interrupt enable if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-1
+1 = INTR_EN
 \end_layout
 
 \end_inset
@@ -14174,7 +14195,7 @@ Bit 0 - Enable 1 PPS interrupt if set
 \begin_inset Text
 
 \begin_layout Plain Layout
-2
+2 = INTR_STATUS
 \end_layout
 
 \end_inset
@@ -14194,7 +14215,7 @@ Bit 0 - 1 PPS interrupt detected
 \begin_inset Text
 
 \begin_layout Plain Layout
-3
+3 = INTR_ACK
 \end_layout
 
 \end_inset
@@ -14214,7 +14235,7 @@ Bit 0 - 1 PPS interrupt acknowledge
 \begin_inset Text
 
 \begin_layout Plain Layout
-4
+4 = INTR_PENDING
 \end_layout
 
 \end_inset
@@ -14247,6 +14268,7 @@ The time tagging interrupt module will assert bit 0 of register 2 whenever
  processor will be generated.
  The IRQ remains asserted until the interrupt is acknowledged by writing
  1 to register 3.
+ This will also reset the interrupted detected signal.
 \end_layout
 
 \begin_layout Subsection

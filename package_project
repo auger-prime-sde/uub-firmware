@@ -28,24 +28,32 @@ cp docs/SDE_PLD_Firmware_Specs.pdf temp/SDE_PLD_Firmware_Specs_${VERSION}.pdf
 
 cp ip_repo/sde_trigger/drivers/sde_trigger/src/*.h temp/
 cp ip_repo/sde_trigger/drivers/sde_trigger/src/sde_trigger.c temp/
-cp ip_repo/time_tagging_1.0/drivers/time_tagging_v1_0/src/time_tagging.h temp/
+cp ip_repo/time_tagging_1.0/drivers/time_tagging_v1_0/src/*.h temp/
 cp ip_repo/time_tagging_1.0/drivers/time_tagging_v1_0/src/time_tagging.c temp/
-cp ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/rd_interface.h temp/
+cp ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/*.h temp/
 cp ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/rd_interface.c temp/
-cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/test_control.h temp/
+cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/*.h temp/
 cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/test_control.c temp/
 
 WD=`pwd`
-cd wp2/uub_proto2
+#cd wp2/uub_proto2
+#find ./ -name xparameters.h -exec cp {} ../../temp/ \;
+#find ./ -name xparameters_ps.h -exec cp {} ../../temp/ \;
+#find ./ -name uub_proto2_wrapper.hdf -exec cp {} ../../temp/ \;
+cd wp2/uub_v3
 find ./ -name xparameters.h -exec cp {} ../../temp/ \;
 find ./ -name xparameters_ps.h -exec cp {} ../../temp/ \;
-find ./ -name uub_proto2_wrapper.hdf -exec cp {} ../../temp/ \;
+find ./ -name uub_v3_wrapper.hdf -exec cp {} ../../temp/ \;
 cd $WD
 
-cp wp2/uub_proto2/src/test_periph/src/*.c temp/
-cp wp2/uub_proto2/src/test_periph/src/*.h temp/
-cp wp2/uub_proto2/src/test_periph/src/README temp/README_${VERSION}
-cp wp2/uub_proto2/uub_proto2.runs/impl_1/uub_proto2_wrapper.bit temp/fpga.bit
+#cp wp2/uub_proto2/src/test_periph/src/*.c temp/
+#cp wp2/uub_proto2/src/test_periph/src/*.h temp/
+#cp wp2/uub_proto2/src/test_periph/src/README temp/README_${VERSION}
+#cp wp2/uub_proto2/uub_proto2.runs/impl_1/uub_proto2_wrapper.bit temp/fpga.bit
+cp wp2/uub_v3/src/test_periph/src/*.c temp/
+cp wp2/uub_v3/src/test_periph/src/*.h temp/
+cp wp2/uub_v3/src/test_periph/src/README temp/README_${VERSION}
+cp wp2/uub_v3/uub_v3.runs/impl_1/uub_v3_wrapper.bit temp/fpga.bit
 
 # Package everything up into a tar file
 (cd temp; tar czf ../wp5/uub_firmware_${VERSION}.tgz ./*)
@@ -53,7 +61,10 @@ cp wp2/uub_proto2/uub_proto2.runs/impl_1/uub_proto2_wrapper.bit temp/fpga.bit
 # Tag this version
 git tag ${VERSION}
 
-echo "If all goes well, don't forget to:"
+echo "If all goes well, don't forget to in Vivado:"
+echo "  1) Reset output products for uub_v3"
+echo "  2) Archive project uub_v3"
+echo "In bash shell:" 
 echo "  1) git add wp5/uub_firmware_${VERSION}.tgz"
 echo "  2) git commit"
 echo "  3) git push origin master"

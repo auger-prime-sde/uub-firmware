@@ -124,6 +124,7 @@ wire [59:0] COMPATIBILITY_TOTD_DEBUG;
 
 // Other registers
 reg LCL_RESET;
+reg LCL_RESET1;
 
 // Integers for loops
 integer INDEX;

@@ -252,8 +252,11 @@ synchronizer_1bit ext_trig_sync(.ASYNC_IN(TRIG_IN),.CLK(CLK120),
                                 .SYNC_OUT(TRIG_IN_SYNCED));
 
 always @(posedge CLK120) begin
-   LCL_RESET <= ((LCL_COMPATIBILITY_GLOBAL_CONTROL &
-                  `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0);
+   LCL_RESET
+     <= ((LCL_COMPATIBILITY_GLOBAL_CONTROL &
+          `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0);
+   LCL_RESET <= LCL_RESET1;
+   
    if (LCL_RESET)
      begin
         //ENABLE40 <= 0;

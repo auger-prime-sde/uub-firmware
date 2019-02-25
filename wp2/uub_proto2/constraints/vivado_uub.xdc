@@ -20,7 +20,7 @@
 # 21-Dec-2018 DFN Steal pins from hconf for I2C.
 # 22-Feb-2019 DFN Draft define pins for RD interface.
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RD_XFR_CLK_IBUF]
+#set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets RD_XFR_CLK_IBUF]
 
 set_property IOSTANDARD LVCMOS33 [get_ports TRIG_IN]
 set_property IOSTANDARD LVCMOS33 [get_ports TRIG_OUT]
