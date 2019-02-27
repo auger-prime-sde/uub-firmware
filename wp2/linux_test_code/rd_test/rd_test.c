@@ -116,6 +116,8 @@ int main()
 
     // Check if we have a trigger
     shwr_status = read_trig(SHWR_BUF_STATUS_ADDR);
+    //    printf("SHWR_BUF_STATUS=%x\n",shwr_status);
+    // sleep(1);
     if ((SHWR_INTR_PEND_MASK & (shwr_status >> SHWR_INTR_PEND_SHIFT)) != 0)
       {
         nevents++;

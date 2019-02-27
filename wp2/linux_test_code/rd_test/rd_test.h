@@ -40,7 +40,7 @@ void map_registers();
 #define FAKE_SIGNAL_WIDTH 30
 #define SIGNAL_HT 3000
 #define EXP_DECAY 0
-#define FAKE_SIGNAL_MODE (8 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
+#define FAKE_SIGNAL_MODE (4 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 
 #define TRIG_THR0 2000
 #define TRIG_THR1 4095
@@ -51,10 +51,25 @@ void map_registers();
 
 #ifdef SHWR_TRIGGERS 
   #define COMPAT_SB_TRIGGER
-//  #define SB_TRIGGER
+// #define COMPAT_TOT_TRIGGER
+//  #define COMPAT_TOT_TRIG_OCC 1
+//   #define COMPAT_TOTD_TRIGGER
+//   #define COMPAT_TOTD_TRIG_OCC 1
+//   #define COMPAT_TOTD_FD 42  // 60ns decay constant
+//   #define COMPAT_TOTD_FN 47
+//     #define COMPAT_TOTD_FD 32  // 17ns decay constant
+//     #define COMPAT_TOTD_FN 32
+//     #define COMPAT_TOTD_UP0 4095
+//     #define COMPAT_TOTD_UP1 4095
+//     #define COMPAT_TOTD_UP2 4095
+//     #define COMPAT_TOTD_INT  5
+  #define SB_TRIGGER
 //  #define SSD_AND	
-//  #define SSD_DELAY 5
-//  #define EXT_TRIGGER
+  #define SB_COINC_LVL 1
+  #define SB_COINC_OVLP 3
+  #define SB_CONSEC_BINS 0
+  #define SSD_DELAY 0
+  #define EXT_TRIGGER
 //  #define PRESCALE_EXT_TRIGGER
 //  #define PRESCALE_COMPAT_SB_TRIGGER
 //  #define LED_TRIGGER

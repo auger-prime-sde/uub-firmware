@@ -30,7 +30,6 @@ reg [31:0] LCL_SHWR_BUF_STATUS;
 reg [31:0] LCL_SHWR_BUF_TRIG_ID;
 reg [31:0] LCL_SHWR_BUF_TRIG_IDN[0:`SHWR_MEM_NBUF-1];
 reg [`SHWR_EVT_ID_WIDTH-1:0] LCL_SHWR_EVT_IDN[0:`SHWR_MEM_NBUF-1];
-//wire [31:0] LCL_COMPATIBILITY_GLOBAL_CONTROL;
 wire LCL_COMPATIBILITY_GLOBAL_CONTROL;
 
 // AXI interface registers
@@ -124,7 +123,6 @@ wire [59:0] COMPATIBILITY_TOTD_DEBUG;
 
 // Other registers
 reg LCL_RESET;
-reg LCL_RESET1;
 
 // Integers for loops
 integer INDEX;

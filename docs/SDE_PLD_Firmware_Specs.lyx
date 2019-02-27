@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-Feburary 24, 2019
+Feburary 26, 2019
 \end_layout
 
 \begin_layout Author
@@ -226,6 +226,10 @@ convolved (ToTd) trigger.
 \begin_layout Description
 23-Feb-2019 Add documentation of RD interface; update Test Control documentation
 ; add documentation of 1pps interrupt module.
+\end_layout
+
+\begin_layout Description
+26-Feb-2019 DMA removed to free up resources for routing.
 \end_layout
 
 \begin_layout Section
@@ -11154,8 +11158,17 @@ Reading Shower & Muon Memories
 \end_layout
 
 \begin_layout Standard
-The shower and muon memories can be read via simple DMA, scatter-gather
- DMA, or via PDT.
+The shower and muon memories can be read via 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+simple DMA, scatter-gather DMA, or via 
+\end_layout
+
+\end_inset
+
+PDT.
 \end_layout
 
 \begin_layout Standard
@@ -12646,8 +12659,17 @@ Unused
 
 \begin_layout Standard
 The RD event memory is starts at RD_EVENT_BASE=0x5200 0000.
- The RD event memory can be read via simple DMA, scatter-gather DMA, or
- via PDT.
+ The RD event memory can be read via 
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+simple DMA, scatter-gather DMA, or via
+\end_layout
+
+\end_inset
+
+ PDT.
 \end_layout
 
 \begin_layout Standard
@@ -13806,7 +13828,11 @@ INTR_BASE = 0x43c1
 
 0000.
  By convention the register names all have _ADDR appended.
- The following registers are defined: 
+ The following registers are defined:
+\end_layout
+
+\begin_layout Standard
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="6" columns="2">
 <features tabularvalignment="middle">
@@ -14271,11 +14297,15 @@ The time tagging interrupt module will assert bit 0 of register 2 whenever
  This will also reset the interrupted detected signal.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
 \begin_layout Subsection
 AXI DMA controllers
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The AXI DMA controller for the shower memories is located at base address
  XPAR_AXICDMA_0_BASEADDR = 0x7e20
 \begin_inset space \space{}
@@ -14289,6 +14319,11 @@ The AXI DMA controller for the shower memories is located at base address
 
 0000.
  Please refer to the Xilinx AXI CDMA documentation for more information.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body

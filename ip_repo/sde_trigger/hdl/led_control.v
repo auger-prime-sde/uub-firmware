@@ -7,6 +7,7 @@
 //
 // 26-Jun-2016 DFN Initial version derived from sources above
 // 20-Sep-2016 DFN Flip sign of LED output
+// 27-Feb-2019 DFN Fix (possibly wrong) non-registered assignment of PULSE_WIDTH
  
 
 `include "sde_trigger_defs.vh"
@@ -54,7 +55,8 @@ module led_control(
          ENABLE_LED <= (LED_CONTROL & `LED_ENAPPS) >> `LED_ENAPPS_SHIFT;
          if (LED_NOW && !PREV_LED_NOW && !ENABLE_PULSE) begin
             ENABLE_PULSE <= 1;
-            PULSE_WIDTH = (LED_CONTROL >> `LED_PULSWID_SHIFT) 
+//            PULSE_WIDTH = (LED_CONTROL >> `LED_PULSWID_SHIFT) // Was this wrong?
+            PULSE_WIDTH <= (LED_CONTROL >> `LED_PULSWID_SHIFT) 
               & `LED_PULSWID_MASK;
             TRG_FLAG_DELAY <= `LED_FLAG_DELAY;
             TRG_FLAG_WIDTH <= `LED_FLAG_DURATION;
@@ -73,7 +75,9 @@ module led_control(
             if (PULSE_DELAY == 0) begin
                ENABLE_DELAY <= 0;
                ENABLE_PULSE <= 1;
-               PULSE_WIDTH = (LED_CONTROL >> `LED_PULSWID_SHIFT) 
+// Was this wrong to have not registered?
+//               PULSE_WIDTH = (LED_CONTROL >> `LED_PULSWID_SHIFT) 
+               PULSE_WIDTH <= (LED_CONTROL >> `LED_PULSWID_SHIFT) 
                  & `LED_PULSWID_MASK;
                TRG_FLAG_DELAY <= `LED_FLAG_DELAY;
                TRG_FLAG_WIDTH <= `LED_FLAG_DURATION;
