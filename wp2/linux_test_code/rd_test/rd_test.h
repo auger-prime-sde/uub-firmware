@@ -40,7 +40,7 @@ void map_registers();
 #define FAKE_SIGNAL_WIDTH 30
 #define SIGNAL_HT 3000
 #define EXP_DECAY 0
-#define FAKE_SIGNAL_MODE (4 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
+#define FAKE_SIGNAL_MODE (5 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 
 #define TRIG_THR0 2000
 #define TRIG_THR1 4095
@@ -63,13 +63,13 @@ void map_registers();
 //     #define COMPAT_TOTD_UP1 4095
 //     #define COMPAT_TOTD_UP2 4095
 //     #define COMPAT_TOTD_INT  5
-  #define SB_TRIGGER
+//  #define SB_TRIGGER
 //  #define SSD_AND	
-  #define SB_COINC_LVL 1
-  #define SB_COINC_OVLP 3
-  #define SB_CONSEC_BINS 0
-  #define SSD_DELAY 0
-  #define EXT_TRIGGER
+//  #define SB_COINC_LVL 1
+//  #define SB_COINC_OVLP 3
+//  #define SB_CONSEC_BINS 0
+//  #define SSD_DELAY 0
+//  #define EXT_TRIGGER
 //  #define PRESCALE_EXT_TRIGGER
 //  #define PRESCALE_COMPAT_SB_TRIGGER
 //  #define LED_TRIGGER

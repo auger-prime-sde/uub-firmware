@@ -119,7 +119,7 @@ module rd_interface_v1_0_S00_AXI #
    //------------------------------------------------
    //-- Number of Slave Registers 4
    reg [C_S_AXI_DATA_WIDTH-1:0]   AXI_CONTROL;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg1;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_STATUS;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg2;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg3;
    wire 			  slv_reg_rden;
@@ -227,7 +227,7 @@ module rd_interface_v1_0_S00_AXI #
 	if ( S_AXI_ARESETN == 1'b0 )
 	  begin
 	     AXI_CONTROL <= 0;
-	     slv_reg1 <= 0;
+	     // AXI_STATUS <= 0;
 	     slv_reg2 <= 0;
 	     slv_reg3 <= 0;
 	  end 
@@ -237,8 +237,8 @@ module rd_interface_v1_0_S00_AXI #
 	        case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	          2'h0:
 	            AXI_CONTROL <= S_AXI_WDATA;
-	          2'h1:
-	            slv_reg1 <= S_AXI_WDATA;
+	          // 2'h1:
+	          //  AXI_STATUS <= S_AXI_WDATA;
 	          2'h2:
 	            slv_reg2 <= S_AXI_WDATA;
 	          2'h3:
@@ -246,7 +246,7 @@ module rd_interface_v1_0_S00_AXI #
 		  
 	          default : begin
 	             AXI_CONTROL <= AXI_CONTROL;
-	             slv_reg1 <= slv_reg1;
+	             // AXI_STATUS <= AXI_STATUS;
 	             slv_reg2 <= slv_reg2;
 	             slv_reg3 <= slv_reg3;
 	          end
@@ -358,7 +358,7 @@ module rd_interface_v1_0_S00_AXI #
 	// Address decoding for reading registers
 	case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	  2'h0   : reg_data_out <= AXI_CONTROL;
-	  2'h1   : reg_data_out <= slv_reg1;
+	  2'h1   : reg_data_out <= AXI_STATUS;
 	  2'h2   : reg_data_out <= slv_reg2;
 	  2'h3   : reg_data_out <= slv_reg3;
 	  default : reg_data_out <= 0;
@@ -390,8 +390,6 @@ module rd_interface_v1_0_S00_AXI #
 
    reg AXI_CONTROL_WRITTEN;
    wire [31:0] STATUS;
-   wire [31:0] AXI_STATUS;
-
 
    // Detect when control register is written to
    always @( posedge S_AXI_ACLK )

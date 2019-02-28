@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>user.org</spirit:vendor>
+  <spirit:vendor>auger.org</spirit:vendor>
   <spirit:library>user</spirit:library>
   <spirit:name>amiga_trigger</spirit:name>
   <spirit:version>1.0</spirit:version>
@@ -295,10 +295,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>amiga_trigger_v1_0</xilinx:displayName>
       <xilinx:coreRevision>1</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-03-22T18:51:36Z</xilinx:coreCreationDateTime>
+      <xilinx:upgrades>
+        <xilinx:canUpgradeFrom>user.org:user:amiga_trigger:1.0</xilinx:canUpgradeFrom>
+      </xilinx:upgrades>
+      <xilinx:coreCreationDateTime>2019-02-27T20:47:42Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="nopcore"/>
-        <xilinx:tag xilinx:name="user.org:user:amiga_trigger:1.0_ARCHIVE_LOCATION">/home/osboxes/scm/uub-firmware/ip_repo/amiga_trigger</xilinx:tag>
+        <xilinx:tag xilinx:name="user.org:user:amiga_trigger:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2</xilinx:tag>
+        <xilinx:tag xilinx:name="auger.org:user:amiga_trigger:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
