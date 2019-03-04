@@ -1,1 +1,1 @@
-../../../ip_repo/sde_trigger/drivers/sde_trigger/src/rd_interface_defs.h
+../../../ip_repo/rd_interface_1.0/drivers/rd_interface_v1_0/src/rd_interface_defs.h

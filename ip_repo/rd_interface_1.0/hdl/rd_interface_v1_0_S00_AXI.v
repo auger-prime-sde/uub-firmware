@@ -5,6 +5,8 @@ module rd_interface_v1_0_S00_AXI #
   (
    // Users to add parameters here
 
+`include "rd_interface_options.vh"
+   
    // User parameters ends
    // Do not modify the parameters beyond this line
 
@@ -29,6 +31,8 @@ module rd_interface_v1_0_S00_AXI #
     output wire[31:0] DATA_TO_MEM,
     output wire ENABLE_MEM_WRT,
     output wire TRIG_OUT,
+    output wire DBG1,
+    output wire DBG2,
 
     // User ports ends
     // Do not modify the ports beyond this line
@@ -120,7 +124,7 @@ module rd_interface_v1_0_S00_AXI #
    //-- Number of Slave Registers 4
    reg [C_S_AXI_DATA_WIDTH-1:0]   AXI_CONTROL;
    wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_STATUS;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg2;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_ID;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg3;
    wire 			  slv_reg_rden;
    wire 			  slv_reg_wren;
@@ -228,7 +232,7 @@ module rd_interface_v1_0_S00_AXI #
 	  begin
 	     AXI_CONTROL <= 0;
 	     // AXI_STATUS <= 0;
-	     slv_reg2 <= 0;
+	     // AXI_ID <= 0;
 	     slv_reg3 <= 0;
 	  end 
 	else begin
@@ -239,15 +243,15 @@ module rd_interface_v1_0_S00_AXI #
 	            AXI_CONTROL <= S_AXI_WDATA;
 	          // 2'h1:
 	          //  AXI_STATUS <= S_AXI_WDATA;
-	          2'h2:
-	            slv_reg2 <= S_AXI_WDATA;
+	          // 2'h2:
+	          //  AXI_ID <= S_AXI_WDATA;
 	          2'h3:
 	            slv_reg3 <= S_AXI_WDATA;
 		  
 	          default : begin
 	             AXI_CONTROL <= AXI_CONTROL;
 	             // AXI_STATUS <= AXI_STATUS;
-	             slv_reg2 <= slv_reg2;
+	             // AXI_ID <= `RD_IFC_COMPILE_DATE;
 	             slv_reg3 <= slv_reg3;
 	          end
 	        endcase
@@ -359,7 +363,7 @@ module rd_interface_v1_0_S00_AXI #
 	case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	  2'h0   : reg_data_out <= AXI_CONTROL;
 	  2'h1   : reg_data_out <= AXI_STATUS;
-	  2'h2   : reg_data_out <= slv_reg2;
+	  2'h2   : reg_data_out <= `RD_IFC_COMPILE_DATE;
 	  2'h3   : reg_data_out <= slv_reg3;
 	  default : reg_data_out <= 0;
 	endcase
@@ -425,7 +429,9 @@ module rd_interface_v1_0_S00_AXI #
       .DATA_TO_MEM(DATA_TO_MEM),
       .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
       .TRIG_OUT(TRIG_OUT),
-      .RST(RST)
+      .RST(RST),
+      .DBG1(DBG1),
+      .DBG2(DBG2)
       ); 
 
    // User logic ends

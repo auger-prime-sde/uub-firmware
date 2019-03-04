@@ -36,7 +36,9 @@ module rd_interface
    output reg[31:0] DATA_ADDR,
    output reg[31:0] DATA_TO_MEM,
    output reg ENABLE_MEM_WRT,
-   output wire TRIG_OUT
+   output wire TRIG_OUT,
+   output DBG1,
+   output DBG2
    );
    
 
@@ -49,7 +51,7 @@ module rd_interface
    reg         PARITY1_ERROR;
    reg [11:0]  DATA0;
    reg [11:0]  DATA1;
-   wire [31:0] LCL_CONTROL;
+   wire [1:0] LCL_CONTROL;
    wire        LCL_TRIG_IN;
    reg [1:0]   LCL_BUF_NUM; // Current buffer writing
    reg         RD_BUSY;  // Set when transfer from RD is in progress
@@ -61,9 +63,12 @@ module rd_interface
    rd_sync_1bit control_wrtsync(.ASYNC_IN(AXI_CONTROL_WRITTEN),
                                 .CLK(SERIAL_CLK_IN),
                                 .SYNC_OUT(LCL_CONTROL_WRITTEN));
-   rd_sync_32bit control_sync(.ASYNC_IN(AXI_CONTROL),
+   rd_sync_1bit control_sync0(.ASYNC_IN(AXI_CONTROL[0]),
                               .CLK(SERIAL_CLK_IN),
-                              .SYNC_OUT(LCL_CONTROL));
+                              .SYNC_OUT(LCL_CONTROL[0]));
+   rd_sync_1bit control_sync1(.ASYNC_IN(AXI_CONTROL[1]),
+                              .CLK(SERIAL_CLK_IN),
+                              .SYNC_OUT(LCL_CONTROL[1]));
 
    rd_sync_1bit trig_sync(.ASYNC_IN(TRIG_IN),
                           .CLK(SERIAL_CLK_IN),
@@ -71,9 +76,11 @@ module rd_interface
    stretch trig_stretch(.IN(LCL_TRIG_OUT),
                         .CLK(SERIAL_CLK_IN),
                         .OUT(TRIG_OUT));
-   
 
-   always @(posedge SERIAL_CLK_IN)
+   assign DBG1 = ENABLE_MEM_WRT;
+   assign DBG2 = PARITY1_ERROR;
+
+     always @(posedge SERIAL_CLK_IN)
      if (RST)
        begin
           STATUS <= 0;
@@ -82,7 +89,8 @@ module rd_interface
        end
      else
        begin
-          PREV_ENABLE_XFR_IN <= ENABLE_XFR_IN;
+    
+         PREV_ENABLE_XFR_IN <= ENABLE_XFR_IN;
           STATUS[`RD_BUF_RNUM_SHIFT+1:`RD_BUF_RNUM_SHIFT] <= BUF_RNUM;
           
           if (LCL_CONTROL_WRITTEN)
@@ -125,7 +133,7 @@ module rd_interface
                     DATA_TO_MEM[27:16] <= DATA1;
                     ENABLE_MEM_WRT <= 1;
                     DATA_ADDR[12:0] <= NEXT_DATA_ADDR;
-                    DATA_ADDR[31:13] <= LCL_BUF_NUM;
+                    DATA_ADDR[14:13] <= LCL_BUF_NUM;
                     NEXT_DATA_ADDR <= NEXT_DATA_ADDR+4;
 
                     // Prepare for next word

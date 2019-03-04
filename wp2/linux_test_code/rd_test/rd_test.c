@@ -44,7 +44,7 @@ int main()
   int cntrl_word = 0;
   int num_full;
   int shwr_status, rd_status;
-  int id;
+  int trig_id, rd_id;
   int parity0, parity1;
   int read0, read1;
   int expected0, expected1;
@@ -97,9 +97,10 @@ int main()
     }
 
 
- // Check for sane ID
-  id = read_trig(ID_REG_ADDR);
-  printf("trigger_test: id=%x\n",id);
+ // Check for sane IDs
+  trig_id = read_trig(ID_REG_ADDR);
+  rd_id = read_rd(RD_IFC_ID_ADDR);
+  printf("trigger_test: trigger id=%x   rd id=%x\n",trig_id, rd_id);
 
   // Reset trigger
   write_trig(COMPATIBILITY_GLOBAL_CONTROL_ADDR,1);
@@ -135,22 +136,26 @@ int main()
                num_full);
 
         // Check if the same RD buffer is full
-        rd_status = read_rd(RD_IFC_STATUS_ADDR);
-        toread_rd_buf_num = RD_BUF_RNUM_MASK & 
-          (rd_status >> RD_BUF_RNUM_SHIFT);
-        cur_rd_buf_num = RD_BUF_WNUM_MASK & 
-          (rd_status >> RD_BUF_WNUM_SHIFT);
-        full_rd_bufs = RD_BUF_FULL_MASK & 
-          (rd_status >> RD_BUF_FULL_SHIFT);
-        busy_rd_bufs = RD_BUF_BUSY_MASK &
-          (rd_status >> RD_BUF_BUSY_SHIFT);
-        parity0 = RD_PARITY0_MASK &
-          (rd_status >> RD_PARITY0_SHIFT);
-        parity1 = RD_PARITY1_MASK &
-          (rd_status >> RD_PARITY1_SHIFT);
-        printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
-               toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
-               busy_rd_bufs, parity0, parity1);
+        busy_rd_bufs = 1;
+        while (busy_rd_bufs != 0)
+          {
+            rd_status = read_rd(RD_IFC_STATUS_ADDR);
+            toread_rd_buf_num = RD_BUF_RNUM_MASK & 
+              (rd_status >> RD_BUF_RNUM_SHIFT);
+            cur_rd_buf_num = RD_BUF_WNUM_MASK & 
+              (rd_status >> RD_BUF_WNUM_SHIFT);
+            full_rd_bufs = RD_BUF_FULL_MASK & 
+              (rd_status >> RD_BUF_FULL_SHIFT);
+            busy_rd_bufs = RD_BUF_BUSY_MASK &
+              (rd_status >> RD_BUF_BUSY_SHIFT);
+            parity0 = RD_PARITY0_MASK &
+              (rd_status >> RD_PARITY0_SHIFT);
+            parity1 = RD_PARITY1_MASK &
+              (rd_status >> RD_PARITY1_SHIFT);
+            printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
+                   toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
+                   busy_rd_bufs, parity0, parity1);
+          }
 
         // Read RD buffer
 
@@ -171,7 +176,8 @@ int main()
 
         expected0 = 0;
         expected1 = 0;
-        for (i=0; i<RD_MEM_WORDS; i++)
+        //        for (i=0; i<RD_MEM_WORDS; i++)
+        for (i=0; i<2; i++)
           {  
             read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
             read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
@@ -179,7 +185,7 @@ int main()
               {
                 printf("word %d  read %x %x  expected %x %x\n",
                        i, read0, read1, expected0, expected1);
-                sleep(2);
+                // sleep(2);
                 nerrors = nerrors+1;
               }
             expected0 = expected0 + 1;

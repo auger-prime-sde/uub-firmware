@@ -35,7 +35,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5647c79e</spirit:value>
+            <spirit:value>97ecad8e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -50,7 +50,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5647c79e</spirit:value>
+            <spirit:value>97ecad8e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -335,7 +335,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="immediate">12</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="immediate">31</spirit:left>
             <spirit:right spirit:format="long" spirit:resolve="immediate">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -355,7 +355,7 @@
       <spirit:file>
         <spirit:name>fake_signal.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_5647c79e</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_97ecad8e</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -395,7 +395,7 @@
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>user.org:user:fake_signal:1.0</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2019-02-27T20:50:18Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2019-03-02T21:41:01Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="nopcore"/>
         <xilinx:tag xilinx:name="user.org:user:fake_signal:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2</xilinx:tag>
@@ -405,8 +405,8 @@
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="93b104fa"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b2479e70"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="d5db4ff7"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2e0c3297"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="dff0bbc3"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="235e7fdb"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

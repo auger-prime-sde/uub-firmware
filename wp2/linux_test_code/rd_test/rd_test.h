@@ -40,7 +40,7 @@ void map_registers();
 #define FAKE_SIGNAL_WIDTH 30
 #define SIGNAL_HT 3000
 #define EXP_DECAY 0
-#define FAKE_SIGNAL_MODE (5 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
+#define FAKE_SIGNAL_MODE (4 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 
 #define TRIG_THR0 2000
 #define TRIG_THR1 4095

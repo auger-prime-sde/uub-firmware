@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>auger.org</spirit:vendor>
-  <spirit:library>auger</spirit:library>
+  <spirit:library>default</spirit:library>
   <spirit:name>rd_interface</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
@@ -266,7 +266,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3cc83359</spirit:value>
+            <spirit:value>5717ae41</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -282,7 +282,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3cc83359</spirit:value>
+            <spirit:value>1cb82236</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -506,6 +506,32 @@
       </spirit:port>
       <spirit:port>
         <spirit:name>TRIG_OUT</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG1</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG2</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -895,6 +921,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_f6f0ae21</spirit:userFileType>
       </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/rd_interface_options.vh</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:isIncludeFile>true</spirit:isIncludeFile>
+      </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_verilogbehavioralsimulation_view_fileset</spirit:name>
@@ -1042,21 +1073,23 @@
       <xilinx:coreRevision>1</xilinx:coreRevision>
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>auger.org:auger:rd_interface:v1</xilinx:canUpgradeFrom>
+        <xilinx:canUpgradeFrom>auger.org:auger:rd_interface:1.0</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2019-02-27T21:01:27Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2019-03-03T17:57:53Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="auger.org:auger:rd_interface:_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/rd_interface_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="auger.org:auger:rd_interface:v1_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/rd_interface_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="auger.org:auger:rd_interface:1.1_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/rd_interface_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="auger.org:auger:rd_interface:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/rd_interface_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="auger.org:default:rd_interface:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/rd_interface_1.0</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="fb6de4a6"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="cafe3ba6"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="8dac0617"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="9ad3938a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7d48cafb"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="0802470d"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="67e6fb9f"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="8692207d"/>
     </xilinx:packagingInfo>

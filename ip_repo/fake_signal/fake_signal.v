@@ -59,7 +59,7 @@ module fake_signal
    output reg[23:0] ADC2_OUT,
    output reg[23:0] ADC3_OUT,
    output reg[23:0] ADC4_OUT,
-   output reg[12:0] EVENT_ADR
+   output reg[31:0] EVENT_ADR
    );
 
    reg [11:0]       FAKE_SIGNALHG;

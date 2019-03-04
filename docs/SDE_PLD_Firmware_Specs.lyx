@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-Feburary 26, 2019
+March 3, 2019
 \end_layout
 
 \begin_layout Author
@@ -230,6 +230,10 @@ convolved (ToTd) trigger.
 
 \begin_layout Description
 26-Feb-2019 DMA removed to free up resources for routing.
+\end_layout
+
+\begin_layout Description
+03-Mar-2019 Add RD interface ID register description.
 \end_layout
 
 \begin_layout Section
@@ -11956,7 +11960,7 @@ The Radio Detector Interface module manages communication between the FPGA
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="2">
+<lyxtabular version="3" rows="4" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -12001,7 +12005,7 @@ RD interface control register
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -12010,11 +12014,31 @@ RD_IFC_STATUS
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 RD interface status register
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_IFC_ID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ID register
 \end_layout
 
 \end_inset
@@ -12333,7 +12357,12 @@ Buffer number to reset
 \end_layout
 
 \begin_layout Standard
-The module operates as follows:
+The ID register contains the date of last tagged changes to the module in
+ the same format as the trigger ID register.
+\end_layout
+
+\begin_layout Standard
+The RD interface module operates as follows:
 \end_layout
 
 \begin_layout Enumerate

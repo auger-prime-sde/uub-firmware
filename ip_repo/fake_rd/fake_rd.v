@@ -14,7 +14,9 @@ module fake_rd
   
    output reg ENABLE_XFR,
    output reg SERIAL_OUT0,
-   output reg SERIAL_OUT1
+   output reg SERIAL_OUT1,
+   output DBG1,
+   output DBG2
    );
 
    reg [3:0]  BIT_COUNT;
@@ -34,8 +36,12 @@ module fake_rd
                              .CLK(LOCAL_CLK),
                              .SYNC_OUT(LOCAL_TRIGGER));
 
+    assign DBG2 = PARITY1;
 
-   always @(posedge LOCAL_CLK)
+   // Use opposite edge of behavior simulation (with no timing) to account
+   // for real delays?
+   always @(negedge LOCAL_CLK)
+//   always @(posedge LOCAL_CLK)
      begin
    // Reset registers if not enabled
         if (~LOCAL_ENABLE)
@@ -58,7 +64,10 @@ module fake_rd
      end  
    
    // Send fake data out
-   always @(negedge LOCAL_CLK)
+   // Use opposite edge of behavior simulation (with no timing) to account
+   // for real delays?
+   always @(posedge LOCAL_CLK)
+//   always @(negedge LOCAL_CLK)
      begin
         if (ENABLE_XFR)
           begin
@@ -72,6 +81,7 @@ module fake_rd
                   BIT_COUNT <= 0;
                   PARITY0 <= 0;
                   PARITY1 <= 0;
+                  DBG1 <= 1;
                end
              else   
                begin
@@ -80,6 +90,7 @@ module fake_rd
                   PARITY0 <= PARITY0+DATA0[11-BIT_COUNT];
                   PARITY1 <= PARITY1+DATA1[11-BIT_COUNT];
                   BIT_COUNT <= BIT_COUNT+1;
+                  DBG1 <= 0;
                end
           end // if (ENABLE_XFR)
         else

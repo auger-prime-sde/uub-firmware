@@ -33,6 +33,8 @@
          output wire[31:0] DATA_TO_MEM,
          output wire ENABLE_MEM_WRT,
          output wire TRIG_OUT,
+         output wire DBG1,
+         output wire DBG2,
          
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -94,14 +96,18 @@
                 .DATA_ADDR(DATA_ADDR),
                 .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
                 .DATA_TO_MEM(DATA_TO_MEM),
+                .TRIG_IN(TRIG_IN),
                 .TRIG_OUT(TRIG_OUT),
                 .RST(RST),
                 .BUF_RNUM(BUF_RNUM),
-                .BUF_WNUM(BUF_WNUM)
+                .BUF_WNUM(BUF_WNUM),
+                .DBG1(DBG1),
+                .DBG2(DBG2)
  	);
 
 	// Add user logic here
 
+ 
 	// User logic ends
 
 	endmodule
