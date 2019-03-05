@@ -61,10 +61,7 @@ cp wp2/uub_v3/uub_v3.runs/impl_1/uub_v3_wrapper.bit temp/fpga.bit
 # Tag this version
 git tag ${VERSION}
 
-echo "If all goes well, don't forget to in Vivado:"
-echo "  1) Reset output products for uub_v3"
-echo "  2) Archive project uub_v3"
-echo "In bash shell:" 
+echo "If all goes well, don't forget to do:"
 echo "  1) git add wp5/uub_firmware_${VERSION}.tgz"
 echo "  2) git commit -a"
 echo "  3) git push origin master"
