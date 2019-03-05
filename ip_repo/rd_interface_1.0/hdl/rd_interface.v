@@ -17,9 +17,10 @@
 //  > Reset WCD buffer full status
 //
 // 31-Jan-2019 DFN Initial version
+// 05-Mar-2019 DFN Correct error - missing PARITY reset
 
 `include "rd_interface_defs.vh"
- 
+
 module rd_interface
   (
    input wire SERIAL_DATA0_IN,
@@ -37,25 +38,25 @@ module rd_interface
    output reg[31:0] DATA_TO_MEM,
    output reg ENABLE_MEM_WRT,
    output wire TRIG_OUT,
-   output DBG1,
-   output DBG2
+   output reg DBG1,
+   output reg DBG2
    );
    
 
-   reg [3:0]   SERIAL_IN_BIT_COUNT;
-   reg         PREV_ENABLE_XFR_IN;
-   reg [31:0]  NEXT_DATA_ADDR;
-   reg         PARITY0;
-   reg         PARITY1;
-   reg         PARITY0_ERROR;
-   reg         PARITY1_ERROR;
-   reg [11:0]  DATA0;
-   reg [11:0]  DATA1;
+   reg [3:0]  SERIAL_IN_BIT_COUNT;
+   reg        PREV_ENABLE_XFR_IN;
+   reg [31:0] NEXT_DATA_ADDR;
+   reg        PARITY0;
+   reg        PARITY1;
+   reg        PARITY0_ERROR;
+   reg        PARITY1_ERROR;
+   reg [11:0] DATA0;
+   reg [11:0] DATA1;
    wire [1:0] LCL_CONTROL;
-   wire        LCL_TRIG_IN;
-   reg [1:0]   LCL_BUF_NUM; // Current buffer writing
-   reg         RD_BUSY;  // Set when transfer from RD is in progress
-   reg         LCL_TRIG_OUT;
+   wire       LCL_TRIG_IN;
+   reg [1:0]  LCL_BUF_NUM; // Current buffer writing
+   reg        RD_BUSY;  // Set when transfer from RD is in progress
+   reg        LCL_TRIG_OUT;
    
    
 
@@ -77,10 +78,8 @@ module rd_interface
                         .CLK(SERIAL_CLK_IN),
                         .OUT(TRIG_OUT));
 
-   assign DBG1 = ENABLE_MEM_WRT;
-   assign DBG2 = PARITY1_ERROR;
 
-     always @(posedge SERIAL_CLK_IN)
+   always @(posedge SERIAL_CLK_IN)
      if (RST)
        begin
           STATUS <= 0;
@@ -89,16 +88,18 @@ module rd_interface
        end
      else
        begin
-    
-         PREV_ENABLE_XFR_IN <= ENABLE_XFR_IN;
+          
+          DBG1 <= PARITY1_ERROR;
+          DBG2 <= PARITY1;
+          PREV_ENABLE_XFR_IN <= ENABLE_XFR_IN;
           STATUS[`RD_BUF_RNUM_SHIFT+1:`RD_BUF_RNUM_SHIFT] <= BUF_RNUM;
           
           if (LCL_CONTROL_WRITTEN)
             begin
                STATUS[`RD_BUF_FULL_SHIFT+LCL_CONTROL[`RD_BUF_RNUM_SHIFT+1:
-                                                  `RD_BUF_RNUM_SHIFT]] <= 0;
+                                                     `RD_BUF_RNUM_SHIFT]] <= 0;
             end
-           
+          
           // Grab serial data
           // High order bit is 1st and parity bit is last
           if (ENABLE_XFR_IN)
@@ -138,6 +139,8 @@ module rd_interface
 
                     // Prepare for next word
                     SERIAL_IN_BIT_COUNT <= 0;
+                    PARITY0 <= 0;
+                    PARITY1 <= 0;
                     
                  end // if (SERIAL_IN_BIT_COUNT == 12)
             end // if (ENABLE_XFER_IN)

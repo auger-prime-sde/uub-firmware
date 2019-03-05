@@ -2,6 +2,7 @@
 //
 // 11-Oct-2018 DFN Initial version
 // 07-Feb-2019 DFN Modified to work in conjunction with true rd_interface
+// 05-Mar-2019 DFN Note: Be careful of which clock edge is used.
 
 
 `define MEM_SIZE 2048
@@ -15,8 +16,8 @@ module fake_rd
    output reg ENABLE_XFR,
    output reg SERIAL_OUT0,
    output reg SERIAL_OUT1,
-   output DBG1,
-   output DBG2
+   output reg DBG1,
+   output reg DBG2
    );
 
    reg [3:0]  BIT_COUNT;
@@ -36,12 +37,7 @@ module fake_rd
                              .CLK(LOCAL_CLK),
                              .SYNC_OUT(LOCAL_TRIGGER));
 
-    assign DBG2 = PARITY1;
-
-   // Use opposite edge of behavior simulation (with no timing) to account
-   // for real delays?
-   always @(negedge LOCAL_CLK)
-//   always @(posedge LOCAL_CLK)
+   always @(posedge LOCAL_CLK)
      begin
    // Reset registers if not enabled
         if (~LOCAL_ENABLE)
@@ -64,13 +60,12 @@ module fake_rd
      end  
    
    // Send fake data out
-   // Use opposite edge of behavior simulation (with no timing) to account
-   // for real delays?
-   always @(posedge LOCAL_CLK)
-//   always @(negedge LOCAL_CLK)
+   always @(negedge LOCAL_CLK)
      begin
         if (ENABLE_XFR)
           begin
+             DBG1 <= BIT_COUNT[3];
+             DBG2 <= PARITY1;
              if (BIT_COUNT == 12)
                begin
                   DATA0 <= DATA0+1;
@@ -81,16 +76,14 @@ module fake_rd
                   BIT_COUNT <= 0;
                   PARITY0 <= 0;
                   PARITY1 <= 0;
-                  DBG1 <= 1;
                end
-             else   
+             if (BIT_COUNT < 12)  
                begin
                   SERIAL_OUT0 <= DATA0[11-BIT_COUNT];
                   SERIAL_OUT1 <= DATA1[11-BIT_COUNT];
                   PARITY0 <= PARITY0+DATA0[11-BIT_COUNT];
                   PARITY1 <= PARITY1+DATA1[11-BIT_COUNT];
                   BIT_COUNT <= BIT_COUNT+1;
-                  DBG1 <= 0;
                end
           end // if (ENABLE_XFR)
         else
