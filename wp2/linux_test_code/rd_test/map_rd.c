@@ -5,6 +5,8 @@
 // 03-Nov-2018 DFN Original version
 
 #include "rd_test.h"
+#include "sde_trigger.h"
+#include "time_tagging.h"
 
 void map_rd()
 {
@@ -12,8 +14,12 @@ void map_rd()
   int size, imem;
   int i;
 
-  fake_rd_mem_addr[0] = FAKE_RD_EVENT0_BASE;
-  rd_mem_addr[0] = RD_EVENT0_BASE;
+  shwr_mem_addr[0] = TRIGGER_MEMORY_SHWR0_BASE;
+  shwr_mem_addr[1] = TRIGGER_MEMORY_SHWR1_BASE;
+  shwr_mem_addr[2] = TRIGGER_MEMORY_SHWR2_BASE;
+  shwr_mem_addr[3] = TRIGGER_MEMORY_SHWR3_BASE;
+  shwr_mem_addr[4] = TRIGGER_MEMORY_SHWR4_BASE;
+  rd_mem_addr[0] = RD_EVENT_BASE;
 
   // Open register addresses for read/write
 
@@ -22,13 +28,52 @@ void map_rd()
     printf("Error - /dev/mem open to read/write registers failed\n");
     exit(1);
   }
-  size=256*sizeof(u32);
+
+  printf("map_rd: Mapping trig_regs TO %X\n", SDE_TRIGGER_BASE); 
+ size=256*sizeof(u32);
   if (size%sysconf(_SC_PAGE_SIZE)){
     size=(size/sysconf(_SC_PAGE_SIZE)+1)*sysconf(_SC_PAGE_SIZE);
   }
-  rd_regs=(u32 *)mmap(NULL, size,
+  trig_regs=(u32 *)mmap(NULL, size,
+  			     PROT_READ | PROT_WRITE, MAP_SHARED,
+  			     fd,SDE_TRIGGER_BASE);
+  if (trig_regs==MAP_FAILED){
+    printf("Error - while trying to map trigger registers\n");
+    exit(1);
+  }
+
+  printf("map_rd: Mapping ttag_regs to %x\n", TIME_TAGGING_BASE); 
+  ttag_regs=(u32 *)mmap(NULL, size,
+  			     PROT_READ | PROT_WRITE, MAP_SHARED,
+  			     fd,TIME_TAGGING_BASE);
+  if (ttag_regs==MAP_FAILED){
+    printf("Error - while trying to map time tagging registers\n");
+    exit(1);
+  }
+
+  printf("map_rd: Mapping ifc_regs to %x\n", INTERFACE_UUB_BASE); 
+   ifc_regs=(u32 *)mmap(NULL, size,
+   			    PROT_READ | PROT_WRITE, MAP_SHARED,
+   			    fd,INTERFACE_UUB_BASE);
+   if (ifc_regs==MAP_FAILED){ 
+     printf("Error - while trying to map interface dfn registers\n");
+     exit(1);
+   }
+
+
+   printf("map_rd: Mapping tstctl_regs to %x\n", TEST_CONTROL_BASE); 
+  tstctl_regs=(u32 *)mmap(NULL, size,
+			    PROT_READ | PROT_WRITE, MAP_SHARED,
+			    fd,TEST_CONTROL_BASE);
+ if (tstctl_regs==MAP_FAILED){
+   printf("Error - while trying to map test control registers\n");
+   exit(1);
+ }
+
+ printf("map_rd: Mapping rd_regs to %x\n", RD_BASE); 
+   rd_regs=(u32 *)mmap(NULL, size,
                       PROT_READ | PROT_WRITE, MAP_SHARED,
-                      fd, FAKE_RD_BASE);
+                      fd, RD_BASE);
   if (rd_regs==MAP_FAILED){
     printf("Error - while trying to map rd registers\n");
     exit(1);
@@ -39,6 +84,21 @@ void map_rd()
   sleep(1);
 
   // Now map shared memory buffers
+
+  printf("map_rd: Mapping shower memory\n"); 
+  size = SHWR_MEM_DEPTH*SHWR_MEM_NBUF;
+  for (imem=0; imem<5; imem++)
+    {
+      shwr_mem_ptr[imem] = (u32)mmap(NULL, size,
+  					    PROT_READ, MAP_SHARED,
+  					    fd,shwr_mem_addr[imem]);
+      if (shwr_mem_ptr[imem] == (u32)MAP_FAILED){
+  	printf("Error - while trying to map shower memory %d\n", imem);
+  	exit(1);
+      }
+    }
+
+  printf("map_rd: Mapping rd memory\n"); 
   size =RD_MEM_DEPTH*RD_MEM_NBUF;
   rd_mem_ptr[0] = (u32)mmap(NULL, size,
                                PROT_WRITE|PROT_READ, MAP_SHARED,
@@ -47,15 +107,8 @@ void map_rd()
     printf("Error - while trying to map rd memory %d\n", 0);
     exit(1);
   }
-  fake_rd_mem_ptr[0] = (u32)mmap(NULL, size,
-                                    PROT_WRITE|PROT_READ, MAP_SHARED,
-                                    fd,fake_rd_mem_addr[0]);
-  if (fake_rd_mem_ptr[0] == (u32)MAP_FAILED){
-    printf("Error - while trying to map fake rd memory %d\n", 0);
-    exit(1);
-  }
 
-  printf("Finished mapping fake rd buffers\n");
+  printf("Finished mapping everything\n");
   fflush(stdout);
   sleep(1);
 

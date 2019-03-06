@@ -3,14 +3,30 @@
 // versions, allowing trigger_test.h to be common.
 //
 // 06-Feb-2017 DFN Initial version extracted from trigger_test.h
+// 04-Dec-2018 DFN Add check for possible missing external triggers
 
 //#define STAND_ALONE
-#define MAX_EVENTS 1000
+#define MAX_EVENTS 1000000
+#define CHECK_MISSING_EVENT
+#define EXT_IN_PERIOD 0.02
+#define EXT_IN_TOLERANCE 0.00001
+#define EVENT_COUNT_INTERVAL 10000
+//#define VERBOSE_BUFFERS  // Print more buffer status if set
 
 //#define ADJUST_BASELINE
 //#define TOGGLE_WATCHDOG
 //#define USE_FAKE_MUON
 //#define USE_FAKE_SIGNAL
+#define PMT0_DLY 0
+#define PMT1_DLY 0
+#define PMT2_DLY 0
+#define FAKE_SIGNAL_WIDTH 30
+#define SIGNAL_HT 3000
+#define EXP_DECAY 0
+#define FAKE_SIGNAL_MODE (7 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
+//#define RAMP
+
+
 #define USE_FAKE_GPS
 //#define DO_LED_PULSE
 //#define DO_LED_NOW

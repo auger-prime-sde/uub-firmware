@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="iic_filter_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="iic_filter_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="22" />
+   <wave_markers>
+      <marker label="" time="468526000" />
+      <marker label="" time="108000000" />
+   </wave_markers>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sysclk">
+      <obj_property name="ElementShortName">Sysclk</obj_property>
+      <obj_property name="ObjectShortName">Sysclk</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Rst">
+      <obj_property name="ElementShortName">Rst</obj_property>
+      <obj_property name="ObjectShortName">Rst</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_noisy">
+      <obj_property name="ElementShortName">Scl_noisy</obj_property>
+      <obj_property name="ObjectShortName">Scl_noisy</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_clean">
+      <obj_property name="ElementShortName">Scl_clean</obj_property>
+      <obj_property name="ObjectShortName">Scl_clean</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_noisy">
+      <obj_property name="ElementShortName">Sda_noisy</obj_property>
+      <obj_property name="ObjectShortName">Sda_noisy</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_clean">
+      <obj_property name="ElementShortName">Sda_clean</obj_property>
+      <obj_property name="ObjectShortName">Sda_clean</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_noisy_out">
+      <obj_property name="ElementShortName">Scl_noisy_out</obj_property>
+      <obj_property name="ObjectShortName">Scl_noisy_out</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_noisy_t">
+      <obj_property name="ElementShortName">Scl_noisy_t</obj_property>
+      <obj_property name="ObjectShortName">Scl_noisy_t</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_clean_in">
+      <obj_property name="ElementShortName">Scl_clean_in</obj_property>
+      <obj_property name="ObjectShortName">Scl_clean_in</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Scl_clean_t">
+      <obj_property name="ElementShortName">Scl_clean_t</obj_property>
+      <obj_property name="ObjectShortName">Scl_clean_t</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_noisy_out">
+      <obj_property name="ElementShortName">Sda_noisy_out</obj_property>
+      <obj_property name="ObjectShortName">Sda_noisy_out</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_noisy_t">
+      <obj_property name="ElementShortName">Sda_noisy_t</obj_property>
+      <obj_property name="ObjectShortName">Sda_noisy_t</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_clean_in">
+      <obj_property name="ElementShortName">Sda_clean_in</obj_property>
+      <obj_property name="ObjectShortName">Sda_clean_in</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/Sda_clean_t">
+      <obj_property name="ElementShortName">Sda_clean_t</obj_property>
+      <obj_property name="ObjectShortName">Sda_clean_t</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/DBG1">
+      <obj_property name="ElementShortName">DBG1</obj_property>
+      <obj_property name="ObjectShortName">DBG1</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/DBG2">
+      <obj_property name="ElementShortName">DBG2</obj_property>
+      <obj_property name="ObjectShortName">DBG2</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/DBG3">
+      <obj_property name="ElementShortName">DBG3</obj_property>
+      <obj_property name="ObjectShortName">DBG3</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/iic_filter_inst/scl_unstable_n">
+      <obj_property name="ElementShortName">scl_unstable_n</obj_property>
+      <obj_property name="ObjectShortName">scl_unstable_n</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/iic_filter_inst/SCL_DEBOUNCE/Noisy">
+      <obj_property name="ElementShortName">Noisy</obj_property>
+      <obj_property name="ObjectShortName">Noisy</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/iic_filter_inst/SCL_DEBOUNCE/Stable">
+      <obj_property name="ElementShortName">Stable</obj_property>
+      <obj_property name="ObjectShortName">Stable</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="logic" fp_name="/iic_filter_tb/iic_filter_inst/SCL_DEBOUNCE/Unstable_n">
+      <obj_property name="ElementShortName">Unstable_n</obj_property>
+      <obj_property name="ObjectShortName">Unstable_n</obj_property>
+   </wvobject>
+   <wvobject db_ref_id="1" type="other" fp_name="/iic_filter_tb/iic_filter_inst/SCL_DEBOUNCE/debounce_ct">
+      <obj_property name="ElementShortName">debounce_ct</obj_property>
+      <obj_property name="ObjectShortName">debounce_ct</obj_property>
+   </wvobject>
+</wave_config>

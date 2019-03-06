@@ -1,0 +1,51 @@
+Notes for code version 11160816 - 16-Aug-2016 D. Nitz
+
+This is the first packaged version of the firmware.  The code is in
+the "alpha" stage.
+
+Only a single bin and muon trigger are implemented.  The triggers have
+been tested somewhat using the external trigger input.  Sensible
+waveform shapes have not been verified because I've not taken my UUB
+out of firmware development service long enough to make all the
+necessary component updates. So, for example, the gains are wrong, the
+pedestals are off scale below zero, and there is a lot of noise on the
+signals.  When using the single bin trigger there are a lot of false
+triggers.  I'm not able to track down the cause of that yet, due to
+the aforementioned issues.  
+
+Thanks to help from Patrik Allison to point me in the correct
+direction, I was able to see how to get both DMA and PDT of the shower
+and muon buffers implemented.  Aftery trying the memory muxing he
+suggested I realized that I could alternatively do the same thing in a
+cleaner way using axi_crossbar IP on each and every buffer BRAM.
+
+Other than that, the project includes all of the devices that I
+presently know about that are required for the field, including the
+time tagging module and the led flasher control.
+
+The led flasher control allows setting the delay from the 1PPS or
+doing an immediate LED flash.  In both cases the width may be varied.
+However, the led driver on the current board EA boards generates a
+pulse which is approximately 4 times wider than the LDEBAR output of
+the trigger module.
+
+There is a GPS 1PPS switch module so that the board can be tested
+either with or without a GPS module.  By default the firmware comes up
+assuming a GPS.  See trigger_test.h & trigger_test.c for example of
+how to chose a fake 1PPS generated from the 120 MHz clock instead.
+The included .c and .h files have examples of the initialization of
+the ADCs and DACs.  They also include examples of configuring
+triggers, readout via DMA and PDT and LED pulsing.
+
+The trigger_out at present just sends a pulse out whenever any trigger
+is detected.
+
+If you can see this file you've obviously been able to unpack the
+distribution tar file.  The zip file you see is an archive of the
+Vivado project for the board.
+
+If there have been changes in the configuration in the Zynq since I
+transferred them from Eric and Roberto's projects, they may not be merged in.
+
+
+

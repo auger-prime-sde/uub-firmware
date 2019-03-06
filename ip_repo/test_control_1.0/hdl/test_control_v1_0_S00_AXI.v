@@ -23,6 +23,20 @@ module test_control_v1_0_S00_AXI #
     output reg USE_FAKE_SHWR,
     output reg USE_FAKE_MUON,
     output reg[31:0] FAKE_MODE,
+    output reg USE_FAKE_RD,
+    input wire FAKE_RDCLK,
+    input wire TRUE_RDCLK,
+    output wire RDCLK,
+    input wire FAKE_ENABLE_XFR,
+    input wire TRUE_ENABLE_XFR,
+    output wire ENABLE_XFR,
+    input wire FAKE_RD_SERIAL0,
+    input wire TRUE_RD_SERIAL0,
+    output wire RD_SERIAL0,
+    input wire FAKE_RD_SERIAL1,
+    input wire TRUE_RD_SERIAL1,
+    output wire RD_SERIAL1,
+    
 
     // User ports ends
     // Do not modify the ports beyond this line
@@ -112,8 +126,8 @@ module test_control_v1_0_S00_AXI #
    //-- Signals for user logic register space example
    //------------------------------------------------
    //-- Number of Slave Registers 4
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg0;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg1;
+   reg [C_S_AXI_DATA_WIDTH-1:0]   USE_FAKE_REG;
+   reg [C_S_AXI_DATA_WIDTH-1:0]   FAKE_MODE_REG;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg2;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg3;
    wire 			  slv_reg_rden;
@@ -220,8 +234,8 @@ module test_control_v1_0_S00_AXI #
      begin
 	if ( S_AXI_ARESETN == 1'b0 )
 	  begin
-	     slv_reg0 <= 0;
-	     slv_reg1 <= 0;
+	     USE_FAKE_REG <= 0;
+	     FAKE_MODE_REG <= 0;
 	     slv_reg2 <= 0;
 	     slv_reg3 <= 0;
 	  end 
@@ -230,17 +244,17 @@ module test_control_v1_0_S00_AXI #
 	     begin
 	        case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	          2'h0:
-	            slv_reg0 <= S_AXI_WDATA;
+	            USE_FAKE_REG <= S_AXI_WDATA;
 	          2'h1:
-	            slv_reg1 <= S_AXI_WDATA;
+	            FAKE_MODE_REG <= S_AXI_WDATA;
 	          2'h2:
 	            slv_reg2 <= S_AXI_WDATA;
 	          2'h3:
 	            slv_reg3 <= S_AXI_WDATA;
 		  
 	          default : begin
-	             slv_reg0 <= slv_reg0;
-	             slv_reg1 <= slv_reg1;
+	             USE_FAKE_REG <= USE_FAKE_REG;
+	             FAKE_MODE_REG <= FAKE_MODE_REG;
 	             slv_reg2 <= slv_reg2;
 	             slv_reg3 <= slv_reg3;
 	          end
@@ -351,8 +365,8 @@ module test_control_v1_0_S00_AXI #
      begin
 	// Address decoding for reading registers
 	case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-	  2'h0   : reg_data_out <= slv_reg0;
-	  2'h1   : reg_data_out <= slv_reg1;
+	  2'h0   : reg_data_out <= USE_FAKE_REG;
+	  2'h1   : reg_data_out <= FAKE_MODE_REG;
 	  2'h2   : reg_data_out <= slv_reg2;
 	  2'h3   : reg_data_out <= slv_reg3;
 	  default : reg_data_out <= 0;
@@ -380,18 +394,28 @@ module test_control_v1_0_S00_AXI #
 
    // Add user logic here
    // So far we only use a few bits of 2 of the 4 registers.
+
+`include "test_control_defs.vh"
+   
    reg USE_FAKE_PPS;
    
    always @( posedge S_AXI_ACLK )
      begin
-        USE_FAKE_PPS <= slv_reg0[0];
-	USE_FAKE_SHWR <= slv_reg0[1];
-	USE_FAKE_MUON <= slv_reg0[2];
-        FAKE_MODE <= slv_reg1[31:0];
+        USE_FAKE_PPS <= USE_FAKE_REG[`USE_FAKE_PPS_BIT];
+	USE_FAKE_SHWR <= USE_FAKE_REG[`USE_FAKE_SHWR_BIT];
+	USE_FAKE_MUON <= USE_FAKE_REG[`USE_FAKE_MUON_BIT];
+        USE_FAKE_RD <= USE_FAKE_REG[`USE_FAKE_RD_BIT];
+        FAKE_MODE <= FAKE_MODE_REG[31:0];
      end
 
    mux1 ppsmux(.SEL_B(USE_FAKE_PPS), .D({TRUE_PPS,FAKE_PPS}), .Q(PPS));
-
+   mux1 rdclk(.SEL_B(USE_FAKE_RD), .D({TRUE_RDCLK,FAKE_RDCLK}), .Q(RDCLK));
+   mux1 rdxfr(.SEL_B(USE_FAKE_RD), .D({TRUE_ENABLE_XFR,FAKE_ENABLE_XFR}),
+              .Q(ENABLE_XFR));
+   mux1 rdser0(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL0,FAKE_RD_SERIAL0}), 
+               .Q(RD_SERIAL0));
+   mux1 rdser1(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL1,FAKE_RD_SERIAL1}), 
+               .Q(RD_SERIAL1));
    
 
    // User logic ends

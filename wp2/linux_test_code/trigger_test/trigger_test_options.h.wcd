@@ -9,6 +9,9 @@
 
 //#define STAND_ALONE
 #define MAX_EVENTS 1000
+//#define CHECK_MISSING_EVENT
+#define EXT_IN_PERIOD 0.1
+#define EXT_IN_TOLERANCE 0.01
 #define EVENT_COUNT_INTERVAL 1
 //#define VERBOSE_BUFFERS  // Print more buffer status if set
 

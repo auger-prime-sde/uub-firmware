@@ -57,7 +57,21 @@
 #define TTAG_EVTCTR_MASK 0xf
 #define TTAG_EVTCTR_SHIFT 28
 
-
+#ifndef INTR_GLOBAL_EN_ADDR
+ #define INTR_GLOBAL_EN_ADDR 0
+#endif
+#ifndef INTR_EN_ADDR
+ #define INTR_EN_ADDR 1
+#endif
+#ifndef INTR_STATUS_ADDR
+ #define INTR_STATUS_ADDR 2
+#endif
+#ifndef INTR_ACK_ADDR
+ #define INTR_ACK_ADDR 3
+#endif
+#ifndef INTR_PENDING_ADDR
+ #define INTR_PENDING_ADDR 4
+#endif
 
 /**************************** Type Definitions *****************************/
 /**
@@ -124,6 +138,10 @@ XStatus TIME_TAGGING_Reg_SelfTest(void * baseaddr_p);
 
 #ifndef TIME_TAGGING_BASE
   #define TIME_TAGGING_BASE XPAR_TIME_TAGGING_0_S00_AXI_BASEADDR
+#endif
+
+#ifndef TIME_TAGGING_INTR_BASE
+  #define TIME_TAGGING_INTR_BASE 0x43c70000
 #endif
 
 #endif // TIME_TAGGING_H

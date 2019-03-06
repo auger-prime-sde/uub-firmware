@@ -7,8 +7,9 @@ HEADERS = xil_assert.h xstatus.h xil_types.h \
 all: linux_rd_test
 
 
-linux_rd_test: rd_test.c  map_rd.c $(HEADERS)
-	$(CCARM) -o linux_rd_test rd_test.c map_rd.c $(cflags) -lrt
+linux_rd_test: rd_test.c  map_rd.c config_trigger.c $(HEADERS)
+	$(CCARM) -o linux_rd_test rd_test.c map_rd.c config_trigger.c \
+	$(cflags) -lrt
 
 clean:;
 	rm linux_rd_test

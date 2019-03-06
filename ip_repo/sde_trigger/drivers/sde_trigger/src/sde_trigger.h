@@ -19,6 +19,22 @@
 #define SDE_TRIGGER_INTR_ACK_OFFSET 12
 #define SDE_TRIGGER_INTR_PENDING_OFFSET 16
 
+#ifndef INTR_GLOBAL_EN_ADDR
+ #define INTR_GLOBAL_EN_ADDR 0
+#endif
+#ifndef INTR_EN_ADDR
+ #define INTR_EN_ADDR 1
+#endif
+#ifndef INTR_STATUS_ADDR
+ #define INTR_STATUS_ADDR 2
+#endif
+#ifndef INTR_ACK_ADDR
+ #define INTR_ACK_ADDR 3
+#endif
+#ifndef INTR_PENDING_ADDR
+ #define INTR_PENDING_ADDR 4
+#endif
+
 /**************************** Type Definitions *****************************/
 /**
  *

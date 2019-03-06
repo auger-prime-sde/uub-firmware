@@ -9,3 +9,4 @@ set_property IOSTANDARD LVCMOS33 [get_ports {FIXED_IO_mio[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {FIXED_IO_mio[0]}]
 
 
+

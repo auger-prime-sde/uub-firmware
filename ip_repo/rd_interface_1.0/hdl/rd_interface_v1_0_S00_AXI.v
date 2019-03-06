@@ -5,6 +5,8 @@ module rd_interface_v1_0_S00_AXI #
   (
    // Users to add parameters here
 
+`include "rd_interface_options.vh"
+   
    // User parameters ends
    // Do not modify the parameters beyond this line
 
@@ -16,17 +18,21 @@ module rd_interface_v1_0_S00_AXI #
    (
     // Users to add ports here
 
-    input DO_FAKE_XFR,
-    input reg SERIAL_DATA0_IN,
-    input reg SERIAL_DATA1_IN,
-    input reg SERIAL_CLK_IN,
-    input reg ENABLE_XFR_IN,
-    input reg[31:0] FAKE_DATA_OUT,
+    input wire SERIAL_DATA0_IN,
+    input wire SERIAL_DATA1_IN,
+    input wire SERIAL_CLK_IN,
+    input wire ENABLE_XFR_IN,
+    input wire[1:0] BUF_RNUM,  // Buffer # to use for reading
+    input wire[1:0] BUF_WNUM,  // Buffer # to use for writing
+    input wire TRIG_IN,
+    input wire RST,
 
-    output wire ENABLE_FAKE_XFR,
-    output wire[10:0] FAKE_DATA_ADDR,
-    output wire[10:0] DATA_ADDR,
+    output wire[31:0] DATA_ADDR, // Address
     output wire[31:0] DATA_TO_MEM,
+    output wire ENABLE_MEM_WRT,
+    output wire TRIG_OUT,
+    output wire DBG1,
+    output wire DBG2,
 
     // User ports ends
     // Do not modify the ports beyond this line
@@ -116,9 +122,9 @@ module rd_interface_v1_0_S00_AXI #
    //-- Signals for user logic register space example
    //------------------------------------------------
    //-- Number of Slave Registers 4
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg0;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg1;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg2;
+   reg [C_S_AXI_DATA_WIDTH-1:0]   AXI_CONTROL;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_STATUS;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_ID;
    reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg3;
    wire 			  slv_reg_rden;
    wire 			  slv_reg_wren;
@@ -224,9 +230,9 @@ module rd_interface_v1_0_S00_AXI #
      begin
 	if ( S_AXI_ARESETN == 1'b0 )
 	  begin
-	     slv_reg0 <= 0;
-	     slv_reg1 <= 0;
-	     slv_reg2 <= 0;
+	     AXI_CONTROL <= 0;
+	     // AXI_STATUS <= 0;
+	     // AXI_ID <= 0;
 	     slv_reg3 <= 0;
 	  end 
 	else begin
@@ -234,18 +240,18 @@ module rd_interface_v1_0_S00_AXI #
 	     begin
 	        case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	          2'h0:
-	            slv_reg0 <= S_AXI_WDATA;
-	          2'h1:
-	            slv_reg1 <= S_AXI_WDATA;
-	          2'h2:
-	            slv_reg2 <= S_AXI_WDATA;
+	            AXI_CONTROL <= S_AXI_WDATA;
+	          // 2'h1:
+	          //  AXI_STATUS <= S_AXI_WDATA;
+	          // 2'h2:
+	          //  AXI_ID <= S_AXI_WDATA;
 	          2'h3:
 	            slv_reg3 <= S_AXI_WDATA;
 		  
 	          default : begin
-	             slv_reg0 <= slv_reg0;
-	             slv_reg1 <= slv_reg1;
-	             slv_reg2 <= slv_reg2;
+	             AXI_CONTROL <= AXI_CONTROL;
+	             // AXI_STATUS <= AXI_STATUS;
+	             // AXI_ID <= `RD_IFC_COMPILE_DATE;
 	             slv_reg3 <= slv_reg3;
 	          end
 	        endcase
@@ -355,9 +361,9 @@ module rd_interface_v1_0_S00_AXI #
      begin
 	// Address decoding for reading registers
 	case ( axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
-	  2'h0   : reg_data_out <= slv_reg0;
-	  2'h1   : reg_data_out <= slv_reg1;
-	  2'h2   : reg_data_out <= slv_reg2;
+	  2'h0   : reg_data_out <= AXI_CONTROL;
+	  2'h1   : reg_data_out <= AXI_STATUS;
+	  2'h2   : reg_data_out <= `RD_IFC_COMPILE_DATE;
 	  2'h3   : reg_data_out <= slv_reg3;
 	  default : reg_data_out <= 0;
 	endcase
@@ -384,29 +390,49 @@ module rd_interface_v1_0_S00_AXI #
 
    // Add user logic here
 
-    input reg SERIAL_CLK_IN,
-    input DO_FAKE_XFR,
-    input reg SERIAL_DATA0_IN,
-    input reg SERIAL_DATA1_IN,
-     input reg ENABLE_XFR_IN,
-    input reg[31:0] FAKE_DATA_OUT,
+`define RD_IFC_CONTROL_ADDR 0
 
-    output wire ENABLE_FAKE_XFR,
-    output wire[10:0] FAKE_DATA_ADDR,
-    output wire[10:0] DATA_ADDR,
-    output wire[31:0] DATA_TO_MEM,
-             
-   rd_interface rf_ifc(
-                       .SERIAL_CLK_IN(SERIAL_CLK_IN),
-                       .SERIAL_DATA0_IN(SERIAL_DATA0_IN),
-                       .SERIAL_DATA1_IN(SERIAL_DATA1_IN),
-                       
-);
+   reg AXI_CONTROL_WRITTEN;
+   wire [31:0] STATUS;
 
+   // Detect when control register is written to
+   always @( posedge S_AXI_ACLK )
+     begin
+        if (slv_reg_wren &&
+            ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] 
+              == `RD_IFC_CONTROL_ADDR ))
+          begin
+             AXI_CONTROL_WRITTEN <= 1;
+          end
+        else
+          AXI_CONTROL_WRITTEN <= 0;
+     end
    
+   
+   rd_sync_32bit status_sync(.ASYNC_IN(STATUS),
+                             .CLK(S_AXI_ACLK),
+                             .SYNC_OUT(AXI_STATUS));  
+
+   rd_interface rd_interface_inst
+     (
+      .SERIAL_DATA0_IN(SERIAL_DATA0_IN),
+      .SERIAL_DATA1_IN(SERIAL_DATA1_IN),
+      .SERIAL_CLK_IN(SERIAL_CLK_IN),
+      .ENABLE_XFR_IN(ENABLE_XFR_IN),
+      .BUF_RNUM(BUF_RNUM),
+      .BUF_WNUM(BUF_WNUM),
+      .TRIG_IN(TRIG_IN),
+      .AXI_CONTROL(AXI_CONTROL),
+      .AXI_CONTROL_WRITTEN(AXI_CONTROL_WRITTEN),
+      .STATUS(STATUS),
+      .DATA_ADDR(DATA_ADDR),
+      .DATA_TO_MEM(DATA_TO_MEM),
+      .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
+      .TRIG_OUT(TRIG_OUT),
+      .RST(RST),
+      .DBG1(DBG1),
+      .DBG2(DBG2)
+      ); 
 
    // User logic ends
-
 endmodule
-
-

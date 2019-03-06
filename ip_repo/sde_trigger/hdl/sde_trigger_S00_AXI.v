@@ -58,7 +58,9 @@ module sde_trigger_S00_AXI #
     output wire MUON_INTR,     // Remains high until no full buffers
     output wire TRIG_OUT,       // External trigger output
     //output reg TRIG_OUT,// "reg" for debug - restore to "wire" for std code
-    output reg [3:1] P6X,       // Test points P63 through P61
+    output reg P61,       // Test points P63 through P61
+    output reg P62,       // Test points P63 through P61
+    output reg P63,       // Test points P63 through P61
     output wire LED,
                 
     // User ports ends
