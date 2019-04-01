@@ -1,6 +1,7 @@
    CCARM=arm-xilinx-linux-gnueabi-gcc
 
-cflags=-I. -g -O0
+# cflags=-I. -g -O0
+cflags=-I.
 HEADERS = xil_assert.h xstatus.h xil_types.h \
 	 xparameters.h xparameters_ps.h rd_test.h
 

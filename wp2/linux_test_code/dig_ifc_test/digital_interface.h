@@ -1,0 +1,1 @@
+../../../ip_repo/digital_interface_1.0/drivers/digital_interface_v1_0/src/digital_interface.h

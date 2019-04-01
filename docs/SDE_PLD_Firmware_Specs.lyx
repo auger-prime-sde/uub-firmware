@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-March 3, 2019
+April 1, 2019
 \end_layout
 
 \begin_layout Author
@@ -234,6 +234,10 @@ convolved (ToTd) trigger.
 
 \begin_layout Description
 03-Mar-2019 Add RD interface ID register description.
+\end_layout
+
+\begin_layout Description
+01-Apr-2019 Add digital_interface module to facilitate factory test
 \end_layout
 
 \begin_layout Section
@@ -13842,6 +13846,266 @@ Fixed rate:
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Subsection
+Digital Interface Module
+\end_layout
+
+\begin_layout Standard
+The digital interface module is located at base address DIG_IFC_BASE = 0x43c8_00
+00.
+ This module is positioned between the connections to digital interfaces
+ and the functional modules described above.
+ It controls whether the digital interfaces are configured for the factory
+ test or for normal operation of the RD and AMIGA interface modules (and
+ associated SPI/UART connections).
+ By default, normal operation is enabled.
+ Factory test mode must be selected by setting a bit in the control register.
+ The following registers are defined:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Register
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0 = DIG_IFC_CONTROL
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Control register
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1= DIG_IFC_INPUT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Inputs from digital interface connectors
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 = DIG_IFC_OUTPUT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Outputs to digital interface connectors
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 = DIG_IFC_ID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Module ID in hhddmmyy format
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following bits are defined in the Control Register:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bits
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Factory test mode if set to 1, normal operation otherwise
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15:8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Interface 1 bits 7:0 set to output if 1 in factor test mode
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7:0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Interface 0 bits 7:0 set to output if 1 in factory test mode
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bits 15:0, which control the direction of corresponding digital interface
+ lines, are only used if bit 16 is set.
+ Otherwise the directions are set according to the requirements of the RD
+ and AMIGA interfaces.
+ 
+\end_layout
+
+\begin_layout Standard
+The Input Register returns a 1 in the corresponding bit if 1) the factory
+ test mode is enabled, 2) the interface line direction is set to input,
+ and 3) a high level is applied to the input.
+ Otherwise 0 is returned.
+ When the 1st 2 conditions are met, but the input is left floating, the
+ result is indeterminate.
+ The Output Register puts a high level on the corresponding digital interface
+ line if 1) the factory test mode is enabled, 2) the interface line direction
+ is set to output, and 3) the corresponding bit is set.
+ If the first 2 conditions are met and the bit is not set, a low level is
+ output.
+ The DIG_IFC_CONTROL and DIG_IFC_OUTPUT registers will read back what has
+ been written to them.
+ The DIG_IFC_INPUT and DIG_IFC_ID registers are read only.
+ If bit 16 of the control register is not set, the registers have no affect
+ on the digital connectors.
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 

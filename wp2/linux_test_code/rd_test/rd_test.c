@@ -6,6 +6,7 @@
 // 15-Feb-2019 DFN Modified for use with real RD interface
 
 #include "rd_test.h"
+#include "string.h"
 
 volatile u32 *rd_regs;
 volatile u32 *trig_regs;
@@ -135,7 +136,33 @@ int main()
                toread_shwr_buf_num, cur_shwr_buf_num, full_shwr_bufs,
                num_full);
 
-        // Check if the same RD buffer is full
+        // Read Shower buffers to insert appropriate delay
+
+        write_ifc(2, 1);  // Set P65
+
+        mem_addr = (u32*) shwr_mem_ptr[0];
+        mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
+        memcpy(&shw_mem0[toread_shwr_buf_num][0],mem_addr,4*SHWR_MEM_WORDS);
+
+        mem_addr = (u32*) shwr_mem_ptr[1];
+        mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
+        memcpy(&shw_mem1[toread_shwr_buf_num][0],mem_addr,4*SHWR_MEM_WORDS);
+
+        mem_addr = (u32*) shwr_mem_ptr[2];
+        mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
+        memcpy(&shw_mem2[toread_shwr_buf_num][0],mem_addr,4*SHWR_MEM_WORDS);
+
+        mem_addr = (u32*) shwr_mem_ptr[3];
+        mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
+        memcpy(&shw_mem3[toread_shwr_buf_num][0],mem_addr,4*SHWR_MEM_WORDS);
+
+        mem_addr = (u32*) shwr_mem_ptr[4];
+        mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
+        memcpy(&shw_mem4[toread_shwr_buf_num][0],mem_addr,4*SHWR_MEM_WORDS);
+
+        write_ifc(2, 0);  // Clear P65
+
+       // Check if the same RD buffer is full
         busy_rd_bufs = 1;
         while (busy_rd_bufs != 0)
           {
@@ -157,7 +184,7 @@ int main()
                    busy_rd_bufs, parity0, parity1);
           }
 
-        // Read RD buffer
+          // Read RD buffer
 
         mem_addr = (u32*) rd_mem_ptr[0];
         mem_addr = mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
