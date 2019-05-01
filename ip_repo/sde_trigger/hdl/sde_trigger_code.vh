@@ -22,6 +22,7 @@
 // 16-May-2018 DFN Add tot_40mhz trigger.
 // 18-Sep-2018 DFN Add stretch of trigger signals to avoid missing them
 // 20-Dec-2018 DFN Add synchronization of trigger in signal
+// 07-Feb-2019 DFN Add scalers
 
 `include "sde_trigger_regs.vh"  // All the reg & wire declarations
 
@@ -180,6 +181,71 @@ muon_buffers
                 .MUON_BUF_WORD_COUNT(MUON_BUF_WORD_COUNT),
                 .DEBUG(MUON_BUFFER_DEBUG)
 	        );
+
+// Scalers
+scaler
+  scaler_a(.ENABLE40(ENABLE40),
+	   .CLK120(CLK120),
+	   .ADC0(FILTB_PMT0),
+	   .ADC1(FILTB_PMT1),
+	   .ADC2(FILTB_PMT2),
+	   .THRES0(COMPATIBILITY_SCALER_A_THR0[`ADC_WIDTH-1:0]),
+	   .THRES1(COMPATIBILITY_SCALER_A_THR1[`ADC_WIDTH-1:0]),
+	   .THRES2(COMPATIBILITY_SCALER_A_THR2[`ADC_WIDTH-1:0]),
+	   .TRIG_ENABLE(COMPATIBILITY_SCALER_A_ENAB
+                        [`COMPATIBILITY_SB_TRIG_ENAB_SHIFT+
+                         `COMPATIBILITY_SB_TRIG_ENAB_WIDTH-1:
+                         `COMPATIBILITY_SB_TRIG_ENAB_SHIFT]),
+	   .MULTIPLICITY(COMPATIBILITY_SCALER_A_ENAB
+                         [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           .RESET(LCL_RESET | LCL_SCALER_A_COUNT_WRITTEN),
+	   .COUNT(LCL_SCALER_A_COUNT),
+           .DEBUG(SCALER_A_DEBUG)
+	   );
+scaler 
+  scaler_b(.ENABLE40(ENABLE40),
+	   .CLK120(CLK120),
+	   .ADC0(FILTB_PMT0),
+	   .ADC1(FILTB_PMT1),
+	   .ADC2(FILTB_PMT2),
+	   .THRES0(COMPATIBILITY_SCALER_B_THR0[`ADC_WIDTH-1:0]),
+	   .THRES1(COMPATIBILITY_SCALER_B_THR1[`ADC_WIDTH-1:0]),
+	   .THRES2(COMPATIBILITY_SCALER_B_THR2[`ADC_WIDTH-1:0]),
+	   .TRIG_ENABLE(COMPATIBILITY_SCALER_B_ENAB
+                        [`COMPATIBILITY_SB_TRIG_ENAB_SHIFT+
+                         `COMPATIBILITY_SB_TRIG_ENAB_WIDTH-1:
+                         `COMPATIBILITY_SB_TRIG_ENAB_SHIFT]),
+	   .MULTIPLICITY(COMPATIBILITY_SCALER_B_ENAB
+                         [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           .RESET(LCL_RESET | LCL_SCALER_B_COUNT_WRITTEN),
+	   .COUNT(LCL_SCALER_B_COUNT),
+           .DEBUG(SCALER_B_DEBUG)
+	   );
+scaler 
+  scaler_c(.ENABLE40(ENABLE40),
+	   .CLK120(CLK120),
+	   .ADC0(FILTB_PMT0),
+	   .ADC1(FILTB_PMT1),
+	   .ADC2(FILTB_PMT2),
+	   .THRES0(COMPATIBILITY_SCALER_C_THR0[`ADC_WIDTH-1:0]),
+	   .THRES1(COMPATIBILITY_SCALER_C_THR1[`ADC_WIDTH-1:0]),
+	   .THRES2(COMPATIBILITY_SCALER_C_THR2[`ADC_WIDTH-1:0]),
+	   .TRIG_ENABLE(COMPATIBILITY_SCALER_C_ENAB
+                        [`COMPATIBILITY_SB_TRIG_ENAB_SHIFT+
+                         `COMPATIBILITY_SB_TRIG_ENAB_WIDTH-1:
+                         `COMPATIBILITY_SB_TRIG_ENAB_SHIFT]),
+	   .MULTIPLICITY(COMPATIBILITY_SCALER_C_ENAB
+                         [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
+                          `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           .RESET(LCL_RESET | LCL_SCALER_C_COUNT_WRITTEN),
+	   .COUNT(LCL_SCALER_C_COUNT),
+           .DEBUG(SCALER_C_DEBUG)
+	   );
 
 // Keep track of signal area, peak, and baselines
 genvar i;
@@ -605,9 +671,9 @@ always @(posedge CLK120) begin
 
         // Send debug output to test pins P61 through P63
 
-        P61 <= TRIG_IN_SYNCED;
-        P62 <= EXT_TRIG;
-        P63 <= STRETCHED_COMPAT_EXT_TRIG;
+        P61 <= SCALER_A_DEBUG[0];
+        P62 <= SCALER_A_DEBUG[1];
+        P63 <= SCALER_A_DEBUG[2];
          
      end // else: !if(LCL_RESET)
 end

@@ -75,9 +75,9 @@ module sde_trigger #
     output wire [`MUON_BUF_NUM_WIDTH-1:0] MUON_BUF_RNUM,
     output wire [`MUON_EVT_CTR_WIDTH-1:0] MUON_EVT_CTR,
     output wire TRIG_OUT, // External trigger output
-    output P61,  // Test point outputs
-    output P62,  // Test point outputs
-    output P63,  // Test point outputs
+    output wire P61,  // Test point outputs
+    output wire P62,  // Test point outputs
+    output wire P63,  // Test point outputs
     output wire LED,
    
     // User ports ends
@@ -158,9 +158,9 @@ module sde_trigger #
 
    wire          MUON_INTR;
    wire          SHWR_INTR;
-   wire          P61A;
-   wire          P62A;
-   wire          P63A;
+//   wire          P61A;
+//   wire          P62A;
+//   wire          P63A;
    
    
    // Instantiation of Axi Bus Interface S00_AXI
@@ -226,9 +226,9 @@ module sde_trigger #
                              .SHWR_INTR(SHWR_INTR),
                              .MUON_INTR(MUON_INTR),
                              .TRIG_OUT(TRIG_OUT),
-			     .P61(P61A),
-			     .P62(P62A),
-			     .P63(P63A),
+			     .P61(P61),
+			     .P62(P62),
+			     .P63(P63),
                              .LED(LED)
 	                     );
 
@@ -308,9 +308,9 @@ module sde_trigger #
 
    // Add user logic here
 
-   assign P61 = P61A;
-   assign P62 = P62A;
-   assign P63 = P63A;
+//   assign P61 = P61A;
+//   assign P62 = P62A;
+//   assign P63 = P63A;
         
    // User logic ends
 

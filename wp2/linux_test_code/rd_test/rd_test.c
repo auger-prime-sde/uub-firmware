@@ -124,6 +124,13 @@ int main()
       {
         nevents++;
 
+        // Turn off fake RD data after MAX_RD events
+        if (nevents >= MAX_RD)
+          {
+            test_options = test_options & ~(1<<USE_FAKE_RD_BIT);
+            write_tstctl(USE_FAKE_ADDR, test_options);
+          }
+
         // Which shower memory buffer to read, and which are full
         toread_shwr_buf_num = SHWR_BUF_RNUM_MASK & 
           (shwr_status >> SHWR_BUF_RNUM_SHIFT);
@@ -132,9 +139,9 @@ int main()
         full_shwr_bufs = SHWR_BUF_FULL_MASK & 
           (shwr_status >> SHWR_BUF_FULL_SHIFT);
         num_full = 0x7 & (shwr_status >> SHWR_BUF_NFULL_SHIFT);
-        printf("Shower mem: toread=%d  writing=%d  full=%x  num_full=%d\n",
-               toread_shwr_buf_num, cur_shwr_buf_num, full_shwr_bufs,
-               num_full);
+        //       printf("Shower mem: toread=%d  writing=%d  full=%x  num_full=%d\n",
+        //     toread_shwr_buf_num, cur_shwr_buf_num, full_shwr_bufs,
+        //     num_full);
 
         // Read Shower buffers to insert appropriate delay
 
@@ -162,8 +169,8 @@ int main()
 
         write_ifc(2, 0);  // Clear P65
 
-       // Check if the same RD buffer is full
-        busy_rd_bufs = 1;
+        // Check if the same RD buffer is full
+               busy_rd_bufs = 1;
         while (busy_rd_bufs != 0)
           {
             rd_status = read_rd(RD_IFC_STATUS_ADDR);
@@ -182,43 +189,58 @@ int main()
             printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
                    toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
                    busy_rd_bufs, parity0, parity1);
-          }
 
-          // Read RD buffer
-
-        mem_addr = (u32*) rd_mem_ptr[0];
-        mem_addr = mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
-        mem_ptr = mem_addr;
-        for (i=0; i<RD_MEM_WORDS; i++)
-          {
-            rd_mem[toread_rd_buf_num][i] = *mem_ptr;
-            mem_ptr++;
-          }
-
-        // Mark buffers as read
-        write_rd(RD_IFC_CONTROL_ADDR, toread_rd_buf_num);
-        write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
-
-  // Verify RD buffer for correctness
-
-        expected0 = 0;
-        expected1 = 0;
-                for (i=0; i<RD_MEM_WORDS; i++)
-          {  
-            read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
-            read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
-                       if ((read0 != expected0) || (read1 != expected1))
+            // We should not satisfy this condition, because buffer should
+            // not be busy when we get here, unless transfer was killed while
+            // in progress, which can happen when USE_FAKE_RD is cleared.
+            if (busy_rd_bufs != 0)
               {
-                printf("word %d  read %x %x  expected %x %x\n",
-                       i, read0, read1, expected0, expected1);
-                sleep(2);
-                nerrors = nerrors+1;
+                printf("RD mem: Transfer interrupted, clearing busy\n");
+                write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
               }
-            expected0 = expected0 + 1;
-            expected1 = (expected1 - 1) & 0xfff;
           }
-        if (nevents%100 == 0) printf("Finished %d events, nerrors=%d\n",
-                                     nevents, nerrors);
+
+        // Read RD buffer
+        if ((full_rd_bufs & (1 << toread_rd_buf_num)) == 0)
+          printf("RD mem: No full RD buffer to read\n");
+        else
+          {
+            printf("RD mem: Reading RD buffer %d\n", toread_rd_buf_num);
+
+            mem_addr = (u32*) rd_mem_ptr[0];
+            mem_addr = mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
+            mem_ptr = mem_addr;
+            for (i=0; i<RD_MEM_WORDS; i++)
+              {
+                rd_mem[toread_rd_buf_num][i] = *mem_ptr;
+                mem_ptr++;
+              }
+
+            // Mark buffers as read
+            write_rd(RD_IFC_CONTROL_ADDR, toread_rd_buf_num);
+            write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
+
+            // Verify RD buffer for correctness
+
+            expected0 = 0;
+            expected1 = 0;
+            for (i=0; i<RD_MEM_WORDS; i++)
+              {  
+                read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
+                read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
+                if ((read0 != expected0) || (read1 != expected1))
+                  {
+                    printf("word %d  read %x %x  expected %x %x\n",
+                           i, read0, read1, expected0, expected1);
+                    sleep(2);
+                    nerrors = nerrors+1;
+                  }
+                expected0 = expected0 + 1;
+                expected1 = (expected1 - 1) & 0xfff;
+              }
+            if (nevents%100 == 0) printf("Finished %d events, nerrors=%d\n",
+                                         nevents, nerrors);
+          }
       }
   }
   

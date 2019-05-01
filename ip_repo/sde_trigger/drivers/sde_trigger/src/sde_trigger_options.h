@@ -1,4 +1,4 @@
 #ifndef _TRIGGER_OPTIONS
   #define _TRIGGER_OPTIONS
-  #define COMPILE_DATE 0x14010419
+  #define COMPILE_DATE 0x15290419
 #endif

@@ -1,3 +1,5 @@
+// 29-Apr-2019 DFN Change RD interface pinouts; Fix direction on AMIGA interface
+
 
 `timescale 1 ns / 1 ps
 `include "digital_interface_defs.vh"
@@ -402,11 +404,11 @@
 // Here we try to assign port direction based upon routing flag
 
    assign DATA0_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[0] :
-                       1 ; // This is AMIGA_LTS_OUT, an output
+                       0 ; // This is AMIGA_LTS_OUT, an output
    assign DATA0_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[1] :
-                       1 ; // This is AMIGA_CLK_OUT, an output
+                       0 ; // This is AMIGA_CLK_OUT, an output
    assign DATA0_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[2] :
-                       0 ; // This is AMIGA_RX, an input
+                       1 ; // This is AMIGA_RX, an input
    assign DATA0_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[3] :
                        0 ; // This is AMIGA_TX, an output
    assign DATA0_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[4] :
@@ -418,24 +420,24 @@
    assign DATA0_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[7] :
                        0 ; // Not used, default 0
     
-   assign DATA1_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[8] :
-                       1 ; // This is RD_DATA_VALID, an input
-   assign DATA1_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[9] :
-                       1 ; // This is RD_XFR_CLK, an input
+   assign DATA1_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[15] :
+                       0 ; //This is RD_SCK, an output
+   assign DATA1_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[14] :
+                       1 ; // This is RD_MOSI, an input
    assign DATA1_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[10] :
                        1 ; // This is RD_SER_DATA0 an input
-   assign DATA1_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[11] :
+   assign DATA1_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[9] :
+                       1 ; // This is RD_XFR_CLK, an input
+   assign DATA1_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[11] :
                        1 ; // This is RD_SER_DATA1, an input
-   assign DATA1_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[12] :
-                       0 ; // This is RD_TRIG, an output
    assign DATA1_T[5] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[13] :
                        0 ; // This is RD_MISO, an output
-   assign DATA1_T[6] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[14] :
-                       1 ; // This is RD_MOSI, an input
-   assign DATA1_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[15] :
-                       0 ; //This is RD_SCK, an output
-   assign CTL0[7:0] =  DIG_IFC_CONTROL[7:0];
-   assign CTL1[7:0] =  DIG_IFC_CONTROL[15:8];
+   assign DATA1_T[6] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[12] :
+                       0 ; // This is RD_TRIG, an output
+   assign DATA1_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[8] :
+                       1 ; // This is RD_DATA_VALID, an input
+   assign CTL0[7:0] =  ~DATA0_T[7:0];
+   assign CTL1[7:0] =  ~DATA1_T[7:0];
 
    // Here we try to assign outputs based upon routing flag
    
@@ -456,22 +458,22 @@
    assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[7] :
                        0 ; // Not used
     
-   assign DATA1_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
-                       0 ; // This is RD_DATA_VALID, an input
-   assign DATA1_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
-                       0 ; // This is RD_XFR_CLK, an input
+   assign DATA1_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[15] :
+                       RD_SCK ; //This is RD_SCK, to pass to output
+   assign DATA1_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
+                       0 ; // This is RD_MOSI, an input
    assign DATA1_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[10] :
                        0 ; // This is RD_SER_DATA0 an input
-   assign DATA1_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
+   assign DATA1_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
+                       0 ; // This is RD_XFR_CLK, an input
+   assign DATA1_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
                        0 ; // This is RD_SER_DATA1, an input
-   assign DATA1_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
-                       RD_TRIG ; // This is RD_TRIG, to pass to output
    assign DATA1_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[13] :
                        RD_MISO ; // This is RD_MISO, to pass to output
-   assign DATA1_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
-                       0 ; // This is RD_MOSI, an input
-   assign DATA1_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[15] :
-                       RD_SCK ; //This is RD_SCK, to pass to output
+   assign DATA1_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
+                       RD_TRIG ; // This is RD_TRIG, to pass to output
+   assign DATA1_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
+                       0 ; // This is RD_DATA_VALID, an input
 
   // Assign inputs when in factory test mode
 
@@ -514,11 +516,11 @@
 
    assign AMIGA_RX = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[2] : 0;
 
-   assign RD_DATA_VALID = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[0] : 0;
-   assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[1] : 0;
+   assign RD_DATA_VALID = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[7] : 0;
+   assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[3] : 0;
    assign RD_SER_DATA0 = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[2] : 0;
-   assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[3] : 0;
-   assign RD_MOSI = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[6] : 0;
+   assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[4] : 0;
+   assign RD_MOSI = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[1] : 0;
    
    
    
