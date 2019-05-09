@@ -89,8 +89,8 @@ module rd_interface
      else
        begin
           
-          DBG1 <= PARITY1_ERROR;
-          DBG2 <= PARITY1;
+          DBG1 <= TRIG_OUT;
+          DBG2 <= LCL_TRIG_IN;
           PREV_ENABLE_XFR_IN <= ENABLE_XFR_IN;
           STATUS[`RD_BUF_RNUM_SHIFT+1:`RD_BUF_RNUM_SHIFT] <= BUF_RNUM;
           

@@ -16,6 +16,7 @@
 #  18-Sep-2016 DFN Add xparameters.h and uub_proto2_wrapper.hdf
 #  10-Oct-2018 DFN Add xparameters_ps.h
 #  22-Feb-2019 DFN Add rd_interface and test_control header files & driver code
+#  06-May-2019 DFN Clean up steps for pushing .tgz file to GitHub
 
 VERSION="`cat  ip_repo/sde_trigger/hdl/sde_trigger_id`"
 
@@ -56,13 +57,15 @@ cp wp2/uub_v3/src/test_periph/src/README temp/README_${VERSION}
 cp wp2/uub_v3/uub_v3.runs/impl_1/uub_v3_wrapper.bit temp/fpga.bit
 
 # Package everything up into a tar file
+#(cd wp5; rm *.tgz)
 (cd temp; tar czf ../wp5/uub_firmware_${VERSION}.tgz ./*)
+git add wp5/uub_firmware_${VERSION}.tgz
 
 # Tag this version
 git tag ${VERSION}
 
 echo "If all goes well, don't forget to do:"
-echo "  1) git add wp5/uub_firmware_${VERSION}.tgz"
+echo "  1) git status"
 echo "  2) git commit -a"
 echo "  3) git push origin master"
 echo "  4) git push --tags"

@@ -107,7 +107,21 @@ module digital_interface_v1_0 #
       .DATA1_T(DATA1_T),
       .CTL0(CTL0),
       .CTL1(CTL1),
-      .RD_TRIG(RD_TRIG)
+      .AMIGA_LTS_OUT(AMIGA_LTS_OUT),
+      .AMIGA_CLOCK_OUT(AMIGA_CLOCK_OUT),
+      .AMIGA_TX(AMIGA_TX),
+      .AMIGA_RX(AMIGA_RX),
+      .RD_TRIG(RD_TRIG),
+      .RD_MISO(RD_MISO),
+      .RD_SCK(RD_SCK),
+      .RD_DATA_VALID(RD_DATA_VALID),
+      .RD_XFR_CLK(RD_XFR_CLK),
+      .RD_SER_DATA0(RD_SER_DATA0),
+      .RD_SER_DATA1(RD_SER_DATA1),
+      .RD_MOSI(RD_MOSI),
+      .DBG1(DBG1),
+      .DBG2(DBG2),
+      .DBG3(DBG3)
       );
 
    // Add user logic here

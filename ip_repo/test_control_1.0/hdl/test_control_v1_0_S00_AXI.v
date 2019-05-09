@@ -398,18 +398,20 @@ module test_control_v1_0_S00_AXI #
 `include "test_control_defs.vh"
    
    reg USE_FAKE_PPS;
-   
+   reg USE_FAKE_RDCLK;
+      
    always @( posedge S_AXI_ACLK )
      begin
         USE_FAKE_PPS <= USE_FAKE_REG[`USE_FAKE_PPS_BIT];
 	USE_FAKE_SHWR <= USE_FAKE_REG[`USE_FAKE_SHWR_BIT];
 	USE_FAKE_MUON <= USE_FAKE_REG[`USE_FAKE_MUON_BIT];
         USE_FAKE_RD <= USE_FAKE_REG[`USE_FAKE_RD_BIT];
+        USE_FAKE_RDCLK <= USE_FAKE_REG[`USE_FAKE_RDCLK_BIT];
         FAKE_MODE <= FAKE_MODE_REG[31:0];
      end
 
    mux1 ppsmux(.SEL_B(USE_FAKE_PPS), .D({TRUE_PPS,FAKE_PPS}), .Q(PPS));
-   mux1 rdclk(.SEL_B(USE_FAKE_RD), .D({TRUE_RDCLK,FAKE_RDCLK}), .Q(RDCLK));
+   mux1 rdclk(.SEL_B(USE_FAKE_RDCLK), .D({TRUE_RDCLK,FAKE_RDCLK}), .Q(RDCLK));
    mux1 rdxfr(.SEL_B(USE_FAKE_RD), .D({TRUE_ENABLE_XFR,FAKE_ENABLE_XFR}),
               .Q(ENABLE_XFR));
    mux1 rdser0(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL0,FAKE_RD_SERIAL0}), 

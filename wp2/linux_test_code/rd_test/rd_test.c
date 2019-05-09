@@ -79,7 +79,7 @@ int main()
 #ifdef USE_FAKE_SIGNAL
   test_options = test_options | (1<< USE_FAKE_SHWR_BIT);
 #endif
-  test_options = test_options | (1<<USE_FAKE_RD_BIT);
+  test_options = test_options | (1<<USE_FAKE_RD_BIT) | (1<<USE_FAKE_RDCLK_BIT);
 
   if (test_options != 0)
     {
