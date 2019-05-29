@@ -12923,7 +12923,7 @@ _BASE = 0x5000
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="13" columns="3">
+<lyxtabular version="3" rows="14" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -12980,7 +12980,7 @@ USE_FAKE_PPS_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 0 - Generate fake GPS PPS if 1
+Generate fake GPS PPS if 1
 \end_layout
 
 \end_inset
@@ -13009,7 +13009,7 @@ USE_FAKE_SHWR_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 1 - Generate fake shower data if 1
+Generate fake shower data if 1
 \end_layout
 
 \end_inset
@@ -13038,7 +13038,7 @@ USE_FAKE_MUON_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 2 - Generate fake muon data if 1
+Generate fake muon data if 1
 \end_layout
 
 \end_inset
@@ -13074,7 +13074,36 @@ Generate fake RD data if 1
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell multirow="4" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_RDCLK_BIT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Generate fake RD CLK if 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -13087,7 +13116,7 @@ Generate fake RD data if 1
 \begin_inset Text
 
 \begin_layout Plain Layout
-DISABLE_TRIG_OUT
+DISABLE_TRIG_OUT_BIT
 \end_layout
 
 \end_inset
