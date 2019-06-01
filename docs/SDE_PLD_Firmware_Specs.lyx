@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-April 29, 2019
+May 29, 2019
 \end_layout
 
 \begin_layout Author
@@ -242,6 +242,11 @@ convolved (ToTd) trigger.
 
 \begin_layout Description
 29-Apr-2019 Implement scalers.
+\end_layout
+
+\begin_layout Description
+29-May-2019 Merge in Sjoerd's updates of RD data format, correct typo in
+ RD interface status register; add trigger output disable.
 \end_layout
 
 \begin_layout Section
@@ -838,13 +843,11 @@ The compatibility mode triggers operate on a signal that has been filtered
 \end_layout
 
 \begin_layout Verbatim
-
 int fir[21] = {5,0,12,22,0,-61,-96,0,256,551,681,551,256,0,-96,-61,0,22,12,0,5};
  
 \end_layout
 
 \begin_layout Verbatim
-
 int filt[2048], unfilt[2048];
 \end_layout
 
@@ -853,32 +856,26 @@ int filt[2048], unfilt[2048];
 \end_layout
 
 \begin_layout Verbatim
-
 for (i=21; i<2048; i++) 
 \end_layout
 
 \begin_layout Verbatim
-
 { 
 \end_layout
 
 \begin_layout Verbatim
-
   filt[i] = 0;
 \end_layout
 
 \begin_layout Verbatim
-
   for (j=0; j<21; j++)
 \end_layout
 
 \begin_layout Verbatim
-
     filt[i] = filt[i] + unfilt[i-21+j]*fir[j]; 
 \end_layout
 
 \begin_layout Verbatim
-
 }
 \end_layout
 
@@ -892,7 +889,6 @@ The code snippet below indicates how to use the bit masks and shifts defined
 \end_layout
 
 \begin_layout Verbatim
-
 int wrt_word, rd_word, value1, value2;
 \end_layout
 
@@ -901,12 +897,10 @@ int wrt_word, rd_word, value1, value2;
 \end_layout
 
 \begin_layout Verbatim
-
 // Prepare information to load multi-field register
 \end_layout
 
 \begin_layout Verbatim
-
 wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
@@ -915,17 +909,14 @@ wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
-
 // Extract information from word read from multi-field register
 \end_layout
 
 \begin_layout Verbatim
-
 value1 = (rd_word & VALUE1_MASK) >> VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
-
 value2 = (rd_word & VALUE2_MASK) >> VALUE2_SHIFT;
 \end_layout
 
@@ -12041,7 +12032,7 @@ Buffer number currently being written
 \begin_inset Text
 
 \begin_layout Plain Layout
-RD_BUF_FULL
+RD_BUF_BUSY
 \end_layout
 
 \end_inset
@@ -12050,7 +12041,7 @@ RD_BUF_FULL
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit mask of full buffers
+Bit mask of busy buffers
 \end_layout
 
 \end_inset
@@ -12070,7 +12061,7 @@ Bit mask of full buffers
 \begin_inset Text
 
 \begin_layout Plain Layout
-RD_BUF_BUSY
+RD_BUF_FULL
 \end_layout
 
 \end_inset
@@ -12079,7 +12070,7 @@ RD_BUF_BUSY
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit mask of busy buffers
+Bit mask of full buffers
 \end_layout
 
 \end_inset
@@ -12422,8 +12413,9 @@ The organization of the data in the RD memory was chosen to simplify unpacking.
  One memory block, containing 4 2048 word long buffers is used to store
  the traces.
  The format of each data word in RD_EVENT memory is shown below.
-\color inherit
 
+\color inherit
+ The RD ADC data is (Modified May, 2019 for RD field tests).
 \begin_inset Separator latexpar
 \end_inset
 
@@ -12436,7 +12428,7 @@ The organization of the data in the RD memory was chosen to simplify unpacking.
 
 \color black
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="2">
+<lyxtabular version="3" rows="7" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -12469,7 +12461,29 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-11:0
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+RD ADC0 parity
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12:1
 \end_layout
 
 \end_inset
@@ -12493,7 +12507,7 @@ RD ADC0
 \begin_layout Plain Layout
 
 \color black
-15:12
+15:13
 \end_layout
 
 \end_inset
@@ -12513,7 +12527,27 @@ Unused
 \begin_inset Text
 
 \begin_layout Plain Layout
-27:16
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD ADC1 parity
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28:17
 \end_layout
 
 \end_inset
@@ -12535,7 +12569,7 @@ RD ADC1
 \begin_inset Text
 
 \begin_layout Plain Layout
-31:28
+31:29
 \end_layout
 
 \end_inset
@@ -12889,7 +12923,7 @@ _BASE = 0x5000
 \begin_layout Standard
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="12" columns="3">
+<lyxtabular version="3" rows="14" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -12946,7 +12980,7 @@ USE_FAKE_PPS_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 0 - Generate fake GPS PPS if 1
+Generate fake GPS PPS if 1
 \end_layout
 
 \end_inset
@@ -12975,7 +13009,7 @@ USE_FAKE_SHWR_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 1 - Generate fake shower data if 1
+Generate fake shower data if 1
 \end_layout
 
 \end_inset
@@ -13004,7 +13038,65 @@ USE_FAKE_MUON_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bit 2 - Generate fake muon data if 1
+Generate fake muon data if 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_RD_BIT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Generate fake RD data if 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+USE_FAKE_RDCLK_BIT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Generate fake RD CLK if 1
 \end_layout
 
 \end_inset
@@ -13024,7 +13116,7 @@ Bit 2 - Generate fake muon data if 1
 \begin_inset Text
 
 \begin_layout Plain Layout
-USE_FAKE_RD_BIT
+DISABLE_TRIG_OUT_BIT
 \end_layout
 
 \end_inset
@@ -13033,7 +13125,7 @@ USE_FAKE_RD_BIT
 \begin_inset Text
 
 \begin_layout Plain Layout
-Generate fake RD data if 1
+Disable front panel trigger output if set
 \end_layout
 
 \end_inset
