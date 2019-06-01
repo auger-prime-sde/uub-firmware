@@ -8,5 +8,6 @@
  #define USE_FAKE_MUON_BIT 2
  #define USE_FAKE_RD_BIT 3
  #define USE_FAKE_RDCLK_BIT 4
+ #define DISABLE_TRIG_OUT_BIT 5
 
  #define FAKE_MODE_ADDR 1

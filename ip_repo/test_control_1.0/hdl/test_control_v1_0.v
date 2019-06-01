@@ -20,6 +20,7 @@ module test_control_v1_0 #
     input wire CLK120,
     input wire FAKE_PPS,
     input wire TRUE_PPS,
+    input wire TRIGGER,
     output wire PPS,
     output wire USE_FAKE_SHWR,
     output wire USE_FAKE_MUON,
@@ -37,6 +38,7 @@ module test_control_v1_0 #
     input wire FAKE_RD_SERIAL1,
     input wire TRUE_RD_SERIAL1,
     output wire RD_SERIAL1,
+    output wire TRIG_OUT,
     
     
     // User ports ends
@@ -95,6 +97,7 @@ module test_control_v1_0 #
 	.S_AXI_RVALID(s00_axi_rvalid),
 	.S_AXI_RREADY(s00_axi_rready),
 	.CLK120(CLK120),
+        .TRIGGER(TRIGGER),
 	.FAKE_PPS(FAKE_PPS),
 	.TRUE_PPS(TRUE_PPS),
 	.PPS(PPS),
@@ -113,7 +116,8 @@ module test_control_v1_0 #
         .RD_SERIAL0(RD_SERIAL0),
         .FAKE_RD_SERIAL1(FAKE_RD_SERIAL1),
         .TRUE_RD_SERIAL1(TRUE_RD_SERIAL1),
-        .RD_SERIAL1(RD_SERIAL1)
+        .RD_SERIAL1(RD_SERIAL1),
+        .TRIG_OUT(TRIG_OUT)
         );
 
    // Add user logic here

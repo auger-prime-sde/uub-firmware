@@ -16,9 +16,10 @@ module test_control_v1_0_S00_AXI #
    (
     // Users to add ports here
 
-    input CLK120,         
-    input FAKE_PPS,
-    input TRUE_PPS,
+    input wire CLK120, 
+    input wire TRIGGER,        
+    input wire FAKE_PPS,
+    input wire TRUE_PPS,
     output wire PPS,
     output reg USE_FAKE_SHWR,
     output reg USE_FAKE_MUON,
@@ -36,6 +37,7 @@ module test_control_v1_0_S00_AXI #
     input wire FAKE_RD_SERIAL1,
     input wire TRUE_RD_SERIAL1,
     output wire RD_SERIAL1,
+    output wire TRIG_OUT,
     
 
     // User ports ends
@@ -399,6 +401,8 @@ module test_control_v1_0_S00_AXI #
    
    reg USE_FAKE_PPS;
    reg USE_FAKE_RDCLK;
+   reg DISAB_TRGOUT;
+   reg NO_TRIGGER;
       
    always @( posedge S_AXI_ACLK )
      begin
@@ -407,6 +411,9 @@ module test_control_v1_0_S00_AXI #
 	USE_FAKE_MUON <= USE_FAKE_REG[`USE_FAKE_MUON_BIT];
         USE_FAKE_RD <= USE_FAKE_REG[`USE_FAKE_RD_BIT];
         USE_FAKE_RDCLK <= USE_FAKE_REG[`USE_FAKE_RDCLK_BIT];
+        DISAB_TRGOUT <= USE_FAKE_REG[`DISABLE_TRIG_OUT_BIT];
+        NO_TRIGGER <= 0;
+        
         FAKE_MODE <= FAKE_MODE_REG[31:0];
      end
 
@@ -418,7 +425,7 @@ module test_control_v1_0_S00_AXI #
                .Q(RD_SERIAL0));
    mux1 rdser1(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL1,FAKE_RD_SERIAL1}), 
                .Q(RD_SERIAL1));
-   
+   mux1 trig(.SEL_B(DISAB_TRGOUT), .D({TRIGGER,NO_TRIGGER}), .Q(TRIG_OUT));
 
    // User logic ends
 

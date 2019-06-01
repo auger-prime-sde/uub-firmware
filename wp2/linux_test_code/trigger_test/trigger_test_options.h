@@ -8,18 +8,18 @@
 
 
 //#define STAND_ALONE
-#define MAX_EVENTS 1000
+#define MAX_EVENTS 100000
 //#define CHECK_MISSING_EVENT
-#define EXT_IN_PERIOD 0.1
+//#define EXT_IN_PERIOD 0.1
 #define EXT_IN_TOLERANCE 0.01
-#define EVENT_COUNT_INTERVAL 1
+#define EVENT_COUNT_INTERVAL 1000
 //#define VERBOSE_BUFFERS  // Print more buffer status if set
 
 //#define ADJUST_BASELINE
 //#define TOGGLE_WATCHDOG
 //#define TOGGLE_ADCPWD
 //#define USE_FAKE_MUON
-#define USE_FAKE_SIGNAL
+//#define USE_FAKE_SIGNAL
 #define PMT0_DLY 0
 #define PMT1_DLY 0
 #define PMT2_DLY 0
@@ -48,10 +48,10 @@
 
 #ifdef SHWR_TRIGGERS 
   #define COMPAT_SB_TRIGGER
-  #define COMPAT_TOT_TRIGGER
-  #define COMPAT_TOT_TRIG_OCC 1
-   #define COMPAT_TOTD_TRIGGER
-   #define COMPAT_TOTD_TRIG_OCC 1
+ // #define COMPAT_TOT_TRIGGER
+ // #define COMPAT_TOT_TRIG_OCC 1
+ //  #define COMPAT_TOTD_TRIGGER
+ //  #define COMPAT_TOTD_TRIG_OCC 1
   //   #define COMPAT_TOTD_FD 42  // 60ns decay constant
   //   #define COMPAT_TOTD_FN 47
      #define COMPAT_TOTD_FD 32  // 17ns decay constant
@@ -60,7 +60,7 @@
      #define COMPAT_TOTD_UP1 4095
      #define COMPAT_TOTD_UP2 4095
      #define COMPAT_TOTD_INT  5
-  #define SB_TRIGGER
+//  #define SB_TRIGGER
 //  #define SSD_AND	
   #define SB_COINC_LVL 3
   #define SB_COINC_OVLP 3

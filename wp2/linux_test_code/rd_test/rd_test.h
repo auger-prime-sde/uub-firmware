@@ -30,8 +30,8 @@ void map_registers();
 #define RD_MEM_WORDS 2048
 #define RD_MEM_NBUF 4
 
-#define MAX_EVENTS 10000 
-#define MAX_RD 10001
+#define MAX_EVENTS 1000 
+#define MAX_RD 500
 #define USE_FAKE_GPS
 
 #define USE_FAKE_SIGNAL

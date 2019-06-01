@@ -125,10 +125,17 @@ int main()
         nevents++;
 
         // Turn off fake RD data after MAX_RD events
-        if (nevents >= MAX_RD)
+        // if (nevents >= MAX_RD)
+       // Turn off trigger output after MAX_RD events
+        if (nevents == MAX_RD)
           {
-            test_options = test_options & ~(1<<USE_FAKE_RD_BIT);
+            printf("Disabling trigger out\n");
+            test_options = test_options | (1<<DISABLE_TRIG_OUT_BIT);
             write_tstctl(USE_FAKE_ADDR, test_options);
+            status = read_tstctl(USE_FAKE_ADDR);
+            if (status != test_options) 
+              printf("trigger_test: Error setting test options, wrote %x read %x\n",
+                     test_options, status);
           }
 
         // Which shower memory buffer to read, and which are full
@@ -186,9 +193,9 @@ int main()
               (rd_status >> RD_PARITY0_SHIFT);
             parity1 = RD_PARITY1_MASK &
               (rd_status >> RD_PARITY1_SHIFT);
-            printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
-                   toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
-                   busy_rd_bufs, parity0, parity1);
+            // printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
+            //                   toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
+            //     busy_rd_bufs, parity0, parity1);
 
             // We should not satisfy this condition, because buffer should
             // not be busy when we get here, unless transfer was killed while
@@ -205,7 +212,7 @@ int main()
           printf("RD mem: No full RD buffer to read\n");
         else
           {
-            printf("RD mem: Reading RD buffer %d\n", toread_rd_buf_num);
+            //            printf("RD mem: Reading RD buffer %d\n", toread_rd_buf_num);
 
             mem_addr = (u32*) rd_mem_ptr[0];
             mem_addr = mem_addr + toread_rd_buf_num * RD_MEM_WORDS;
@@ -226,8 +233,8 @@ int main()
             expected1 = 0;
             for (i=0; i<RD_MEM_WORDS; i++)
               {  
-                read0 = rd_mem[toread_rd_buf_num][i] & 0xfff;
-                read1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0xfff;
+                read0 = (rd_mem[toread_rd_buf_num][i]>>1) & 0xfff;
+                read1 = (rd_mem[toread_rd_buf_num][i]>>17) & 0xfff;
                 if ((read0 != expected0) || (read1 != expected1))
                   {
                     printf("word %d  read %x %x  expected %x %x\n",
