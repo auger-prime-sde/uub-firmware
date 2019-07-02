@@ -37,7 +37,7 @@ int dac, fd, i;
 
 int main(int argc, char *argv[]){
 	if (argc == 1) {
-		 dac = 0x8cc;  // valore dac a 1,65 volts
+		 dac = 2690;  // valore dac a 1,97 volts
 		 printf("Initialization of DAC7551... ");	//printf("Default DAC value %d.....\n",dac);
 	}
 	else if (argc < 1 || argc > 2){

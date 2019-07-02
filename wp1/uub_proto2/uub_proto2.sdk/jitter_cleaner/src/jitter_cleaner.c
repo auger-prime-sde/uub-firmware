@@ -4,7 +4,7 @@
 #include <linux/i2c-dev.h>
 
 #define IIC_SLAVE_SI5347         0x6C  // The slave address Cleaner Jitter
-#define IIC_SLAVE_AD5316         0x0C  // The slave address Led controler
+//#define IIC_SLAVE_AD5316         0x0C  // The slave address Led controler
 #define BUF_SIZE                35 // Tansmit and receive buffer size
 #define RCV_BUF_SIZE           256 // Tansmit and receive buffer size
 #define nb_initData_SI5347    1560 // Nb init data for SI5347 component

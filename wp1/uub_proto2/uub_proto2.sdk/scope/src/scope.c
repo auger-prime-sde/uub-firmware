@@ -1,5 +1,6 @@
 // UUB simple signals acquisition utility and store on json file
 // written by R.Assiro and G. Marsella
+// peak-peak read register written by Fabio Convenga
 
 #include <stdlib.h>
 #include <sys/select.h>
@@ -12,15 +13,22 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <string.h>
+
 //#include "fe_lib.h" /*this include automatically the shwr_evt_defs.h */
 //#include "fe_kernel_interface_defs.h"
 //#include "read_evt.h"
 #include "shwr_evt_defs.h"
+
 #include "xparameters.h"
 #include "sde_trigger_defs.h"
 #include "time_tagging.h"
+#include <time.h>
+
+
 //#include <ctype.h>
 //#include <termios.h>
+
+
 #define SIG_WAKEUP SIGRTMIN+14
 
 #define MAP_SIZE 4096UL
@@ -72,7 +80,9 @@ int main()
       printf("FeShwrRead: Problem in start the Front-End - (shower read) %d \n",aux);
       return(0);
     }
-
+    clock_t start,end;
+    double tempo;
+    start=clock();
 
 
     while(nevt<1)
@@ -92,8 +102,14 @@ int main()
 
     	}
     	FeShwrRead_test(1);
+    //	printf("nevt %d\n", nevt);
         nevt++;
     }
+
+    end=clock();
+    tempo=((double)(end-start))/CLOCKS_PER_SEC;
+   // printf("tempo %lf\n", tempo);
+    read_evt_end();
 
 }
 
@@ -260,37 +276,90 @@ FeShwrRead_test(int Nev)
 
   while(read_evt_read(&evt)!=0); /*wait for a available event */
 
-    fp = fopen ("/srv/www/adc_data.json", "w" );    /* Open /dev/mem file */
-    fprintf(fp,"[");
-    printf("[");
+    fp = fopen ("/srv/www/adc_data.json", "w" );
+    fprintf(fp, "{");
+    printf("{");
+ 	   fprintf(fp,"\"valuepeak\":");
+ 	   printf("\"valuepeak\":");
+ 	   fprintf(fp,"[");
+ 	   printf("[");
 
-    for(j=0;j<SHWR_NSAMPLES;j++){
-      index=(j+evt.trace_start)%SHWR_NSAMPLES;
-      fprintf(fp,"{");
-      printf("{");
-      for(i=0;i<SHWR_RAW_NCH_MAX;i++){
-    	  fprintf  (fp,"\"adc%d\": \"%d\"",i*2, evt.fadc_raw[i][index] & 0xFFF);
-    	  fprintf(fp,", \"adc%d\": \"%d\"",i*2+1,(evt.fadc_raw[i][index]>>16) & 0xFFF);
+ 	   fprintf(fp,"{");
+ 	   printf("{");
 
-    	  printf  ("\"adc%d\": \"%d\"",i*2, evt.fadc_raw[i][index] & 0xFFF);
-    	  printf(", \"adc%d\": \"%d\"",i*2+1,(evt.fadc_raw[i][index]>>16) & 0xFFF);
+ 	   		          fprintf (fp,"\"peak0\": \"%d\"",(gl.regs[SHWR_PEAK_AREA0_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf ("\"peak0\": \"%d\"",(gl.regs[SHWR_PEAK_AREA0_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak1\": \"%d\"",(gl.regs[SHWR_PEAK_AREA1_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak1\": \"%d\"",(gl.regs[SHWR_PEAK_AREA1_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak2\": \"%d\"",(gl.regs[SHWR_PEAK_AREA2_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak2\": \"%d\"",(gl.regs[SHWR_PEAK_AREA2_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak3\": \"%d\"",(gl.regs[SHWR_PEAK_AREA3_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak3\": \"%d\"",(gl.regs[SHWR_PEAK_AREA3_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf (fp,", \"peak4\": \"%d\"",(gl.regs[SHWR_PEAK_AREA4_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf (", \"peak4\": \"%d\"",(gl.regs[SHWR_PEAK_AREA4_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak5\": \"%d\"",(gl.regs[SHWR_PEAK_AREA5_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak5\": \"%d\"",(gl.regs[SHWR_PEAK_AREA5_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf (fp,", \"peak6\": \"%d\"",(gl.regs[SHWR_PEAK_AREA6_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf (", \"peak6\": \"%d\"",(gl.regs[SHWR_PEAK_AREA6_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak7\": \"%d\"",(gl.regs[SHWR_PEAK_AREA7_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak7\": \"%d\"",(gl.regs[SHWR_PEAK_AREA7_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf (fp,", \"peak8\": \"%d\"",(gl.regs[SHWR_PEAK_AREA8_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf (", \"peak8\": \"%d\"",(gl.regs[SHWR_PEAK_AREA8_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          fprintf(fp,", \"peak9\": \"%d\"",(gl.regs[SHWR_PEAK_AREA9_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
+ 	   		          printf(", \"peak9\": \"%d\"",(gl.regs[SHWR_PEAK_AREA9_ADDR] >> SHWR_PEAK_SHIFT) & SHWR_PEAK_MASK);
 
-    	  if (i != 4) {fprintf(fp,", "); printf(", ");}
-      }
 
-      fprintf(fp,"}");
-      printf("}");
-      if (j!=SHWR_NSAMPLES-1)  {fprintf(fp,", "); printf(", ");}
-    }
- 	 fprintf(fp,"]\n");
- 	 printf("]");
+
+					  fprintf(fp,"}");
+	 	   		      printf("}");
+
+
+
+ 	 	 fprintf(fp,"]\n");
+ 	   	 printf("]");
+ 	   	fprintf(fp,", \n");
+ 	   	 	  	 	printf(", ");
+
+ 	    fprintf(fp,"\"datadc\":");
+ 	     printf("\"datadc\":");
+ 	     fprintf(fp,"[");
+ 	     printf("[");
+
+ 	     for(j=0;j<SHWR_NSAMPLES;j++){
+ 	       index=(j+evt.trace_start)%SHWR_NSAMPLES;
+ 	       fprintf(fp,"{");
+ 	       printf("{");
+ 	       for(i=0;i<SHWR_RAW_NCH_MAX;i++){
+ 	     	  fprintf  (fp,"\"adc%d\": \"%d\"",i*2, evt.fadc_raw[i][index] & 0xFFF);
+ 	     	  fprintf(fp,", \"adc%d\": \"%d\"",i*2+1,(evt.fadc_raw[i][index]>>16) & 0xFFF);
+
+ 	     	  printf  ("\"adc%d\": \"%d\"",i*2, evt.fadc_raw[i][index] & 0xFFF);
+ 	     	  printf(", \"adc%d\": \"%d\"",i*2+1,(evt.fadc_raw[i][index]>>16) & 0xFFF);
+
+ 	     	  if (i != 4) {fprintf(fp,", ");
+ 	     	  printf(", ");
+ 	     	  }
+ 	       }
+
+ 	       fprintf(fp,"}");
+ 	       printf("}");
+ 	       if (j!=SHWR_NSAMPLES-1)  {fprintf(fp,", ");
+ 	       printf(", ");
+ 	       }
+ 	     }
+ 	  	 fprintf(fp,"]\n");
+ 	  	printf("]");
+
+
+
+ 	 fprintf(fp, "}");
+  	 printf("}");
  	 fclose(fp);
 
- 	 read_evt_end();
 }
 
 
-/*
+
 int usage(void)
 {
     printf("____________________________\n");
@@ -302,7 +371,7 @@ int usage(void)
     printf("|                          |\n");
     printf("|    written by R.Assiro   |\n");
     printf("|      and G.Marsella      |\n");
-    printf("|__________________________|\n");
+    printf("|______and F.Convenga______|\n");
     exit(0);
 }
-*/
+

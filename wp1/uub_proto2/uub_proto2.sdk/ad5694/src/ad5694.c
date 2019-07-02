@@ -1,5 +1,9 @@
 // led shot generator
 // script to control LED DAC 12 bit analog device AD5694
+//
+// ls -l /sys/bus/i2c/devices/
+// i2cdetect -r 0
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <linux/i2c-dev.h>
@@ -128,7 +132,7 @@ void ramp()
 
 
 void i2c(){
-	snprintf(filename, 19, "/dev/i2c-0");
+	snprintf(filename, 19, "/dev/i2c-2");
 	file = open(filename, O_RDWR);
 	if (file < 0) {
 			exit("no open file");

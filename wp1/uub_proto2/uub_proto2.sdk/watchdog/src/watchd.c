@@ -56,12 +56,21 @@ int main()
 //		printf("%d\n",lt);
 //		printf("%d\n",last_life_time);
 
+
+		// MODIFICATION FOR I2C issue
+/*		writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
+		*((unsigned long *) virt_addr) = writeval;
+		usleep (100000);
+		writeval = 0x0002;
+		*((unsigned long *) virt_addr) = writeval;
+*/
+
 		if (lt != last_life_time){
 				counter = 0;
-		//		printf("life time diverso ok, counter: %d\n",counter);
+		//		printf("different life time, it's ok, counter: %d\n",counter);
 				last_life_time = lt;
 
-		// external watchdog control - pulse on W11 every 5 seconds
+				// external watchdog control - pulse on W11
 				writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
 				*((unsigned long *) virt_addr) = writeval;
 				usleep (100000);
@@ -70,8 +79,8 @@ int main()
 
 		}else{
 				counter ++;
-//				printf("Risposta non ricevuta da slowc, counter: %d\n",counter);
-				if (counter == 5){	// scrivi l'evento nel file di log
+//				printf("No reply from slowc, counter: %d\n",counter);
+				if (counter == 5){	// write event in log file
 			  			system ("mountflash > /dev/null &");
 			  			fp = fopen ("/flash/watchdog.log", "a" );
 			  			current_time();
@@ -83,13 +92,9 @@ int main()
 				//		exit (1);
 				}
 		}
-
 		sleep (5);
 	}
 }
-
-
-
 
 
 
