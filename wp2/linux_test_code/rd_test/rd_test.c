@@ -81,6 +81,7 @@ int main()
 #endif
   test_options = test_options | (1<<USE_FAKE_RD_BIT) | (1<<USE_FAKE_RDCLK_BIT);
 
+  write_tstctl(USE_FAKE_ADDR, 0);
   if (test_options != 0)
     {
       write_tstctl(USE_FAKE_ADDR, test_options);
@@ -106,6 +107,11 @@ int main()
   // Reset trigger
   write_trig(COMPATIBILITY_GLOBAL_CONTROL_ADDR,1);
 
+  // Reset RD interface
+  //  write_rd(RD_IFC_RESET_ADDR, 1);
+  write_rd(3, 1);
+
+
   // Disable all shower triggers
   write_trig(SHWR_BUF_TRIG_MASK_ADDR,0);
   status = read_trig(SHWR_BUF_TRIG_MASK_ADDR);
@@ -118,8 +124,8 @@ int main()
 
     // Check if we have a trigger
     shwr_status = read_trig(SHWR_BUF_STATUS_ADDR);
-    //    printf("SHWR_BUF_STATUS=%x\n",shwr_status);
-    // sleep(1);
+        printf("SHWR_BUF_STATUS=%x\n",shwr_status);
+     sleep(1);
     if ((SHWR_INTR_PEND_MASK & (shwr_status >> SHWR_INTR_PEND_SHIFT)) != 0)
       {
         nevents++;
@@ -127,16 +133,16 @@ int main()
         // Turn off fake RD data after MAX_RD events
         // if (nevents >= MAX_RD)
        // Turn off trigger output after MAX_RD events
-        if (nevents == MAX_RD)
-          {
-            printf("Disabling trigger out\n");
-            test_options = test_options | (1<<DISABLE_TRIG_OUT_BIT);
-            write_tstctl(USE_FAKE_ADDR, test_options);
-            status = read_tstctl(USE_FAKE_ADDR);
-            if (status != test_options) 
-              printf("trigger_test: Error setting test options, wrote %x read %x\n",
-                     test_options, status);
-          }
+        /* if (nevents == MAX_RD) */
+        /*   { */
+        /*     printf("Disabling trigger out\n"); */
+        /*     test_options = test_options | (1<<DISABLE_TRIG_OUT_BIT); */
+        /*     write_tstctl(USE_FAKE_ADDR, test_options); */
+        /*     status = read_tstctl(USE_FAKE_ADDR); */
+        /*     if (status != test_options)  */
+        /*       printf("trigger_test: Error setting test options, wrote %x read %x\n", */
+        /*              test_options, status); */
+        /*   } */
 
         // Which shower memory buffer to read, and which are full
         toread_shwr_buf_num = SHWR_BUF_RNUM_MASK & 
@@ -193,18 +199,18 @@ int main()
               (rd_status >> RD_PARITY0_SHIFT);
             parity1 = RD_PARITY1_MASK &
               (rd_status >> RD_PARITY1_SHIFT);
-            // printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
-            //                   toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
-            //     busy_rd_bufs, parity0, parity1);
+            printf("RD mem: toread=%d  writing=%d  full=%x  busy=%x  parity=%x %x\n",
+                   toread_rd_buf_num, cur_rd_buf_num, full_rd_bufs,
+                   busy_rd_bufs, parity0, parity1);
 
             // We should not satisfy this condition, because buffer should
             // not be busy when we get here, unless transfer was killed while
             // in progress, which can happen when USE_FAKE_RD is cleared.
-            if (busy_rd_bufs != 0)
-              {
-                printf("RD mem: Transfer interrupted, clearing busy\n");
-                write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
-              }
+            /* if (busy_rd_bufs != 0) */
+            /*   { */
+            /*     printf("RD mem: Transfer interrupted, clearing busy\n"); */
+            /*     write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num); */
+            /*   } */
           }
 
         // Read RD buffer
@@ -232,6 +238,7 @@ int main()
             expected0 = 0;
             expected1 = 0;
             for (i=0; i<RD_MEM_WORDS; i++)
+            //for (i=0; i<5; i++)
               {  
                 read0 = (rd_mem[toread_rd_buf_num][i]>>1) & 0xfff;
                 read1 = (rd_mem[toread_rd_buf_num][i]>>17) & 0xfff;
@@ -239,7 +246,7 @@ int main()
                   {
                     printf("word %d  read %x %x  expected %x %x\n",
                            i, read0, read1, expected0, expected1);
-                    sleep(2);
+                    //                    sleep(2);
                     nerrors = nerrors+1;
                   }
                 expected0 = expected0 + 1;

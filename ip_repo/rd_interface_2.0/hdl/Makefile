@@ -10,8 +10,8 @@
 # 03-Mar-2019 DFN Initial version
 
 all:	rd_interface_id rd_interface_options.vh  \
-	../drivers/rd_interface_v1_0/src/rd_interface_defs.h \
-	../drivers/rd_interface_v1_0/src/rd_interface_options.h
+	../drivers/rd_interface_v2_0/src/rd_interface_defs.h \
+	../drivers/rd_interface_v2_0/src/rd_interface_options.h
 
 rd_interface_id: FORCE
 	echo "`date +%H%d%m%y`" >rd_interface_id
@@ -23,7 +23,7 @@ rd_interface_options.vh: FORCE
 	>>rd_interface_options.vh
 	echo "\`endif" >>rd_interface_options.vh
 
-../drivers/rd_interface_v1_0/src/rd_interface_defs.h: 	FORCE
+../drivers/rd_interface_v2_0/src/rd_interface_defs.h: 	FORCE
 	sed -e "s/\`define/\#define/" \
 	<../../rd_interface_1.0/hdl/rd_interface_defs.vh | \
 	sed -e "s/\`ifndef/\#ifndef/" | \
@@ -32,18 +32,18 @@ rd_interface_options.vh: FORCE
 	sed -e "s/\`//" | \
 	sed -e "s/\`//" | \
 	sed -e "s/'h/0x/" \
-	> ../drivers/rd_interface_v1_0/src/rd_interface_defs.h
+	> ../drivers/rd_interface_v2_0/src/rd_interface_defs.h
 
-../drivers/rd_interface_v1_0/src/rd_interface_options.h:	rd_interface_options.vh
+../drivers/rd_interface_v2_0/src/rd_interface_options.h:	rd_interface_options.vh
 	sed -e "s/\`define/\#define/" <rd_interface_options.vh | \
 	sed -e "s/\`ifndef/\#ifndef/" | \
 	sed -e "s/\`endif/\#endif/" | \
 	sed -e "s/'h/0x/" \
-	> ../drivers/rd_interface_v1_0/src/rd_interface_options.h
+	> ../drivers/rd_interface_v2_0/src/rd_interface_options.h
 
 clean:
-	rm -f ../drivers/rd_interface_v1_0/src/rd_interface_defs.h
-	rm -f ../drivers/rd_interface_v1_0/src/rd_interface_options.h
+	rm -f ../drivers/rd_interface_v2_0/src/rd_interface_defs.h
+	rm -f ../drivers/rd_interface_v2_0/src/rd_interface_options.h
 	rm -f rd_interface_options.vh
 
 FORCE:

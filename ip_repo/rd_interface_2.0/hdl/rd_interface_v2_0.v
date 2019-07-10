@@ -84,12 +84,11 @@
 		.S_AXI_RDATA(s00_axi_rdata),
 		.S_AXI_RRESP(s00_axi_rresp),
 		.S_AXI_RVALID(s00_axi_rvalid),
-		.S_AXI_RREADY(s00_axi_rready)
+		.S_AXI_RREADY(s00_axi_rready),
                 .SERIAL_DATA0_IN(SERIAL_DATA0_IN),
                 .SERIAL_DATA1_IN(SERIAL_DATA1_IN),
                 .SERIAL_CLK_IN(SERIAL_CLK_IN),
                 .CLK120(CLK120),
-                .ENABLE_XFR_IN(ENABLE_XFR_IN),
                 .DATA_ADDR(DATA_ADDR),
                 .ENABLE_MEM_WRT(ENABLE_MEM_WRT),
                 .DATA_TO_MEM(DATA_TO_MEM),

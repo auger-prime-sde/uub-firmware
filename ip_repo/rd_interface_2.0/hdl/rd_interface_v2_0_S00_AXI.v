@@ -5,6 +5,8 @@
 	(
 		// Users to add parameters here
 
+`include "rd_interface_options.vh"
+         
 		// User parameters ends
 		// Do not modify the parameters beyond this line
 
@@ -123,7 +125,7 @@
    reg [C_S_AXI_DATA_WIDTH-1:0]   AXI_CONTROL;
    wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_STATUS;
    wire [C_S_AXI_DATA_WIDTH-1:0]   AXI_ID;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   slv_reg3;
+   reg [C_S_AXI_DATA_WIDTH-1:0]   AXI_RESET;
 	wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	 reg_data_out;
@@ -231,7 +233,7 @@
 	     AXI_CONTROL <= 0;
 	     // AXI_STATUS <= 0;
 	     // AXI_ID <= 0;
-	     slv_reg3 <= 0;
+	     AXI_RESET <= 0;
 	  end 
 	else begin
 	   if (slv_reg_wren)
@@ -244,13 +246,13 @@
 	          // 2'h2:
 	          //  AXI_ID <= S_AXI_WDATA;
 	          2'h3:
-	            slv_reg3 <= S_AXI_WDATA;
+	            AXI_RESET <= S_AXI_WDATA;
 		  
 	          default : begin
 	             AXI_CONTROL <= AXI_CONTROL;
 	             // AXI_STATUS <= AXI_STATUS;
 	             // AXI_ID <= `RD_IFC_COMPILE_DATE;
-	             slv_reg3 <= slv_reg3;
+	             AXI_RESET <= AXI_RESET;
 	          end
 	        endcase
 	     end
@@ -362,7 +364,7 @@
 	  2'h0   : reg_data_out <= AXI_CONTROL;
 	  2'h1   : reg_data_out <= AXI_STATUS;
 	  2'h2   : reg_data_out <= `RD_IFC_COMPILE_DATE;
-	  2'h3   : reg_data_out <= slv_reg3;
+	  2'h3   : reg_data_out <= AXI_RESET;
 	  default : reg_data_out <= 0;
 	endcase
      end
@@ -389,8 +391,10 @@
    // Add user logic here
 
 `define RD_IFC_CONTROL_ADDR 0
+`define RD_IFC_RESET_ADDR 3
 
    reg AXI_CONTROL_WRITTEN;
+   reg AXI_RESET_WRITTEN;
    wire [31:0] STATUS;
 
    // Detect when control register is written to
@@ -405,6 +409,19 @@
         else
           AXI_CONTROL_WRITTEN <= 0;
      end
+
+      // Detect when reset register is written to
+   always @( posedge S_AXI_ACLK )
+     begin
+        if (slv_reg_wren &&
+            ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] 
+              == `RD_IFC_RESET_ADDR ))
+          begin
+             AXI_RESET_WRITTEN <= 1;
+          end
+        else
+          AXI_RESET_WRITTEN <= 0;
+     end
    
    
    rd_sync_32bit status_sync(.ASYNC_IN(STATUS),
@@ -416,12 +433,14 @@
       .SERIAL_DATA0_IN(SERIAL_DATA0_IN),
       .SERIAL_DATA1_IN(SERIAL_DATA1_IN),
       .SERIAL_CLK_IN(SERIAL_CLK_IN),
-      .ENABLE_XFR_IN(CLK120),
+      .CLK120(CLK120),
       .BUF_RNUM(BUF_RNUM),
       .BUF_WNUM(BUF_WNUM),
       .TRIG_IN(TRIG_IN),
       .AXI_CONTROL(AXI_CONTROL),
       .AXI_CONTROL_WRITTEN(AXI_CONTROL_WRITTEN),
+      .AXI_RESET(AXI_RESET),
+      .AXI_RESET_WRITTEN(AXI_RESET_WRITTEN),
       .STATUS(STATUS),
       .DATA_ADDR(DATA_ADDR),
       .DATA_TO_MEM(DATA_TO_MEM),
