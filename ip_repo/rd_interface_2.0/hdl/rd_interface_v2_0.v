@@ -31,6 +31,9 @@
          output wire TRIG_OUT,
          output wire DBG1,
          output wire DBG2,
+         output wire DBG3,
+         output wire DBG4,
+         output wire DBG5,
          
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -98,7 +101,10 @@
                 .BUF_RNUM(BUF_RNUM),
                 .BUF_WNUM(BUF_WNUM),
                 .DBG1(DBG1),
-                .DBG2(DBG2)            
+                .DBG2(DBG2),            
+                .DBG3(DBG3),            
+                .DBG4(DBG4),            
+                .DBG5(DBG5)            
 	);
 
 	// Add user logic here

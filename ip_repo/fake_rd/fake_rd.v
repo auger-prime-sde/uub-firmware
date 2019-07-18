@@ -3,11 +3,12 @@
 // 11-Oct-2018 DFN Initial version
 // 07-Feb-2019 DFN Modified to work in conjunction with true rd_interface
 // 05-Mar-2019 DFN Note: Be careful of which clock edge is used.
-// 06-Jul-2019 DFN Modify for rd_interface_2.0 
+// 06-Jul-2019 DFN Modify for rd_interface_2.0
+// 11-Jul-2019 DFN Add delay of transfer start to be more realistic
 
 
-//`define MEM_SIZE 2048
-`define MEM_SIZE 5000  // Extra long just for test
+`define MEM_SIZE 2048
+`define FAKE_RD_TRIG_DLY 20
 
 module fake_rd 
   (
@@ -15,7 +16,6 @@ module fake_rd
    input wire LOCAL_CLK,
    input wire TRIGGER,
   
-   output reg ENABLE_XFR,
    output wire XFR_CLK,
    output reg SERIAL_OUT0,
    output reg SERIAL_OUT1,
@@ -31,10 +31,14 @@ module fake_rd
    reg [15:0] WORD_COUNT;
    wire       LOCAL_TRIGGER;
    wire       LOCAL_ENABLE;
+   reg        EMAB;
+   reg        ENABLE_XFR;
    reg        PRE_ENABLE1;
    reg        PRE_ENABLE2;
    reg        PRE_ENABLE3;
    reg        NO_CLK;
+   reg        LOCAL_TRIG_DLYD;
+   reg [`FAKE_RD_TRIG_DLY-1:0] TRIG_DLYD;
    
    
    rd_synchronizer enable_sync(.ASYNC_IN(ENABLE),
@@ -67,8 +71,12 @@ module fake_rd
           end
         else
           begin
+             // Delay trigger by some clock cycles to be more realistic
+             TRIG_DLYD <= {TRIG_DLYD[`FAKE_RD_TRIG_DLY-2:0], LOCAL_TRIGGER};
+             LOCAL_TRIG_DLYD <= TRIG_DLYD[`FAKE_RD_TRIG_DLY-1];
+
              // Look for trigger to enable transfer of data
-             if (LOCAL_TRIGGER & ~ENABLE_XFR)
+             if (LOCAL_TRIG_DLYD & ~ENABLE_XFR)
                begin
                   PRE_ENABLE1 <= 1;
                   DATA0 <= 0;
@@ -77,9 +85,11 @@ module fake_rd
                   BIT_COUNT <= 0;
                   PARITY0 <= 0;
                   PARITY1 <= 0;
+                  SERIAL_OUT0 <= 1;
+                  SERIAL_OUT1 <= 1;
                end // if (TRIGGER & ~ENABLE_XFR)
 
-             // Add 3 extra clock cycles before start of data transfer
+             // Add extra clock cycles before start of data transfer
              if (PRE_ENABLE1)
                begin
                   PRE_ENABLE2 <= 1;

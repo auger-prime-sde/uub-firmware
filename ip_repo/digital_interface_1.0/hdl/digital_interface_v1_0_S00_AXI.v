@@ -2,6 +2,8 @@
 // 09-May-2019 DFN Restore original RD interface pin assignments for current
 //                 RD tests; swap ext0 and 1 so RD is nearest FPGA on V2/3 bd.
 //                 This make RD farthest from FPGA on V1 bd
+// 11-Jul-2019 DFN Change RD interface pinouts to agree with latest document
+//                 from Jorg with out the DATA_VALID signal.
 
 `timescale 1 ns / 1 ps
 `include "digital_interface_defs.vh"
@@ -36,13 +38,14 @@
          output wire AMIGA_RX,
          
          input wire RD_TRIG,
-         input wire RD_MISO,
          input wire RD_SCK,
+         input wire RD_MOSI,
+         input wire RD_CE,
          output wire RD_DATA_VALID,
          output wire RD_XFR_CLK,
          output wire RD_SER_DATA0,
          output wire RD_SER_DATA1,
-         output wire RD_MOSI,
+         output wire RD_MISO,
 
         output reg DBG1,
         output reg DBG2,
@@ -427,21 +430,21 @@
                        0 ; // Not used, default 0
     
    assign DATA0_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[8] :
-                       0 ; //
+                       0 ; // SPI CLK - output
    assign DATA0_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[9] :
-                       0 ; //
+                       1 ; // SPI MOSI - output
    assign DATA0_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[10] :
                        1 ; // This is DATA0
    assign DATA0_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[11] :
-                       1 ; // This is DATA_CLK
+                       1 ; // This is DATA XFR CLK
    assign DATA0_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[12] :
-                       1 ; // This is DATA0
+                       1 ; // This is DATA1
    assign DATA0_T[5] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[13] :
-                       0 ; // 
+                       0 ; // SPI CE - output
    assign DATA0_T[6] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[14] :
                        0 ; // This is TRIGGER
    assign DATA0_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[15] :
-                       1 ; // This is DATA_VALID
+                       1 ; // This is SPI MISO - input
    assign CTL0[7:0] =  ~DATA0_T[7:0];
    assign CTL1[7:0] =  ~DATA1_T[7:0];
 
@@ -464,28 +467,11 @@
    assign DATA1_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[7] :
                        0 ; // Not used
     
-  // assign DATA0_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
-  //                     0 ; // This is RD_SER_DATA1
-  // assign DATA0_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
-  //                     0 ; // This is RD_SER_DATA0
-  // assign DATA0_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[10] :
-  //                     0 ; // This is RD_XFR_CLK
-  // assign DATA0_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
-  //                     RD_TRIG ; // This is RD_TRIG
-  // assign DATA0_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
-  //                     0 ; // RD_DATA_VALID
-  // assign DATA0_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[13] :
-  //                     RD_SCK ; // This is RD_SCK
-  // assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
-  //                     0 ; // This is RD_MISO
-  // assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[5] :
-  //                     RD_MOSI ; // This is RD_MOSI
-
 
    assign DATA0_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
-                       0 ; // 
+                       0 ; // RD_SCK CLK output
    assign DATA0_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
-                       0 ; // 
+                       0 ; // RD_MOSI output
    assign DATA0_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[10] :
                        0 ; // This is RD_SER_DATA0
    assign DATA0_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
@@ -493,11 +479,11 @@
    assign DATA0_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
                        0 ; // RD_SER_DATA1
    assign DATA0_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[13] :
-                       0; // 
+                       0; // RD_CE output
    assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
-                       RD_TRIG ; // This is RD_TRIG
+                       RD_TRIG ; // This is RD_TRIG output
    assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[5] :
-                       0 ; // This RD_DATA_VALID
+                       0 ; // RD_MISO input
 
 
   // Assign inputs when in factory test mode
@@ -541,16 +527,10 @@
 
    assign AMIGA_RX = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[2] : 0;
 
-   //assign RD_DATA_VALID = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[4] : 0;
-   //assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[2] : 0;
-   //assign RD_SER_DATA0 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[1] : 0;
-   //assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[0] : 0;
-   //assign RD_MISO = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[6] : 0;
-   
    assign RD_SER_DATA0 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[2] : 0;
    assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[3] : 0;
    assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[4] : 0;
-   assign RD_DATA_VALID = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[7] : 0;
+   assign RD_MISO = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[7] : 0;
    
 // Some debug outputs -- Does this assign actually work?
 

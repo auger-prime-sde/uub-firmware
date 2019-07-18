@@ -17,7 +17,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>56e1ba9b</spirit:value>
+            <spirit:value>06dd7442</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -32,7 +32,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2b3fb5c9</spirit:value>
+            <spirit:value>50c0f15f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -92,25 +92,12 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ENABLE_XFR</spirit:name>
-        <spirit:wire>
-          <spirit:direction>out</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>reg</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
         <spirit:name>XFR_CLK</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>reg</spirit:typeName>
+              <spirit:typeName>wire</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -227,7 +214,7 @@
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>auger.org:auger:combined_rd_interface_tb:1.0</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2019-07-10T00:21:39Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2019-07-18T14:20:45Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="nopcore"/>
         <xilinx:tag xilinx:name="auger.org:auger:combined_rd_interface_tb:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/fake_rd</xilinx:tag>
@@ -236,8 +223,8 @@
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c6b35f30"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="d2d14618"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d7bd354e"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="05023af1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="7744f6fc"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

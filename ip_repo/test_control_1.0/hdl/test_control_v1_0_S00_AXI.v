@@ -28,9 +28,6 @@ module test_control_v1_0_S00_AXI #
     input wire FAKE_RDCLK,
     input wire TRUE_RDCLK,
     output wire RDCLK,
-    input wire FAKE_ENABLE_XFR,
-    input wire TRUE_ENABLE_XFR,
-    output wire ENABLE_XFR,
     input wire FAKE_RD_SERIAL0,
     input wire TRUE_RD_SERIAL0,
     output wire RD_SERIAL0,
@@ -419,8 +416,6 @@ module test_control_v1_0_S00_AXI #
 
    mux1 ppsmux(.SEL_B(USE_FAKE_PPS), .D({TRUE_PPS,FAKE_PPS}), .Q(PPS));
    mux1 rdclk(.SEL_B(USE_FAKE_RDCLK), .D({TRUE_RDCLK,FAKE_RDCLK}), .Q(RDCLK));
-   mux1 rdxfr(.SEL_B(USE_FAKE_RD), .D({TRUE_ENABLE_XFR,FAKE_ENABLE_XFR}),
-              .Q(ENABLE_XFR));
    mux1 rdser0(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL0,FAKE_RD_SERIAL0}), 
                .Q(RD_SERIAL0));
    mux1 rdser1(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL1,FAKE_RD_SERIAL1}), 

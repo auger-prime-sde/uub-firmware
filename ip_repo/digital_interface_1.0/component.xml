@@ -330,7 +330,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>121a52e4</spirit:value>
+            <spirit:value>a69423f9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -346,7 +346,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ed24b851</spirit:value>
+            <spirit:value>780f3764</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -596,7 +596,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>RD_MISO</spirit:name>
+        <spirit:name>RD_MOSI</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -622,9 +622,9 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>RD_DATA_VALID</spirit:name>
+        <spirit:name>RD_CE</spirit:name>
         <spirit:wire>
-          <spirit:direction>out</spirit:direction>
+          <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>wire</spirit:typeName>
@@ -674,7 +674,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>RD_MOSI</spirit:name>
+        <spirit:name>RD_MISO</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1216,7 +1216,7 @@
       </xilinx:taxonomies>
       <xilinx:displayName>digital_interface_v1.0</xilinx:displayName>
       <xilinx:coreRevision>1</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2019-05-09T18:38:07Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2019-07-12T00:53:38Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="auger.org:auger:digital_interface:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/ip_repo/digital_interface_1.0</xilinx:tag>
       </xilinx:tags>
@@ -1225,8 +1225,8 @@
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="cd908967"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="cafe3ba6"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="15cc6b30"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="06fd94db"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3fb7aee1"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="cc3f3273"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="6992ea72"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="8b20d0f7"/>
     </xilinx:packagingInfo>

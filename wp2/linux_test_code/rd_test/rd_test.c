@@ -246,7 +246,7 @@ int main()
                   {
                     printf("word %d  read %x %x  expected %x %x\n",
                            i, read0, read1, expected0, expected1);
-                    //                    sleep(2);
+                                        sleep(2);
                     nerrors = nerrors+1;
                   }
                 expected0 = expected0 + 1;

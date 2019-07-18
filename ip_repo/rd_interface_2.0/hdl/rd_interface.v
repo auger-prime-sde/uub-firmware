@@ -20,6 +20,9 @@
 // 05-Mar-2019 DFN Correct error - missing PARITY reset
 // 02-May-2019 DFN Version 2 without ENABLE_XFR (DATA_VALID) signal
 // 06-Jul-2019 DFN Add local reset command
+// 10-Jul-2019 DFN Add watchdog timer provided by Sjoerd
+// 18-Jul-2019 DFN Added block against triggers for 25 clock cycles after
+//                 end of transfer.
 
 `include "rd_interface_defs.vh"
 
@@ -43,12 +46,14 @@ module rd_interface
    output reg ENABLE_MEM_WRT,
    output wire TRIG_OUT,
    output reg DBG1,
-   output reg DBG2
+   output reg DBG2,
+   output reg DBG3,
+   output reg DBG4,
+   output reg DBG5
    );
    
 
    reg [3:0]  SERIAL_IN_BIT_COUNT;
-   reg        PREV_ENABLE_XFR;
    reg [31:0] NEXT_DATA_ADDR;
    reg        PARITY0;
    reg        PARITY1;
@@ -64,15 +69,17 @@ module rd_interface
    
    reg [1:0]  LCL_BUF_NUM; // Current buffer writing
    reg        RD_BUSY;  // Set when transfer from RD is in progress
+   wire       RD_BUSY_STRETCH;
    wire       RD_BUSY120;
    reg        PREV_RD_BUSY120;
-   wire       RD_BUSY_DLYD;
+   wire       RD_BUSY120_STRETCH;
    reg        LCL_TRIG_OUT;
    reg [15:0] XFR_COUNT;
    wire       ENABLE_XFR;
    reg        ENABLE_XFR120;
    reg        PREV_ENABLE_XFR120;
-
+   reg [16:0] WATCHDOG_COUNTER;
+   
 
    rd_sync_1bit control_wrtsync(.ASYNC_IN(AXI_CONTROL_WRITTEN),
                                 .CLK(CLK120),
@@ -101,25 +108,37 @@ module rd_interface
    rd_sync_1bit enable_sync(.ASYNC_IN(ENABLE_XFR120),
                             .CLK(SERIAL_CLK_IN),
                             .SYNC_OUT(ENABLE_XFR));
-   
+
    stretch trig_stretch(.IN(LCL_TRIG_OUT),
                         .CLK(CLK120),
                         .OUT(TRIG_OUT));
 
    // This will work to ignore 11 extra clock cycles only if XFR clock
-   // frequency is 60 MHz or greater.  If not, need to increase delay.
-   stretch #(25) busy_stretch(.IN(RD_BUSY120),
-                              .CLK(CLK120),
-                              .OUT(RD_BUSY_DLYD));
+   // frequency is 60 MHz or greater.  If not, or there are more than
+   // 11 extra clock cycles, may need to increase delay.
+   stretch #(25) busy120_stretch(.IN(RD_BUSY120),
+                                 .CLK(CLK120),
+                                 .OUT(RD_BUSY120_STRETCH));
+
+   // This stretch is OK if XFR clock fequency is 60 MHz or less.  If not, may
+   // need to increase delay    
+   stretch #(5) busy_stretch(.IN(RD_BUSY),
+                             .CLK(SERIAL_CLK_IN),
+                             .OUT(RD_BUSY_STRETCH));
 
 
    always @(posedge CLK120)
      begin
+
+        DBG4 <= RD_BUSY120;
+        DBG5 <= ENABLE_XFR120;
+
         if (RST || (LCL_RESET && LCL_RESET_WRITTEN))
           begin
              STATUS <= 0;
              ENABLE_XFR120 <= 0;
              PREV_RD_BUSY120 <= 0;
+             WATCHDOG_COUNTER <= 0;
           end
         else
           begin
@@ -140,41 +159,62 @@ module rd_interface
              // accept a new trigger. So we need to also worry about 
              // interlocks.  
              
-             PREV_RD_BUSY120 <= RD_BUSY120;
+             PREV_RD_BUSY120 <= RD_BUSY120_STRETCH;
 
-             if (!RD_BUSY120)
+             if (!(RD_BUSY120_STRETCH | RD_BUSY120))
                begin
-                  if (TRIG_IN)
+                  if (TRIG_IN)  // Not busy and trigger
                     begin
                        LCL_TRIG_OUT <= 1;
                        LCL_BUF_NUM <= BUF_WNUM;
                        STATUS[`RD_BUF_WNUM_SHIFT+1:`RD_BUF_WNUM_SHIFT]
                          <= BUF_WNUM;
+                       
                        // Arm for next transfer
                        ENABLE_XFR120 <= 1;
+                       WATCHDOG_COUNTER <= 16'hffff;
                        
                        // Reset parity error indicators
                        STATUS[`RD_PARITY0_SHIFT+LCL_BUF_NUM] <= 0;
                        STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 0;
                     end // if (TRIG_IN)
-                  else
+
+                  // We assume here that trigger is shorter than delay
+                  // from trigger to start of serial clock. 
+                  // Otherwise this won't work.
+                  else  // Not busy & no trigger
                     begin
                        LCL_TRIG_OUT <= 0;
-                  
-                       // If busy goes from 1 to 0, so transfer is over
-                       if (PREV_RD_BUSY120)
-                         ENABLE_XFR120 <= 0;
-                       if (PARITY0_ERROR120)
-                         STATUS[`RD_PARITY0_SHIFT+LCL_BUF_NUM] <= 1;
-                       if (PARITY1_ERROR120)
-                         STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 1;
-                       STATUS[`RD_BUF_FULL_SHIFT+LCL_BUF_NUM] <= 1;
-                       STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= 0;
+                    end // else: !if(TRIG_IN)
+               end
+             
+             // If busy goes from 1 to 0, transfer is over
+             if (PREV_RD_BUSY120 && !RD_BUSY120)
+               begin
+                  ENABLE_XFR120 <= 0;
+                  if (PARITY0_ERROR120)
+                    STATUS[`RD_PARITY0_SHIFT+LCL_BUF_NUM] <= 1;
+                  if (PARITY1_ERROR120)
+                    STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 1;
+                  STATUS[`RD_BUF_FULL_SHIFT+LCL_BUF_NUM] <= 1;
+                  STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= 0;
+               end
+
+             // Decrement and check watchdog timer
+             if (RD_BUSY120)
+               begin
+                  if (WATCHDOG_COUNTER == 0)
+                    begin
+                       ENABLE_XFR120 <= 0;
                     end
-               end // if (!RD_BUSY120)
+                  else
+                    begin
+                       WATCHDOG_COUNTER <= WATCHDOG_COUNTER-1;
+                    end
+               end
 
              // Flag transfer as busy if it is
-             STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= RD_BUSY_DLYD;
+             STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= RD_BUSY120_STRETCH;
 
           end // else: !if(RST)
      end // always @ (posedge CLK120)
@@ -183,16 +223,14 @@ module rd_interface
 
    always @(posedge SERIAL_CLK_IN)
      begin
-             DBG1 <= RD_BUSY;
-             DBG2 <= ENABLE_XFR;
-             
-        PREV_ENABLE_XFR <= ENABLE_XFR;
+        DBG1 <= ENABLE_XFR;  //p62
+        DBG2 <= ENABLE_MEM_WRT;  //p63
+        DBG3 <= SERIAL_DATA0_IN;  //
+
         if (!ENABLE_XFR)
-          RD_BUSY <= 0;
-        if (!PREV_ENABLE_XFR && ENABLE_XFR)
           begin
+             RD_BUSY <= 0;
              XFR_COUNT <= 0;
-             RD_BUSY <= 1;
              NEXT_DATA_ADDR <= 0;
              ENABLE_MEM_WRT <= 0;  // Not writing to memory
              DATA_TO_MEM <= 0;
@@ -206,6 +244,11 @@ module rd_interface
              DATA1 <= 0;
              SERIAL_IN_BIT_COUNT <= 0;
           end
+        
+        if (!(RD_BUSY_STRETCH||RD_BUSY) && ENABLE_XFR)
+          begin
+             RD_BUSY <= 1;
+          end
 
         // Grab serial data
         // High order bit is 1st and parity bit is last
@@ -214,7 +257,6 @@ module rd_interface
              XFR_COUNT <= XFR_COUNT+1;
              if (XFR_COUNT >= 2048*13)
                begin
-                  XFR_COUNT <= 0;
                   RD_BUSY <= 0;
                end
              if (SERIAL_IN_BIT_COUNT < 12)

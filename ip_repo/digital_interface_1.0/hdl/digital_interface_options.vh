@@ -1,4 +1,4 @@
 `ifndef _DIG_IFC_OPTIONS
   `define _DIG_IFC_OPTIONS
-  `define DIG_IFC_COMPILE_DATE 'h14090519
+  `define DIG_IFC_COMPILE_DATE 'h20110719
 `endif
