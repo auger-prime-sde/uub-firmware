@@ -8,7 +8,7 @@
 
 
 //#define STAND_ALONE
-#define MAX_EVENTS 100000
+#define MAX_EVENTS 1000
 //#define CHECK_MISSING_EVENT
 //#define EXT_IN_PERIOD 0.1
 #define EXT_IN_TOLERANCE 0.01
@@ -36,9 +36,9 @@
 #define LED_PULSWID0 10
 #define LED_PULSWID1 20
 
-#define TRIG_THR0 512
-#define TRIG_THR1 512
-#define TRIG_THR2 512
+#define TRIG_THR0 3000
+#define TRIG_THR1 3000
+#define TRIG_THR2 3000
 #define TRIG_SSD 4095
 #define LPMT_THR0 0000   // Software large PMT threshold for small PMT cal
 #define LPMT_THR1 0000
@@ -47,7 +47,7 @@
 #define SHWR_TRIGGERS
 
 #ifdef SHWR_TRIGGERS 
-  #define COMPAT_SB_TRIGGER
+ // #define COMPAT_SB_TRIGGER
  // #define COMPAT_TOT_TRIGGER
  // #define COMPAT_TOT_TRIG_OCC 1
  //  #define COMPAT_TOTD_TRIGGER
@@ -60,9 +60,9 @@
      #define COMPAT_TOTD_UP1 4095
      #define COMPAT_TOTD_UP2 4095
      #define COMPAT_TOTD_INT  5
-//  #define SB_TRIGGER
+  #define SB_TRIGGER
 //  #define SSD_AND	
-  #define SB_COINC_LVL 3
+  #define SB_COINC_LVL 1
   #define SB_COINC_OVLP 3
   #define SB_CONSEC_BINS 0
   #define SSD_DELAY 0

@@ -26,8 +26,11 @@ extern int compat_ext_dlyd_count;
 
 int peaks[4][10], areas[4][10], baselines[4][10], saturateds[4][10];
 int peak[10], area[10], baseline[10], saturated[10];
+int seconds4[4], delta_tics4[4];
+int seconds1, delta_tics1;
 
 static double prev_time = 0;
+static int first_second = 0;
 
 // Read shower memory buffers from PL memory into PS memory
 void read_shw_buffers()
@@ -39,7 +42,10 @@ void read_shw_buffers()
 
 
   pps_tics = read_ttag(TTAG_SHWR_PPS_TICS_ADDR);
+  pps_tics = read_ttag(TTAG_SHWR_PPS_TICS_ADDR);
   seconds = read_ttag(TTAG_SHWR_SECONDS_ADDR);
+  seconds = read_ttag(TTAG_SHWR_SECONDS_ADDR);
+  tics = read_ttag(TTAG_SHWR_TICS_ADDR);
   tics = read_ttag(TTAG_SHWR_TICS_ADDR);
 
   pps_tics = pps_tics & TTAG_TICS_MASK;
@@ -57,6 +63,12 @@ void read_shw_buffers()
   time = (double) seconds + 8.3333 * (double) delta_tics / 1.e9;
   dt = time - prev_time;
   prev_time = time;
+
+
+  // Save trigger time for later print
+  if (first_second == 0) first_second = seconds;
+  seconds4[readto_shw_buf_num] = seconds-first_second;
+  delta_tics4[readto_shw_buf_num] = delta_tics;
 
   trig_id = read_trig(SHWR_BUF_TRIG_ID_ADDR);
 #ifdef VERBOSE
@@ -290,6 +302,9 @@ void unpack_shw_buffers()
   int i, j;
   int filt0, filt1, filt2;
 
+  seconds1= seconds4[unpack_shw_buf_num];
+  delta_tics1= delta_tics4[unpack_shw_buf_num];
+
   for (i=0; i<10; i++)
     {
       peak[i] = peaks[unpack_shw_buf_num][i];
@@ -405,7 +420,7 @@ void print_shw_buffers()
   trig = 1;
 
   //  #define DETAIL_PRINT
-  //  #define PRINT_EVENT
+    #define PRINT_EVENT
 
 #ifndef ANY_DEBUG  // Some firmware debug flags disable info needed for this
 #ifdef COMPAT_SB_TRIGGER
@@ -505,6 +520,9 @@ void print_shw_buffers()
     {
 
       printf("\n>>>>>>>>>> BEGINNING OF EVENT HEADER >>>>>>>>>>\n");
+
+      // Print time of event
+      printf("%8x %8x\n",seconds1, delta_tics1);
 
       // Output a few lines header with the FPGA calculated area, peak, etc.
       for (i=0; i<10; i++)
