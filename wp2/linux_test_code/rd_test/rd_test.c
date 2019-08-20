@@ -242,11 +242,15 @@ int main()
               {  
                 read0 = (rd_mem[toread_rd_buf_num][i]>>1) & 0xfff;
                 read1 = (rd_mem[toread_rd_buf_num][i]>>17) & 0xfff;
+                parity0 = (rd_mem[toread_rd_buf_num][i]) & 0x1;
+                parity1 = (rd_mem[toread_rd_buf_num][i]>>16) & 0x1;
+                if (i <4) printf("word %d  read %x %x  parity %x %x\n",
+                                 i, read0, read1, parity0, parity1);
                 if ((read0 != expected0) || (read1 != expected1))
                   {
                     printf("word %d  read %x %x  expected %x %x\n",
                            i, read0, read1, expected0, expected1);
-                                        sleep(2);
+                    sleep(2);
                     nerrors = nerrors+1;
                   }
                 expected0 = expected0 + 1;

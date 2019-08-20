@@ -277,8 +277,10 @@ module rd_interface
                   // Write data to memory
                   DATA_TO_MEM[12:1] <= DATA0[11:0];
                   DATA_TO_MEM[28:17] <= DATA1[11:0];
-                  DATA_TO_MEM[0] <= PARITY0;
-                  DATA_TO_MEM[16] <= PARITY1;
+                  //DATA_TO_MEM[0] <= PARITY0;
+                  //DATA_TO_MEM[16] <= PARITY1;
+                  DATA_TO_MEM[0] <= SERIAL_DATA0_IN;
+                  DATA_TO_MEM[16] <= SERIAL_DATA1_IN;
                   ENABLE_MEM_WRT <= 1;
                   DATA_ADDR[12:0] <= NEXT_DATA_ADDR;
                   DATA_ADDR[14:13] <= LCL_BUF_NUM;

@@ -36,6 +36,7 @@ module fake_rd
    reg        PRE_ENABLE1;
    reg        PRE_ENABLE2;
    reg        PRE_ENABLE3;
+   reg        PRE_ENABLE4;
    reg        NO_CLK;
    reg        LOCAL_TRIG_DLYD;
    reg [`FAKE_RD_TRIG_DLY-1:0] TRIG_DLYD;
@@ -50,7 +51,7 @@ module fake_rd
    
 
    // Gated clock
-   mux2 clk(.SEL_B(ENABLE_XFR|PRE_ENABLE1|PRE_ENABLE2|PRE_ENABLE3),
+   mux2 clk(.SEL_B(ENABLE_XFR|PRE_ENABLE1|PRE_ENABLE2|PRE_ENABLE3|PRE_ENABLE4),
             .D({NO_CLK,~LOCAL_CLK}),.Q(XFR_CLK));
             
    always @(posedge LOCAL_CLK)
@@ -66,6 +67,7 @@ module fake_rd
              PRE_ENABLE1 <= 0;
              PRE_ENABLE2 <= 0;
              PRE_ENABLE3 <= 0;
+             PRE_ENABLE4 <= 0;
              SERIAL_OUT0 <= 1;
              SERIAL_OUT1 <= 1;
           end
@@ -102,8 +104,13 @@ module fake_rd
                end 
              if (PRE_ENABLE3)
                begin
-                  ENABLE_XFR <= 1;
+                  PRE_ENAVLE4 <= 1;
                   PRE_ENABLE3 <= 0;
+               end 
+            if (PRE_ENABLE4)
+               begin
+                  ENABLE_XFR <= 1;
+                  PRE_ENABLE4 <= 0;
                end 
              if (ENABLE_XFR)
                begin

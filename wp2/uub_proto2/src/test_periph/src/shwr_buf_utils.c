@@ -6,10 +6,10 @@
 #include "trigger_test.h"
 #include <math.h>
 
-//#define VERBOSE
+#define VERBOSE
 
 extern u32 *mem_addr, *mem_ptr;
-extern u32 start_offset[4];
+extern u32 start_offset[NUM_BUFFERS];
 extern int toread_shwr_buf_num;
 extern int status;
 extern int nevents;
@@ -24,10 +24,11 @@ extern int compat_totd_dlyd_count;
 extern int sb_dlyd_count;
 extern int compat_ext_dlyd_count;
 
-int peaks[4][10], areas[4][10], baselines[4][10], saturateds[4][10];
-int peak[10], area[10], baseline[10], saturated[10];
-int seconds4[4], delta_tics4[4];
-int seconds1, delta_tics1;
+static int peaks[NUM_BUFFERS][10], areas[NUM_BUFFERS][10];
+static int baselines[NUM_BUFFERS][10], saturateds[NUM_BUFFERS][10];
+static int peak[10], area[10], baseline[10], saturated[10];
+static int secondsn[NUM_BUFFERS], delta_ticsn[NUM_BUFFERS];
+static int secondsu, delta_ticsu;
 
 static double prev_time = 0;
 static int first_second = 0;
@@ -42,10 +43,7 @@ void read_shw_buffers()
 
 
   pps_tics = read_ttag(TTAG_SHWR_PPS_TICS_ADDR);
-  pps_tics = read_ttag(TTAG_SHWR_PPS_TICS_ADDR);
   seconds = read_ttag(TTAG_SHWR_SECONDS_ADDR);
-  seconds = read_ttag(TTAG_SHWR_SECONDS_ADDR);
-  tics = read_ttag(TTAG_SHWR_TICS_ADDR);
   tics = read_ttag(TTAG_SHWR_TICS_ADDR);
 
   pps_tics = pps_tics & TTAG_TICS_MASK;
@@ -55,8 +53,8 @@ void read_shw_buffers()
   delta_tics = tics-pps_tics;
   if (delta_tics < 0) delta_tics = delta_tics + TTAG_TICS_MASK +1;
 #ifdef VERBOSE
-//  printf("pps_tics=%d seconds=%d tics=%d delta_tics=%d\n",
-//	 pps_tics, seconds, tics, delta_tics);
+  printf("pps_tics=%d seconds=%d tics=%d delta_tics=%d\n",
+	 pps_tics, seconds, tics, delta_tics);
 #endif
 
   // Does not yet account for rollover of seconds
@@ -67,8 +65,14 @@ void read_shw_buffers()
 
   // Save trigger time for later print
   if (first_second == 0) first_second = seconds;
-  seconds4[readto_shw_buf_num] = seconds-first_second;
-  delta_tics4[readto_shw_buf_num] = delta_tics;
+  secondsn[readto_shw_buf_num] = seconds-first_second;
+  delta_ticsn[readto_shw_buf_num] = delta_tics;
+#ifdef VERBOSE
+  printf("readto_shw_buf_num=%d seconds=%d %d %d %d %d %d %d %d\n",
+	 unpack_shw_buf_num, secondsn[0], secondsn[1], 
+         secondsn[2], secondsn[3], secondsn[4], 
+         secondsn[5], secondsn[6], secondsn[7]);
+#endif
 
   trig_id = read_trig(SHWR_BUF_TRIG_ID_ADDR);
 #ifdef VERBOSE
@@ -302,8 +306,15 @@ void unpack_shw_buffers()
   int i, j;
   int filt0, filt1, filt2;
 
-  seconds1= seconds4[unpack_shw_buf_num];
-  delta_tics1= delta_tics4[unpack_shw_buf_num];
+  secondsu= secondsn[unpack_shw_buf_num];
+  delta_ticsu= delta_ticsn[unpack_shw_buf_num];
+#ifdef VERBOSE
+  printf("unpack_shw_buf_num=%d seconds=%d %d %d %d %d %d %d %d\n",
+	 unpack_shw_buf_num, secondsn[0], secondsn[1], 
+         secondsn[2], secondsn[3], secondsn[4], 
+         secondsn[5], secondsn[6], secondsn[7]);
+#endif
+
 
   for (i=0; i<10; i++)
     {
@@ -522,7 +533,7 @@ void print_shw_buffers()
       printf("\n>>>>>>>>>> BEGINNING OF EVENT HEADER >>>>>>>>>>\n");
 
       // Print time of event
-      printf("%8x %8x\n",seconds1, delta_tics1);
+      printf("%8x %8x\n",secondsu, delta_ticsu);
 
       // Output a few lines header with the FPGA calculated area, peak, etc.
       for (i=0; i<10; i++)

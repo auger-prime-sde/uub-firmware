@@ -432,7 +432,7 @@
    assign DATA0_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[8] :
                        0 ; // SPI CLK - output
    assign DATA0_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[9] :
-                       1 ; // SPI MOSI - output
+                       0 ; // SPI MOSI - output
    assign DATA0_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[10] :
                        1 ; // This is DATA0
    assign DATA0_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[11] :
@@ -469,9 +469,9 @@
     
 
    assign DATA0_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
-                       0 ; // RD_SCK CLK output
+                       RD_SCK ; // RD_SCK CLK output
    assign DATA0_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
-                       0 ; // RD_MOSI output
+                       RD_MOSI ; // RD_MOSI output
    assign DATA0_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[10] :
                        0 ; // This is RD_SER_DATA0
    assign DATA0_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
@@ -479,7 +479,7 @@
    assign DATA0_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
                        0 ; // RD_SER_DATA1
    assign DATA0_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[13] :
-                       0; // RD_CE output
+                       RD_CE; // RD_CE output
    assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
                        RD_TRIG ; // This is RD_TRIG output
    assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[5] :
@@ -540,7 +540,7 @@
  
     always @( posedge S_AXI_ACLK )
       begin
-         DBG1 <= RD_TRIG;  // Trigger
+         DBG1 <= RD_MISO;  // Trigger
          DBG2 <= AMIGA_CLOCK_OUT;  // RD trig out
          DBG3 <= RD_SCK;
        end // always @ ( posedge S_AXI_ACLK )
