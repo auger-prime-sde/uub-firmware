@@ -393,6 +393,7 @@ module test_control_v1_0_S00_AXI #
 
    // Add user logic here
    // So far we only use a few bits of 2 of the 4 registers.
+   // 26-Aug-2019 DFN Add manual GEN_TRGOUT control.
 
 `include "test_control_defs.vh"
    
@@ -400,6 +401,8 @@ module test_control_v1_0_S00_AXI #
    reg USE_FAKE_RDCLK;
    reg DISAB_TRGOUT;
    reg NO_TRIGGER;
+   reg GEN_TRGOUT;
+   reg DO_TRGOUT;
       
    always @( posedge S_AXI_ACLK )
      begin
@@ -409,6 +412,9 @@ module test_control_v1_0_S00_AXI #
         USE_FAKE_RD <= USE_FAKE_REG[`USE_FAKE_RD_BIT];
         USE_FAKE_RDCLK <= USE_FAKE_REG[`USE_FAKE_RDCLK_BIT];
         DISAB_TRGOUT <= USE_FAKE_REG[`DISABLE_TRIG_OUT_BIT];
+        GEN_TRGOUT <= USE_FAKE_REG[`GENERATE_TRIG_OUT_BIT];
+        DO_TRGOUT <= GEN_TRGOUT || TRIGGER;
+        
         NO_TRIGGER <= 0;
         
         FAKE_MODE <= FAKE_MODE_REG[31:0];
@@ -420,7 +426,7 @@ module test_control_v1_0_S00_AXI #
                .Q(RD_SERIAL0));
    mux1 rdser1(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL1,FAKE_RD_SERIAL1}), 
                .Q(RD_SERIAL1));
-   mux1 trig(.SEL_B(DISAB_TRGOUT), .D({TRIGGER,NO_TRIGGER}), .Q(TRIG_OUT));
+   mux1 trig(.SEL_B(DISAB_TRGOUT), .D({DO_TRGOUT,NO_TRIGGER}), .Q(TRIG_OUT));
 
    // User logic ends
 
