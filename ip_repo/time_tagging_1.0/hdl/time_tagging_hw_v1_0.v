@@ -113,7 +113,8 @@ module time_tagging_hw_v1_0
 	wire clr_evtclkf,clr_evtclks,clr_evtpps,clr_evtdead;
 	wire clr_clkf,clr_evts,clr_pps,clr_dead;
 	wire q1,q2,nq2,q3,nq5,q6,q7,nq8,q8,nq11,q12,q13,q14,q15,q16,q17,q18,nq18,q19,q20;
-	wire nq20,q23,nq23;
+   wire      q20a, q20b, q20c, q20d, q20e;
+   	wire nq20,q23,nq23;
 	wire wrppsevent;
 	wire wreventm,wren_mb1,wren_mb2;
 	wire wren_mb3,wren_mb4;// added 7_16_2015
@@ -205,7 +206,10 @@ module time_tagging_hw_v1_0
 	assign calnanosec = {5'b00000,ccalnanosec[26:0]}; //concatenation of wires
 	assign deadnanosec = {5'b00000,cdeadnanosec[26:0]}; //concatenation of wires
 	assign ttagid = {8'h74,8'h74,8'h61,8'h67}; //assignment to ascii representation for "ttag", added 7_9_15
-	assign csel8rr = q20; // circuit to create "csel8rr" - added 8_10_16 to correct zynq ps lock_up
+// 29-Aug-2019 DFN following RS instructions ... extend handshake pipelin
+//	assign csel8rr = q20; // circuit to create "csel8rr" - added 8_10_16 to correct zynq ps lock_up
+	assign csel8rr = q20e; // circuit to create "csel8rr" - added 8_10_16 to correct zynq ps lock_up
+
 	assign cseldfwr = q23; //circuit to create "cseldfwr" - added 8_10_16 to correct zynq ps lock_up
 	
   	dff dqff1(clk_120m,evtclkf,q1,ttagres); // circuit to create "wrevents "
@@ -221,7 +225,14 @@ module time_tagging_hw_v1_0
 	dff dqff20(clk_120m,q11,q20,ttagres); // circuit to create "wrenr_csel8"
 	//dff dqff26(clk_120m,q20,q26,ttagres); // circuit to create "csel8rr" - removed 8_10_16 to correct zynq ps lock_up
 	//dff dqff27(clk_120m,q26,q27,ttagres); // circuit to create "csel8rr"  - removed 8_10_16 to correct zynq ps lock_up
-	
+
+   // 29-Aug-2019 Added more delay here for csel8rr per Bob Sobin suggestion
+	dff dqff20a(clk_120m,q20,q20a,ttagres); 
+	dff dqff20b(clk_120m,q20a,q20b,ttagres); 
+	dff dqff20c(clk_120m,q20b,q20c,ttagres); 
+	dff dqff20d(clk_120m,q20c,q20d,ttagres); 
+	dff dqff20e(clk_120m,q20d,q20e,ttagres); 
+
 	dff dqff17(clk_120m,dead,q17,ttagres); //circuit to create "wrdeadevent"
 	dff dqff18(clk_120m,q17,q18,ttagres); //circuit to create "wrdeadevent"
 	dff dqff19(clk_120m,q18,q19,ttagres); //circuit to create "wrdeadevent"

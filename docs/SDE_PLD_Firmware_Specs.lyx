@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-August 26, 2019
+August 29, 2019
 \end_layout
 
 \begin_layout Author
@@ -256,6 +256,11 @@ convolved (ToTd) trigger.
 \begin_layout Description
 26-Aug-2019 Add ability to manually set trigger output high for the factory
  test.
+\end_layout
+
+\begin_layout Description
+29-Aug-2019 Modify to have digital interface module power up in factory
+ test mode with all LVDS drivers set to input mode.
 \end_layout
 
 \begin_layout Section
@@ -14072,7 +14077,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-Factory test mode if set to 1, normal operation otherwise
+Factory test mode if set to 0, normal operation otherwise
 \end_layout
 
 \end_inset
@@ -14092,7 +14097,7 @@ Factory test mode if set to 1, normal operation otherwise
 \begin_inset Text
 
 \begin_layout Plain Layout
-Interface 1 bits 7:0 set to output if 1 in factor test mode
+Interface 1 bits 7:0 set to output if 1 in factory test mode
 \end_layout
 
 \end_inset
@@ -14127,10 +14132,10 @@ Interface 0 bits 7:0 set to output if 1 in factory test mode
 
 \begin_layout Standard
 Bits 15:0, which control the direction of corresponding digital interface
- lines, are only used if bit 16 is set.
+ lines, are only used if bit 16 is set to 0.
  Otherwise the directions are set according to the requirements of the RD
  and AMIGA interfaces.
- 
+ That is, before using for RD and/or AMIGA bit 16 must be set to 1!
 \end_layout
 
 \begin_layout Standard
