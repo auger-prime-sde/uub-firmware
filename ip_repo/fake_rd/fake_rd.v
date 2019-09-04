@@ -104,14 +104,15 @@ module fake_rd
                end 
              if (PRE_ENABLE3)
                begin
-                  PRE_ENAVLE4 <= 1;
+                  ENABLE_XFR <= 1;
+//                  PRE_ENABLE4 <= 1;
                   PRE_ENABLE3 <= 0;
                end 
-            if (PRE_ENABLE4)
-               begin
-                  ENABLE_XFR <= 1;
-                  PRE_ENABLE4 <= 0;
-               end 
+//            if (PRE_ENABLE4)
+//               begin
+//                  ENABLE_XFR <= 1;
+//                  PRE_ENABLE4 <= 0;
+//               end 
              if (ENABLE_XFR)
                begin
                   if (WORD_COUNT < `MEM_SIZE)

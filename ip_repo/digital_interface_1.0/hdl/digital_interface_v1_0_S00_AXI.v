@@ -4,6 +4,7 @@
 //                 This make RD farthest from FPGA on V1 bd
 // 11-Jul-2019 DFN Change RD interface pinouts to agree with latest document
 //                 from Jorg with out the DATA_VALID signal.
+// 29-Aug-2019 DFN Change default to assign all pins as inputs!
 
 `timescale 1 ns / 1 ps
 `include "digital_interface_defs.vh"
@@ -412,125 +413,125 @@
 // Here we try to assign port direction based upon routing flag
 
 
-   assign DATA1_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[0] :
+   assign DATA1_T[0] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[0] :
                        0 ; // This is AMIGA_LTS_OUT, an output
-   assign DATA1_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[1] :
+   assign DATA1_T[1] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[1] :
                        0 ; // This is AMIGA_CLK_OUT, an output
-   assign DATA1_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[2] :
+   assign DATA1_T[2] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[2] :
                        1 ; // This is AMIGA_RX, an input
-   assign DATA1_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[3] :
+   assign DATA1_T[3] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[3] :
                        0 ; // This is AMIGA_TX, an output
-   assign DATA1_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[4] :
+   assign DATA1_T[4] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[4] :
                        0 ; // Not used, default 0
-   assign DATA1_T[5] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[5] :
+   assign DATA1_T[5] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[5] :
                        0 ; // Not used, default 0
-   assign DATA1_T[6] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[6] :
+   assign DATA1_T[6] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[6] :
                        0 ; // Not used, default 0
-   assign DATA1_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[7] :
+   assign DATA1_T[7] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[7] :
                        0 ; // Not used, default 0
     
-   assign DATA0_T[0] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[8] :
+   assign DATA0_T[0] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[8] :
                        0 ; // SPI CLK - output
-   assign DATA0_T[1] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[9] :
+   assign DATA0_T[1] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[9] :
                        0 ; // SPI MOSI - output
-   assign DATA0_T[2] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[10] :
+   assign DATA0_T[2] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[10] :
                        1 ; // This is DATA0
-   assign DATA0_T[3] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[11] :
+   assign DATA0_T[3] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[11] :
                        1 ; // This is DATA XFR CLK
-   assign DATA0_T[4] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[12] :
+   assign DATA0_T[4] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[12] :
                        1 ; // This is DATA1
-   assign DATA0_T[5] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[13] :
+   assign DATA0_T[5] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[13] :
                        0 ; // SPI CE - output
-   assign DATA0_T[6] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[14] :
+   assign DATA0_T[6] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[14] :
                        0 ; // This is TRIGGER
-   assign DATA0_T[7] = (DIG_IFC_CONTROL[16] == 1) ? ~DIG_IFC_CONTROL[15] :
+   assign DATA0_T[7] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[15] :
                        1 ; // This is SPI MISO - input
    assign CTL0[7:0] =  ~DATA0_T[7:0];
    assign CTL1[7:0] =  ~DATA1_T[7:0];
 
    // Here we try to assign outputs based upon routing flag
    
-   assign DATA1_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[0] :
+   assign DATA1_O[0] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[0] :
                        AMIGA_LTS_OUT; // This is AMIGA_LTS_OUT, pass to output
-   assign DATA1_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[1] :
+   assign DATA1_O[1] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[1] :
                        AMIGA_CLOCK_OUT; // Pass to output
-   assign DATA1_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[2] :
+   assign DATA1_O[2] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[2] :
                        0 ; // This is AMIGA_RX, an input
-   assign DATA1_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[3] :
+   assign DATA1_O[3] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[3] :
                        AMIGA_TX ; // Pass to output
-   assign DATA1_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[4] :
+   assign DATA1_O[4] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[4] :
                        0 ; // Not used
-   assign DATA1_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[5] :
+   assign DATA1_O[5] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[5] :
                        0 ; // Not used
-   assign DATA1_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[6] :
+   assign DATA1_O[6] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[6] :
                        0 ; // Not used
-   assign DATA1_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[7] :
+   assign DATA1_O[7] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[7] :
                        0 ; // Not used
     
 
-   assign DATA0_O[0] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[8] :
+   assign DATA0_O[0] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[8] :
                        RD_SCK ; // RD_SCK CLK output
-   assign DATA0_O[1] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[9] :
+   assign DATA0_O[1] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[9] :
                        RD_MOSI ; // RD_MOSI output
-   assign DATA0_O[2] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[10] :
+   assign DATA0_O[2] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[10] :
                        0 ; // This is RD_SER_DATA0
-   assign DATA0_O[3] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[11] :
+   assign DATA0_O[3] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[11] :
                        0 ; // This is RD_XFR_CLK
-   assign DATA0_O[4] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[12] :
+   assign DATA0_O[4] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[12] :
                        0 ; // RD_SER_DATA1
-   assign DATA0_O[5] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[13] :
+   assign DATA0_O[5] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[13] :
                        RD_CE; // RD_CE output
-   assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[14] :
+   assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[14] :
                        RD_TRIG ; // This is RD_TRIG output
-   assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 1) ? DIG_IFC_OUT[5] :
+   assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[5] :
                        0 ; // RD_MISO input
 
 
   // Assign inputs when in factory test mode
 
-   assign DIG_IFC_IN[0] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[0] :
+   assign DIG_IFC_IN[0] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[0] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[1] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[1] :
+   assign DIG_IFC_IN[1] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[1] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[2] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[2] :
+   assign DIG_IFC_IN[2] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[2] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[3] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[3] :
+   assign DIG_IFC_IN[3] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[3] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[4] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[4] :
+   assign DIG_IFC_IN[4] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[4] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[5] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[5] :
+   assign DIG_IFC_IN[5] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[5] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[6] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[6] :
+   assign DIG_IFC_IN[6] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[6] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[7] = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[7] :
+   assign DIG_IFC_IN[7] = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[7] :
                        0 ; // 0 if not in factory test mode
 
-   assign DIG_IFC_IN[8] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[0] :
+   assign DIG_IFC_IN[8] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[0] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[9] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[1] :
+   assign DIG_IFC_IN[9] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[1] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[10] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[2] :
+   assign DIG_IFC_IN[10] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[2] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[11] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[3] :
+   assign DIG_IFC_IN[11] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[3] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[12] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[4] :
+   assign DIG_IFC_IN[12] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[4] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[13] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[5] :
+   assign DIG_IFC_IN[13] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[5] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[14] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[6] :
+   assign DIG_IFC_IN[14] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[6] :
                        0 ; // 0 if not in factory test mode
-   assign DIG_IFC_IN[15] = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[7] :
+   assign DIG_IFC_IN[15] = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[7] :
                        0 ; // 0 if not in factory test mode
    assign DIG_IFC_IN[31:16] = 0;
 
    // Assign inputs when not in factory test mode
 
-   assign AMIGA_RX = (DIG_IFC_CONTROL[16] == 0) ? DATA1_I[2] : 0;
+   assign AMIGA_RX = (DIG_IFC_CONTROL[16] == 1) ? DATA1_I[2] : 0;
 
-   assign RD_SER_DATA0 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[2] : 0;
-   assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[3] : 0;
-   assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[4] : 0;
-   assign RD_MISO = (DIG_IFC_CONTROL[16] == 0) ? DATA0_I[7] : 0;
+   assign RD_SER_DATA0 = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[2] : 0;
+   assign RD_XFR_CLK = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[3] : 0;
+   assign RD_SER_DATA1 = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[4] : 0;
+   assign RD_MISO = (DIG_IFC_CONTROL[16] == 1) ? DATA0_I[7] : 0;
    
 // Some debug outputs -- Does this assign actually work?
 
