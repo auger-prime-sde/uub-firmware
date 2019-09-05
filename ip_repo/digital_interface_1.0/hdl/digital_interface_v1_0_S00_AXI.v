@@ -410,7 +410,8 @@
 
 	// Add user logic here
 
-// Here we try to assign port direction based upon routing flag
+   // Here we try to assign port direction based upon routing flag
+   // DIG_IFC_CONTROL[0] = 0 == factory test mode
 
 
    assign DATA1_T[0] = (DIG_IFC_CONTROL[16] == 0) ? ~DIG_IFC_CONTROL[0] :
@@ -483,7 +484,7 @@
                        RD_CE; // RD_CE output
    assign DATA0_O[6] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[14] :
                        RD_TRIG ; // This is RD_TRIG output
-   assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[5] :
+   assign DATA0_O[7] = (DIG_IFC_CONTROL[16] == 0) ? DIG_IFC_OUT[15] :
                        0 ; // RD_MISO input
 
 
