@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "sde_sc.h"
+#define VERSION_STRING " Version 3.1"
 #define LSB_TO_5V 1.868
 #define LSB_TO_24V 8.88
 #define LSB_TO_12V 4.43
@@ -17,7 +18,7 @@
 #define SC_ADDR		0x0f
 char buf[160];
 short int adc_buffer[MAX_VARS];
-static const char *optString = "d:w:W:klL:rsStp:v:P::Aah?";
+static const char *optString = "d:w:VW:klL:rsStp:v:P::I::Aah?";
 /* Read SlowControl serial Number */
 void sc_serial ( int file, char *b)
 {   char reg[] ={0x01, 0x00};
@@ -102,6 +103,17 @@ void radio_rst (int file)
 
 
 }
+void sc_version ( int file, char*b )
+{ char reg[] = {0x0e,0x00};
+if (write(file, reg, 2) != 2) {
+        	 	exit(3);
+     }
+     usleep (100000);
+     if (read(file,b,2)!= 2) {
+     	  	  	  	exit(4);
+     }
+     return ;
+}
 void sc_test_reg (int file, char *b)
 {   char reg[] ={0x0a, 0x00};
      if (write(file, reg, 2) != 2) {
@@ -146,7 +158,31 @@ void sc_powerControl_reg_w (int file, char *b)
      usleep (100000);
      return ;
 }
+void sc_ident_reg_w( int file, char*buf)
+{
+int i;
+char reg[6] ={0x0f, 0x00, 0x0, 0x0, 0x0,0x0};
+	for (i=0;i<4; i++) {
+		reg[i+2] = buf[i];
 
+	}
+	 if (write(file, reg, 6) != 6) {
+       	 	exit(3);
+    }
+	 return;
+}
+void sc_ident_reg( int file, char*buf)
+{
+char reg[5] ={0x0f, 0x00, 0x0, 0x0, 0x0};
+	 if (write(file, reg, 2) != 2) {
+       	 	exit(3);
+    }
+     usleep (100000);
+     if (read(file,buf,4)!= 4) {
+	  	  	  	exit(4);
+	 }
+     return;
+}
 void sc_set_dac (int file, int chan, int value)
 {	char reg[4] ={0x05, 0x00, 0x0, 0x0};
 	static char ch_msk[6] = {0x00, 0x20, 0x60, 0x30, 0x40, 0x50};
@@ -168,12 +204,13 @@ void sc_set_dac (int file, int chan, int value)
 //sStp:v:P::Aah?
 void display_usage( char *s )
 {
-    puts( "Version 2.0 \n Usage:" );
-    printf ( "%s [-aAsStl] [-L 0|1] [-wW ARG] [-P[HEX]] [-p P_ARG -v V_ARG]\n", s);
+    puts( "Version 3.1 \n Usage:" );
+    printf ( "%s [-aAsStlV] [-I[NUM]] [-L 0|1] [-d 0|1] [-wW ARG] [-P[HEX]] [-p P_ARG -v V_ARG]\n", s);
     puts ("Options:");
     puts ("-a \t show a map of environment variables in human readable form");
     puts ("-A \t show a map of environment variables as hex raw data");
     puts ("-S \t show content of status register in hex");
+    puts ("-r \t radio reset");
     puts ("-s \t show serial number");
     puts ("-l \t show lifetime [s]");
     puts ("-L \t set ADC enable signal low or high");
@@ -182,11 +219,18 @@ void display_usage( char *s )
     puts ("   \t ARG = 1 Slowcontrol managing WD");
     puts ("   \t ARG = 0 ZYNQ is managing WD");
     puts ("-P \t if [HEX] omitted show content of power control register in hex");
+    puts ("   \t no space between arg and option");
     puts ("   \t with [HEX] set power control register to [HEX]");
     puts ("   \t the program takes care that you cannot switch off power supplies used by FPGA");
     puts ("-p");
     puts ("-v \t -p -v are used to set the high voltage for PMT1-6 P_ARG=(1-6) ");
     puts ("   \t to value V_ARG(0x0....0x0fff)");
+    puts ("-V \t shows version of slowc and scu firmware ");
+    puts ("-I \t with arg stores NUM (1-4 digit number) into EEPROM, without prints NUM ");
+    puts ("   \t no space between arg and option");
+    puts ("-d \t analog +/-3V3 control");
+    puts ("   \t ARG = 1 enable analog 3V3");
+    puts ("   \t ARG = 0 disable ");
     puts ("   \t for further information refer to the slow control register map documentation");
     exit( EXIT_FAILURE );
 }
@@ -234,6 +278,23 @@ int main( int argc, char *argv[] )
             	 printf("%.2x\n", buf[0]);
 
             	 break;
+             case 'I':
+            	 if (optarg) {
+            		 i = (int) strtol (optarg,NULL, 0);
+            		 sprintf(buf, "%04d",i);
+            		 sc_ident_reg_w (file,buf);
+
+            	 }
+            	 else {
+            	 sc_ident_reg(file, buf);
+            	 printf ("ID: %4s\n", buf);
+            	 }
+
+            	 break;
+             case 'V':
+            	 sc_version (file, buf);
+            	 printf ("%s %s scu FW Version %d.%d\n",argv[0],VERSION_STRING, buf[1], buf[0]);
+            	 break;
              case 'k':
             	 kill (file);
             	 break;
@@ -277,31 +338,31 @@ int main( int argc, char *argv[] )
             	 break;
              case 'a':
             	 sc_get_ADC_values (file);
-            	 printf("PMT Stat: HVmon\tImon \t Tmon\n");
+            	 printf("PMT Stat: HVmon[V]\tImon[uA] \t Tmon[C]\n");
             	 printf ("PMT1");
             	 printf ("\t %.1f",(float)adc_buffer[PMT1_HVM] *LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT1_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT1_TM]*0.3662/2.)-273.15);
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT1_CM]*LSB_TO_5V);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT1_TM]*0.3662/2.)-273.15);
             	 printf ("\nPMT2");
             	 printf ("\t %.1f",(float)adc_buffer[PMT2_HVM]*LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT2_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT2_TM]*0.3662/2.)-273.15);
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT2_CM]*LSB_TO_5V);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT2_TM]*0.3662/2.)-273.15);
             	 printf ("\nPMT3");
             	 printf ("\t %.1f",(float)adc_buffer[PMT3_HVM]*LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT3_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT3_TM]*0.3662/2.)-273.15); //0.3662 = mV/adc count; measured over 2kOhm
-            	 printf ("\nPMT4");
-            	 printf ("\t %.1f",(float)adc_buffer[PMT4_HVM]*LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT4_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT4_TM]*0.3662/2.)-273.15);
-            	 printf ("\nPMT5");
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT3_CM]*LSB_TO_5V);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT3_TM]*0.3662/2.)-273.15); //0.3662 = mV/adc count; measured over 2kOhm
+            	 printf ("\nSSD_PMT");
+            	 printf ("\t %.1f",(float)adc_buffer[PMT4_HVM]*LSB_TO_5V/1875.*1500.);
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT4_CM]*LSB_TO_5V/10.);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT4_TM]*0.3662/2.)-273.15);
+            	 printf ("\nSM_PMT");
             	 printf ("\t %.1f",(float)adc_buffer[PMT5_HVM]*LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT5_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT5_TM]*0.3662/2.)-273.15);
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT5_CM]*LSB_TO_5V);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT5_TM]*0.3662/2.)-273.15);
             	 printf ("\nPMT6");
             	 printf ("\t %.1f",(float)adc_buffer[PMT6_HVM]*LSB_TO_5V*1.25);
-            	 printf ("\t %.1f",(float)adc_buffer[PMT6_CM]*LSB_TO_5V);
-            	 printf ("\t %.1f",(float)(adc_buffer[PMT6_TM]*0.3662/2.)-273.15);
+            	 printf ("\t\t %.1f",(float)adc_buffer[PMT6_CM]*LSB_TO_5V);
+            	 printf ("\t\t %.1f",(float)(adc_buffer[PMT6_TM]*0.3662/2.)-273.15);
             	 printf ("\n");
             	 printf ("\nPower supplies");
             	 printf ("\nNominal \t Actual \t Current");
@@ -358,13 +419,17 @@ int main( int argc, char *argv[] )
 //						 (float)adc_buffer[P12V_HI_2],
 //						 (float)adc_buffer[P12V_HI_3]);
             	 printf("\nSensors ");
-//            	 printf ("\nT= %d *0.1K, P= %d mBar TW = ",adc_buffer[T_AIR],adc_buffer[P_AIR]);
-            	 printf ("%.1f K",adc_buffer[WAT_LVL]*0.3662/2.);
+            	 printf ("\n T= %.1f C\n P= %.1f mBar\n H= %.1f %% \n",
+            			 (float) adc_buffer[T_AIR]/10.,
+            			 (float) adc_buffer[P_AIR]/10.,
+            			 (float) adc_buffer[H_AIR]/10.);
+            	 printf (" T_WAT %.1f K",adc_buffer[WAT_LVL]*0.3662/2.);
 
 
             	 printf ("\n");
                  break;
              case 'P': // switch ps on/of
+
             	 if (optarg) {
             		 i = (int) strtol (optarg,NULL, 0);
 

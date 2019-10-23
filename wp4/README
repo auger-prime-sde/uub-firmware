@@ -1,1 +1,11 @@
-Files for working package 4
+This repository holds files for the SCU (Slow Control Unit) for the UUB.
+For compile you need the msp430-gcc compiler package and a TI 
+MSP-FETFlash Emulation Tool if you want to flash the firmware to the MCU.
+
+Directories:
+
+slowc/ 		contains the sources and binaries for the slowc command.
+UUB_V1/	 	files for SCU firmware for V1 UUBs
+UUB_V2/	 	files for SCU firmware for V2 UUBs
+UUB_V3/	 	files for SCU firmware for V3 UUBs
+

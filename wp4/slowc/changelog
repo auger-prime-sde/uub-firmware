@@ -6,7 +6,11 @@ sde_sc.h 	Header file from the slowcontrol Firmware
 SlowControl.c	Sources
 
 Changelog:
+Oct  2019	V3.1 	minor modification to output
+			added commands for serial number stored in EEPROM (slowc -I)
+			modified output from slowc -a for pressure sensor data
 Dec.11th 2018 	V2.1	Corrected current measurment for I_3V3_SC
 			LED controller handling, 1st version
 			LED controler put to DAC channels 1 & 7 
 Nov. 2018 	V2.0	Initial version put to Githubv3
+

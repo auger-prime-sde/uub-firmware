@@ -82,7 +82,7 @@ K.H. Becker
 
 #define P_AIR	  64	//Air pressure
 #define T_AIR     65    //Air temperature
-#define T_SCU     66    //SCU temperature
+#define H_AIR     66    //SCU temperature
 #define T_WAT     67    //Water temperatur (0xffff if not present)
 #define MAX_VARS 68
 uint8_t act_mask;
