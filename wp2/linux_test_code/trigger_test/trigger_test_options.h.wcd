@@ -36,7 +36,7 @@
 #define LED_PULSWID0 10
 #define LED_PULSWID1 20
 
-#define TRIG_THR0 3000
+#define TRIG_THR0 1000
 #define TRIG_THR1 3000
 #define TRIG_THR2 3000
 #define TRIG_SSD 4095
@@ -47,9 +47,9 @@
 #define SHWR_TRIGGERS
 
 #ifdef SHWR_TRIGGERS 
- // #define COMPAT_SB_TRIGGER
+  #define COMPAT_SB_TRIGGER
  // #define COMPAT_TOT_TRIGGER
- // #define COMPAT_TOT_TRIG_OCC 1
+ // #define COMPAT_TOT_TRIG_OCC 10
  //  #define COMPAT_TOTD_TRIGGER
  //  #define COMPAT_TOTD_TRIG_OCC 1
   //   #define COMPAT_TOTD_FD 42  // 60ns decay constant
@@ -60,7 +60,7 @@
      #define COMPAT_TOTD_UP1 4095
      #define COMPAT_TOTD_UP2 4095
      #define COMPAT_TOTD_INT  5
-  #define SB_TRIGGER
+//  #define SB_TRIGGER
 //  #define SSD_AND	
   #define SB_COINC_LVL 1
   #define SB_COINC_OVLP 3

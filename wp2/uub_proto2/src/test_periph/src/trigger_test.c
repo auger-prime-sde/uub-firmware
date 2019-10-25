@@ -640,6 +640,7 @@ void trigger_test()
         check_muon_buffers();  // Do sanity check of shower buffers
         print_muon_buffers();  // Print out the buffer
       }
+    fflush(stdout);  // Ensure event flushed to file
   }
   // Disable shower interrupts from the sde_trigger module. --
   // For test if disable after enable works

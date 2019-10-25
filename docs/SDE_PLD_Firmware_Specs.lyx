@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-September 3, 2019
+October 25, 2019
 \end_layout
 
 \begin_layout Author
@@ -268,6 +268,11 @@ convolved (ToTd) trigger.
  The order of EXT0 and EXT1 in the registers was previously incorrectly
  documented.
  
+\end_layout
+
+\begin_layout Description
+25-Oct-2019 Enable documentation for the compatibility mode MOPS trigger
+ in preparation for inclusion of this trigger.
 \end_layout
 
 \begin_layout Section
@@ -864,11 +869,13 @@ The compatibility mode triggers operate on a signal that has been filtered
 \end_layout
 
 \begin_layout Verbatim
+
 int fir[21] = {5,0,12,22,0,-61,-96,0,256,551,681,551,256,0,-96,-61,0,22,12,0,5};
  
 \end_layout
 
 \begin_layout Verbatim
+
 int filt[2048], unfilt[2048];
 \end_layout
 
@@ -877,26 +884,32 @@ int filt[2048], unfilt[2048];
 \end_layout
 
 \begin_layout Verbatim
+
 for (i=21; i<2048; i++) 
 \end_layout
 
 \begin_layout Verbatim
+
 { 
 \end_layout
 
 \begin_layout Verbatim
+
   filt[i] = 0;
 \end_layout
 
 \begin_layout Verbatim
+
   for (j=0; j<21; j++)
 \end_layout
 
 \begin_layout Verbatim
+
     filt[i] = filt[i] + unfilt[i-21+j]*fir[j]; 
 \end_layout
 
 \begin_layout Verbatim
+
 }
 \end_layout
 
@@ -910,6 +923,7 @@ The code snippet below indicates how to use the bit masks and shifts defined
 \end_layout
 
 \begin_layout Verbatim
+
 int wrt_word, rd_word, value1, value2;
 \end_layout
 
@@ -918,10 +932,12 @@ int wrt_word, rd_word, value1, value2;
 \end_layout
 
 \begin_layout Verbatim
+
 // Prepare information to load multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
@@ -930,14 +946,17 @@ wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 // Extract information from word read from multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 value1 = (rd_word & VALUE1_MASK) >> VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 value2 = (rd_word & VALUE2_MASK) >> VALUE2_SHIFT;
 \end_layout
 
@@ -2691,21 +2710,25 @@ FN=(int)\,(1024./(64.-FD)+0.5)
 
 \begin_layout Subsection
 
-\color cyan
-Multiplicity of Positive Steps 
+\color black
+Compatibility Multiplicity of Positive Steps 
 \end_layout
 
 \begin_layout Standard
 \noindent
 
-\color cyan
-The multiplicity-of-positive-steps (MOPS) trigger counts positive steps
- in each FADC trace, accumulating bin to bin steps until the first bin which
- is smaller than the previous bin is encountered.
+\color black
+The compatibility multiplicity-of-positive-steps (MOPS) trigger counts positive
+ steps in each FADC trace, accumulating bin to bin steps until the first
+ bin which is smaller than the previous bin is encountered.
  The aggregate positive step is then subjected to a minimum & maximum height
  constraint.
  If it passes this condition the step is added to the count of such steps
- within a fixed length 120 bin long sliding window.
+ within a fixed length 
+\begin_inset Formula $3\mu s$
+\end_inset
+
+ long sliding window.
  A variable length veto may be applied to ignore aggregate steps following
  another such step.
  Finally, if the occupancy exceeds a specified value in the required multiplicit
@@ -2716,53 +2739,41 @@ y of traces, and the integrated signal exceeds a specified value in those
 
 \begin_layout Standard
 
-\color cyan
+\color black
 The signal integration operates by keeping a running sum of the pulse height
- in the current ADC time bin minus that in the bin 250 time slots earlier.
- However, there is a period after a trigger, when no triggers are possible
- due to finishing the ADC trace or if no buffers are available, in which
- the earlier time bin is not available in the PLD.
- While this does not affect any triggered events, it could cause the integrated
- signal to diverge from zero.
- In order to mitigate this effect, the integrated signal is exponentially
- decayed with a time constant of 2048 time bins.
- The actual integral decays faster than that due to the undershoot following
- a signal.
+ in the current ADC time bin minus that in the bin 
+\begin_inset Formula $\text{6\ensuremath{\mu s}}$
+\end_inset
+
+ earlier.
+ In addition, the integral is decayed to 0 with a 
+\begin_inset Formula $\approx50\mu\mathrm{s}$
+\end_inset
+
+ time constant to ensure recovery from any overflow.
  Note that in any case, the integral depends upon the history of signals
  not only in the trace, but before the trace, so an exact offline reconstruction
  of the trigger is not possible.
- The integral remains valid for 
-\begin_inset Formula $\approx$
-\end_inset
-
-250 time bins after the primary trigger.
  
 \end_layout
 
 \begin_layout Standard
 \noindent
 
-\color cyan
+\color black
 A block of 10 registers controls the multiplicity-of-positive-steps trigger
  instance.
  
-\color inherit
-
-\begin_inset Separator latexpar
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
 \noindent
 \align center
 
-\color cyan
+\color black
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="5">
+<lyxtabular version="3" rows="11" columns="4">
 <features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -2773,7 +2784,7 @@ A block of 10 registers controls the multiplicity-of-positive-steps trigger
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Name
 \end_layout
 
@@ -2784,18 +2795,7 @@ Name
 
 \begin_layout Plain Layout
 
-\color cyan
-Address
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -2806,7 +2806,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Width
 \end_layout
 
@@ -2817,7 +2817,7 @@ Width
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Description
 \end_layout
 
@@ -2830,8 +2830,8 @@ Description
 
 \begin_layout Plain Layout
 
-\color cyan
-MIN0
+\color black
+COMPATIBILITY_MOPS_MIN0_ADDR
 \end_layout
 
 \end_inset
@@ -2841,18 +2841,7 @@ MIN0
 
 \begin_layout Plain Layout
 
-\color cyan
-base+0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -2863,8 +2852,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -2874,7 +2863,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Lower threshold for PMT0
 \end_layout
 
@@ -2887,8 +2876,8 @@ Lower threshold for PMT0
 
 \begin_layout Plain Layout
 
-\color cyan
-MIN1
+\color black
+COMPATIBILITY_MOPS_MIN1_ADDR
 \end_layout
 
 \end_inset
@@ -2898,18 +2887,7 @@ MIN1
 
 \begin_layout Plain Layout
 
-\color cyan
-base+1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -2920,8 +2898,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -2931,7 +2909,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Lower threshold for PMT1
 \end_layout
 
@@ -2944,8 +2922,8 @@ Lower threshold for PMT1
 
 \begin_layout Plain Layout
 
-\color cyan
-MIN2
+\color black
+COMPATIBILITY_MOPS_MIN2_ADDR
 \end_layout
 
 \end_inset
@@ -2955,18 +2933,7 @@ MIN2
 
 \begin_layout Plain Layout
 
-\color cyan
-base+2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -2977,8 +2944,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -2988,7 +2955,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Lower threshold for PMT2
 \end_layout
 
@@ -3001,8 +2968,8 @@ Lower threshold for PMT2
 
 \begin_layout Plain Layout
 
-\color cyan
-MAX0
+\color black
+COMPATIBILITY_MOPS_MAX0_ADDR
 \end_layout
 
 \end_inset
@@ -3012,18 +2979,7 @@ MAX0
 
 \begin_layout Plain Layout
 
-\color cyan
-base+3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3034,8 +2990,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -3045,7 +3001,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Upper threshold for PMT0
 \end_layout
 
@@ -3058,8 +3014,8 @@ Upper threshold for PMT0
 
 \begin_layout Plain Layout
 
-\color cyan
-MAX1
+\color black
+COMPATIBILITY_MOPS_MAX1_ADDR
 \end_layout
 
 \end_inset
@@ -3069,18 +3025,7 @@ MAX1
 
 \begin_layout Plain Layout
 
-\color cyan
-base+4
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3091,8 +3036,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -3102,7 +3047,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Upper threshold for PMT1
 \end_layout
 
@@ -3115,8 +3060,8 @@ Upper threshold for PMT1
 
 \begin_layout Plain Layout
 
-\color cyan
-MAX2
+\color black
+COMPATIBILITY_MOPS_MAX2_ADDR
 \end_layout
 
 \end_inset
@@ -3126,18 +3071,7 @@ MAX2
 
 \begin_layout Plain Layout
 
-\color cyan
-base+5
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3148,8 +3082,8 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
-10
+\color black
+12
 \end_layout
 
 \end_inset
@@ -3159,7 +3093,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Upper threshold for PMT2
 \end_layout
 
@@ -3172,8 +3106,8 @@ Upper threshold for PMT2
 
 \begin_layout Plain Layout
 
-\color cyan
-ENABLE
+\color black
+COMPATIBILITY_MOPS_ENABLE_ADDR
 \end_layout
 
 \end_inset
@@ -3183,18 +3117,7 @@ ENABLE
 
 \begin_layout Plain Layout
 
-\color cyan
-base+6
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3205,7 +3128,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 8
 \end_layout
 
@@ -3216,7 +3139,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Control bits for the trigger
 \end_layout
 
@@ -3229,8 +3152,8 @@ Control bits for the trigger
 
 \begin_layout Plain Layout
 
-\color cyan
-INT
+\color black
+COMPATIBILITY_MOPS_INT_ADDR
 \end_layout
 
 \end_inset
@@ -3240,18 +3163,7 @@ INT
 
 \begin_layout Plain Layout
 
-\color cyan
-base+7
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3261,9 +3173,7 @@ R/W
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-10
+24
 \end_layout
 
 \end_inset
@@ -3273,7 +3183,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Minimum integrated signal
 \end_layout
 
@@ -3286,8 +3196,8 @@ Minimum integrated signal
 
 \begin_layout Plain Layout
 
-\color cyan
-OCC
+\color black
+COMPATIBILITY_MOPS_OCC_ADDR
 \end_layout
 
 \end_inset
@@ -3297,18 +3207,7 @@ OCC
 
 \begin_layout Plain Layout
 
-\color cyan
-base+8
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3319,7 +3218,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 7
 \end_layout
 
@@ -3330,7 +3229,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Occupancy required for trigger
 \end_layout
 
@@ -3343,8 +3242,8 @@ Occupancy required for trigger
 
 \begin_layout Plain Layout
 
-\color cyan
-OFS
+\color black
+COMPATIBILITY_MOPS_OFS_ADDR
 \end_layout
 
 \end_inset
@@ -3354,18 +3253,7 @@ OFS
 
 \begin_layout Plain Layout
 
-\color cyan
-base+9
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 R/W
 \end_layout
 
@@ -3375,8 +3263,6 @@ R/W
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
 4
 \end_layout
 
@@ -3387,7 +3273,7 @@ R/W
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Veto 
 \end_layout
 
@@ -3403,7 +3289,7 @@ Veto
 
 \begin_layout Standard
 
-\color cyan
+\color black
 Note that the MINx, OCC, and INT conditions are satisfied when the signal
  is strictly greater than (
 \begin_inset Formula $>$
@@ -3415,37 +3301,36 @@ Note that the MINx, OCC, and INT conditions are satisfied when the signal
 \end_inset
 
 ) the register value.
- Thus writing 1023 to a MAXx register disables that constraint.
+ Thus writing 4095 to a MAXx register disables that constraint.
 \end_layout
 
 \begin_layout Standard
 
-\color cyan
+\color black
 The veto is active for 
-\begin_inset Formula $max(0,\,int(log_{2}(ph))+1-ofs)$
+\begin_inset Formula $max(0,\,int(log_{2}(ph))-1-ofs)$
 \end_inset
 
- bins following a aggregate step of size 
+ (25, not 8.3 ns!) bins following a aggregate step of size 
 \begin_inset Formula $ph.$
 \end_inset
 
  The veto can be disabled by setting OFS to 10 (decimal).
  Also note that a veto length of 1 has no effect since at least on negative
  bin to bin step is required to finish an aggregate step.
- The following table lists some example veto durations.
-\color inherit
-
-\begin_inset Separator latexpar
-\end_inset
-
-
+ With respect to the pre-upgrade electronics, the OCC and OFS register values
+ remain the same, while the values loaded into the INT register and the
+ MINx and MAXx registers should nominally be increased by a factor of 4
+ to preserve the trigger behavior.
+ The following table lists the veto duration for some example OFS and step
+ sizes.
 \end_layout
 
 \begin_layout Standard
 \noindent
 \align center
 
-\color cyan
+\color black
 \begin_inset Tabular
 <lyxtabular version="3" rows="9" columns="3">
 <features tabularvalignment="middle">
@@ -3458,7 +3343,7 @@ The veto is active for
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 OFS
 \end_layout
 
@@ -3469,7 +3354,7 @@ OFS
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Aggregate step
 \end_layout
 
@@ -3480,7 +3365,7 @@ Aggregate step
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Veto duration
 \end_layout
 
@@ -3493,7 +3378,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 0
 \end_layout
 
@@ -3504,8 +3389,8 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
-2
+\color black
+8
 \end_layout
 
 \end_inset
@@ -3515,42 +3400,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
-2
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
+\color black
 2
 \end_layout
 
@@ -3563,7 +3413,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 0
 \end_layout
 
@@ -3573,9 +3423,7 @@ Veto duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-9
+12
 \end_layout
 
 \end_inset
@@ -3585,7 +3433,40 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
+2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
 4
 \end_layout
 
@@ -3598,7 +3479,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 1
 \end_layout
 
@@ -3608,78 +3489,6 @@ Veto duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-1
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-5
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-2
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
 8
 \end_layout
 
@@ -3690,7 +3499,73 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\color black
 3
 \end_layout
 
@@ -3703,7 +3578,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 2
 \end_layout
 
@@ -3713,9 +3588,7 @@ Veto duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-8
+32
 \end_layout
 
 \end_inset
@@ -3725,7 +3598,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 2
 \end_layout
 
@@ -3738,7 +3611,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 4
 \end_layout
 
@@ -3748,9 +3621,7 @@ Veto duration
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-8
+32
 \end_layout
 
 \end_inset
@@ -3760,7 +3631,7 @@ Veto duration
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 0
 \end_layout
 
@@ -3777,21 +3648,15 @@ Veto duration
 \begin_layout Standard
 \noindent
 
-\color cyan
+\color black
 The bit usage for the ENABLE register is shown below.
-\color inherit
-
-\begin_inset Separator latexpar
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
 \noindent
 \align center
 
-\color cyan
+\color black
 \begin_inset Tabular
 <lyxtabular version="3" rows="8" columns="2">
 <features tabularvalignment="middle">
@@ -3803,7 +3668,7 @@ The bit usage for the ENABLE register is shown below.
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Bit(s)
 \end_layout
 
@@ -3814,7 +3679,7 @@ Bit(s)
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Description
 \end_layout
 
@@ -3827,7 +3692,7 @@ Description
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 0
 \end_layout
 
@@ -3838,7 +3703,7 @@ Description
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Not used
 \end_layout
 
@@ -3851,7 +3716,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 1
 \end_layout
 
@@ -3862,7 +3727,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Not used
 \end_layout
 
@@ -3875,7 +3740,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 2
 \end_layout
 
@@ -3886,7 +3751,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Not used
 \end_layout
 
@@ -3899,7 +3764,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 3
 \end_layout
 
@@ -3910,7 +3775,7 @@ Not used
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Include PMT0 in multiplicity logic if set
 \end_layout
 
@@ -3923,7 +3788,7 @@ Include PMT0 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 4
 \end_layout
 
@@ -3934,7 +3799,7 @@ Include PMT0 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Include PMT1 in multiplicity logic if set
 \end_layout
 
@@ -3947,7 +3812,7 @@ Include PMT1 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 5
 \end_layout
 
@@ -3958,7 +3823,7 @@ Include PMT1 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Include PMT2 in multiplicity logic if set
 \end_layout
 
@@ -3971,7 +3836,7 @@ Include PMT2 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 7:6
 \end_layout
 
@@ -3982,7 +3847,7 @@ Include PMT2 in multiplicity logic if set
 
 \begin_layout Plain Layout
 
-\color cyan
+\color black
 Coincidence level for multiplicity logic sub-trigger
 \end_layout
 
@@ -3994,23 +3859,6 @@ Coincidence level for multiplicity logic sub-trigger
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\color cyan
-This trigger is present in code versions x270711y and later.
- The minimum integrated signal requirement is present in code versions x081211y
- and later.
- Note this uses the register previously used to specify the window length.
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-\color cyan
-Also note that as of version x161012y the minimum integrated signal requirement
- set for the MOPS trigger is also applied to the ToTd trigger.
 \end_layout
 
 \begin_layout Subsection
