@@ -23,6 +23,9 @@
 // 18-Sep-2018 DFN Add stretch of trigger signals to avoid missing them
 // 20-Dec-2018 DFN Add synchronization of trigger in signal
 // 07-Feb-2019 DFN Add scalers
+// 31-Oct-2019 DFN Added Fabio's mops module
+// 01-Nov-2019 DFN Add random module; fix SB prescale
+// 02-Nov-2019 DFN Add two consequtive bins option to compat single bin
 
 `include "sde_trigger_regs.vh"  // All the reg & wire declarations
 
@@ -45,6 +48,8 @@ single_bin_40mhz
                           [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
                            `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                            `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+            .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
 	    .TRIG(COMPATIBILITY_SB_TRIG)
 	    );
 
@@ -98,6 +103,33 @@ totd_40mhz
               .INT(COMPATIBILITY_TOTD_TRIG_INT[`COMPATIBILITY_INTEGRAL_BITS-1:0]),
 	     .TRIG(COMPATIBILITY_TOTD_TRIG),
              .DEBUG(COMPATIBILITY_TOTD_DEBUG)
+	     );
+
+mops_40mhz
+  mops_40mhz1(.ENABLE40(ENABLE40),
+	     .CLK120(CLK120),
+             .RESET(SHWR_TRIGGER),
+	     .ADC0(FILTB_PMT0),
+	     .ADC1(FILTB_PMT1),
+	     .ADC2(FILTB_PMT2),
+	     .MIN0(COMPATIBILITY_MOPS_TRIG_MIN0[`ADC_WIDTH-1:0]),
+	     .MIN1(COMPATIBILITY_MOPS_TRIG_MIN1[`ADC_WIDTH-1:0]),
+	     .MIN2(COMPATIBILITY_MOPS_TRIG_MIN2[`ADC_WIDTH-1:0]),
+	     .MAX0(COMPATIBILITY_MOPS_TRIG_MAX0[`ADC_WIDTH-1:0]),
+	     .MAX1(COMPATIBILITY_MOPS_TRIG_MAX1[`ADC_WIDTH-1:0]),
+	     .MAX2(COMPATIBILITY_MOPS_TRIG_MAX2[`ADC_WIDTH-1:0]),
+	     .TRIG_ENABLE(COMPATIBILITY_MOPS_TRIG_ENAB
+                          [`COMPATIBILITY_MOPS_TRIG_ENAB_SHIFT+
+                           `COMPATIBILITY_MOPS_TRIG_ENAB_WIDTH-1:
+                           `COMPATIBILITY_MOPS_TRIG_ENAB_SHIFT]),
+	     .MULTIPLICITY(COMPATIBILITY_MOPS_TRIG_ENAB
+                           [`COMPATIBILITY_MOPS_TRIG_COINC_LVL_SHIFT+
+                            `COMPATIBILITY_MOPS_TRIG_COINC_LVL_WIDTH-1:
+                            `COMPATIBILITY_MOPS_TRIG_COINC_LVL_SHIFT]),
+              .OCCUPANCY(COMPATIBILITY_MOPS_TRIG_OCC[`WIDTH_BITS-3:0]),
+              .OFS(COMPATIBILITY_MOPS_TRIG_OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0]),
+              .INT(COMPATIBILITY_TOTD_TRIG_INT[`COMPATIBILITY_INTEGRAL_BITS-1:0]),
+	     .TRIG(COMPATIBILITY_MOPS_TRIG)
 	     );	
 
 
@@ -118,6 +150,12 @@ single_bin_120mhz
              .TRIG(SB_TRIG),
              .DEBUG(SB_TRIG_DEBUG)
   	     );
+
+random
+  random1(.MODE(RANDOM_TRIG_MODE),
+          .CLK(CLK120),
+          .TRIG(RNDM_TRIG)
+  	  );
 
 // Generate muon triggers
 
@@ -200,6 +238,7 @@ scaler
                          [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           
            .RESET(LCL_RESET | LCL_SCALER_A_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_A_COUNT),
            .DEBUG(SCALER_A_DEBUG)
@@ -221,6 +260,8 @@ scaler
                          [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
            .RESET(LCL_RESET | LCL_SCALER_B_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_B_COUNT),
            .DEBUG(SCALER_B_DEBUG)
@@ -242,6 +283,8 @@ scaler
                          [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
+           .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
            .RESET(LCL_RESET | LCL_SCALER_C_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_C_COUNT),
            .DEBUG(SCALER_C_DEBUG)
@@ -309,9 +352,10 @@ stretch #(2) stretch_compat_totd(.CLK(CLK120),
 stretch #(2) stretch_compat_ext(.CLK(CLK120),
                                  .IN(PRESCALED_COMPAT_EXT_TRIG),
                                  .OUT(STRETCHED_COMPAT_EXT_TRIG));
-stretch #(2) stretch_sb(.CLK(CLK120),
-                         .IN(SB_TRIG),
+stretch #(2) stretch_sb(.CLK(CLK120),.IN(PRESCALED_SB_TRIG),
                          .OUT(STRETCHED_SB_TRIG));
+stretch #(2) stretch_rndm(.CLK(CLK120),.IN(PRESCALED_RNDM_TRIG),
+                         .OUT(STRETCHED_RNDM_TRIG));
 
 // Synchronize external trigger input to clock
 synchronizer_1bit ext_trig_sync(.ASYNC_IN(TRIG_IN),.CLK(CLK120),
@@ -421,7 +465,7 @@ always @(posedge CLK120) begin
         else
           PRESCALED_COMPAT_TOT_TRIG <= COMPATIBILITY_TOT_TRIG;
 
-                if (SHWR_BUF_TRIG_MASK & `COMPAT_PRESCALE_SHWR_BUF_TRIG_TOTD) begin
+        if (SHWR_BUF_TRIG_MASK & `COMPAT_PRESCALE_SHWR_BUF_TRIG_TOTD) begin
            if (COMPATIBILITY_TOTD_TRIG) begin
               COMPAT_TOTD_TRIG_COUNTER <= COMPAT_TOTD_TRIG_COUNTER + 1;
               if (COMPAT_TOTD_TRIG_COUNTER == 0) PRESCALED_COMPAT_TOTD_TRIG <= 1;
@@ -431,6 +475,17 @@ always @(posedge CLK120) begin
         end
         else
           PRESCALED_COMPAT_TOTD_TRIG <= COMPATIBILITY_TOTD_TRIG;
+
+        if (SHWR_BUF_TRIG_MASK & `COMPAT_PRESCALE_SHWR_BUF_TRIG_MOPS) begin
+           if (COMPATIBILITY_MOPS_TRIG) begin
+              COMPAT_MOPS_TRIG_COUNTER <= COMPAT_MOPS_TRIG_COUNTER + 1;
+              if (COMPAT_MOPS_TRIG_COUNTER == 0) PRESCALED_COMPAT_MOPS_TRIG <= 1;
+           end
+           else
+             PRESCALED_COMPAT_MOPS_TRIG <= 0;
+        end
+        else
+          PRESCALED_COMPAT_MOPS_TRIG <= COMPATIBILITY_MOPS_TRIG;
 
         if (SHWR_BUF_TRIG_MASK & `COMPAT_PRESCALE_SHWR_BUF_TRIG_EXT) begin
            if (EXT_TRIG) begin
@@ -442,6 +497,28 @@ always @(posedge CLK120) begin
         end
         else
           PRESCALED_COMPAT_EXT_TRIG <= EXT_TRIG;
+
+        if (SHWR_BUF_TRIG_MASK & `PRESCALE_SHWR_BUF_TRIG_SB) begin
+           if (SB_TRIG) begin
+              SB_TRIG_COUNTER <= SB_TRIG_COUNTER + 1;
+              if (SB_TRIG_COUNTER == 0) PRESCALED_SB_TRIG <= 1;
+	   end
+           else
+             PRESCALED_SB_TRIG <= 0;
+        end
+        else
+          PRESCALED_SB_TRIG <= SB_TRIG;
+
+        if (SHWR_BUF_TRIG_MASK & `PRESCALE_SHWR_BUF_TRIG_RNDM) begin
+           if (RNDM_TRIG) begin
+              RNDM_TRIG_COUNTER <= RNDM_TRIG_COUNTER + 1;
+              if (RNDM_TRIG_COUNTER == 0) PRESCALED_RNDM_TRIG <= 1;
+	   end
+           else
+             PRESCALED_RNDM_TRIG <= 0;
+        end
+        else
+          PRESCALED_RNDM_TRIG <= RNDM_TRIG;
 
 	// Repetitive code block that scrubs the filtered ADC data,
 	// delays ADC data, and loads shower memory.
@@ -489,11 +566,17 @@ always @(posedge CLK120) begin
                      `COMPATIBILITY_SHWR_BUF_TRIG_TOTD_SHIFT) &
                     (SHWR_BUF_TRIG_MASK & 
                      `COMPATIBILITY_SHWR_BUF_TRIG_TOTD)) 
+               |  ((STRETCHED_COMPAT_MOPS_TRIG << 
+                     `COMPATIBILITY_SHWR_BUF_TRIG_MOPS_SHIFT) &
+                    (SHWR_BUF_TRIG_MASK & 
+                     `COMPATIBILITY_SHWR_BUF_TRIG_MOPS)) 
               | ((STRETCHED_COMPAT_EXT_TRIG <<
                   `COMPATIBILITY_SHWR_BUF_TRIG_EXT_SHIFT) & 
                  (SHWR_BUF_TRIG_MASK & `COMPATIBILITY_SHWR_BUF_TRIG_EXT))
               | ((STRETCHED_SB_TRIG << `SHWR_BUF_TRIG_SB_SHIFT) & 
                  (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_SB))
+              | ((STRETCHED_RNDM_TRIG << `SHWR_BUF_TRIG_RNDM_SHIFT) & 
+                 (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_RNDM))
               | ((LED_TRG_FLAG << `SHWR_BUF_TRIG_LED_SHIFT) & 
                  (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_LED));
               
@@ -536,11 +619,17 @@ always @(posedge CLK120) begin
                                    `COMPATIBILITY_SHWR_BUF_TRIG_TOTD_SHIFT) &
                                   (SHWR_BUF_TRIG_MASK & 
                                    `COMPATIBILITY_SHWR_BUF_TRIG_TOTD)) 
+                |  ((STRETCHED_COMPAT_MOPS_TRIG << 
+                                   `COMPATIBILITY_SHWR_BUF_TRIG_MOPS_SHIFT) &
+                                  (SHWR_BUF_TRIG_MASK & 
+                                   `COMPATIBILITY_SHWR_BUF_TRIG_MOPS)) 
 		| ((STRETCHED_COMPAT_EXT_TRIG << 
                     `COMPATIBILITY_SHWR_BUF_TRIG_EXT_SHIFT) & 
                    (SHWR_BUF_TRIG_MASK & `COMPATIBILITY_SHWR_BUF_TRIG_EXT))
               | ((STRETCHED_SB_TRIG << `SHWR_BUF_TRIG_SB_SHIFT) & 
-                 (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_SB));
+                 (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_SB))
+             | ((STRETCHED_RNDM_TRIG << `SHWR_BUF_TRIG_RNDM_SHIFT) & 
+                 (SHWR_BUF_TRIG_MASK & `SHWR_BUF_TRIG_RNDM));
 
               LCL_SHWR_BUF_TRIG_IDN[LCL_SHWR_BUF_WNUM]
                 <= LCL_SHWR_BUF_TRIG_IDN[LCL_SHWR_BUF_WNUM] |
