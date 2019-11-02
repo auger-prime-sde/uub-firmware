@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-October 25, 2019
+November 2, 2019
 \end_layout
 
 \begin_layout Author
@@ -273,6 +273,10 @@ convolved (ToTd) trigger.
 \begin_layout Description
 25-Oct-2019 Enable documentation for the compatibility mode MOPS trigger
  in preparation for inclusion of this trigger.
+\end_layout
+
+\begin_layout Description
+02-Nov-2019 Add new random trigger documentation.
 \end_layout
 
 \begin_layout Section
@@ -1399,7 +1403,7 @@ Coincidence level for multiplicity logic sub-trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 9
 \end_layout
 
@@ -1420,7 +1424,7 @@ Coincidence level for multiplicity logic sub-trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Require 2 consecutive bins above threshold if set
 \end_layout
 
@@ -3863,79 +3867,37 @@ Coincidence level for multiplicity logic sub-trigger
 
 \begin_layout Subsection
 
-\color cyan
+\color black
 Random Trigger
 \end_layout
 
 \begin_layout Standard
-\noindent
-
-\color cyan
-The random trigger provides a means for the PPC403 to generate a trigger
- after a specified delay, irrespective of the ADC inputs.
- It is controlled by a bank of 3 registers.
-\color inherit
-
-\begin_inset Separator latexpar
-\end_inset
-
-
+The functionality of the old UB random trigger is now essentially available
+ in the LED module.
+ The new random trigger module for the UUB, which is not compatible with
+ the old module, is described here.
+ It can be useful for recording background traces or testing DAQ programs
+ with various trigger rates.
+ There is just one register controlling this module at address RANDOM_TRIG_MODE_
+ADDR.
+ Once started the random trigger continues until 0 is written to the mode
+ register.
+ The contents of this register are described below:
 \end_layout
 
 \begin_layout Standard
-\noindent
 \align center
-
-\color cyan
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="5">
+<lyxtabular version="3" rows="19" columns="2">
 <features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0pt">
-<column alignment="center" valignment="top" width="0pt">
-<column alignment="center" valignment="top" width="0pt">
-<column alignment="center" valignment="top" width="0pt">
-<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-Name
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-Address
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-R/W
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-Width
+Value
 \end_layout
 
 \end_inset
@@ -3944,9 +3906,7 @@ Width
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-Description
+Fake Data
 \end_layout
 
 \end_inset
@@ -3957,42 +3917,7 @@ Description
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-DELAY A
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-base+0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-R/W
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-12
+0
 \end_layout
 
 \end_inset
@@ -4001,9 +3926,7 @@ R/W
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-Low order 12 bits of delay (25ns increments)
+Reset and stop random trigger
 \end_layout
 
 \end_inset
@@ -4014,42 +3937,7 @@ Low order 12 bits of delay (25ns increments)
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-DELAY B
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-base+1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-R/W
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-12
+1
 \end_layout
 
 \end_inset
@@ -4058,9 +3946,363 @@ R/W
 \begin_inset Text
 
 \begin_layout Plain Layout
+Fixed rate: 
+\begin_inset Formula $10\ \mathrm{ms}$
+\end_inset
 
-\color cyan
-High order 12 bits of delay (25ns increments)
+ period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 
+\begin_inset Formula $100\ \mathrm{ms}$
+\end_inset
+
+ period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 
+\begin_inset Formula $1\ \mathrm{s}$
+\end_inset
+
+ period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 
+\begin_inset Formula $10\ \mathrm{s}$
+\end_inset
+
+ period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 
+\begin_inset Formula $100\ \mathrm{s}$
+\end_inset
+
+ period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 200 s period 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Fixed rate: 400 s period
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-17.1\ \mathrm{\mu s}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-273\ \mathrm{\mu s}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-2.2\ \mathrm{ms}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-17.5\ \mathrm{ms}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-35\ \mathrm{ms}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-70\ \mathrm{ms}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-280\ \mathrm{ms}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+28
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing 
+\begin_inset Formula $0-2.24\ \mathrm{s}$
+\end_inset
+
+ spacing
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Random timing: 
+\begin_inset Formula $0-17.9\ \mathrm{s}$
+\end_inset
+
+ spacing
 \end_layout
 
 \end_inset
@@ -4071,42 +4313,11 @@ High order 12 bits of delay (25ns increments)
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-START
-\end_layout
-
+Anything else 
+\begin_inset Formula $\le31$
 \end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
 
-\begin_layout Plain Layout
 
-\color cyan
-base+2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-W
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\color cyan
-–
 \end_layout
 
 \end_inset
@@ -4115,9 +4326,7 @@ W
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\color cyan
-Writing anything to this register starts the random trigger timer
+Fixed rate: 800 s period
 \end_layout
 
 \end_inset
@@ -4128,15 +4337,6 @@ Writing anything to this register starts the random trigger timer
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\noindent
-
-\color cyan
-Only 1 random trigger is generated per write to the START register.
- Also note that the trigger inhibit will block random triggers with less
- than 256 clock cycle delay.
 \end_layout
 
 \begin_layout Subsection
@@ -5035,8 +5235,8 @@ SHWR_BUF_TRIG_MASK register, then a trigger is generated on a LED flash,
 
 \color cyan
 \begin_inset Tabular
-<lyxtabular version="3" rows="15" columns="3">
-<features tabularvalignment="middle">
+<lyxtabular version="3" rows="16" columns="3">
+<features tabularvalignment="bottom">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -5193,7 +5393,7 @@ Time-over-threshold deconvolved trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 3
 \end_layout
 
@@ -5205,7 +5405,7 @@ Time-over-threshold deconvolved trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_MOPS
 \end_layout
 
@@ -5217,7 +5417,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_MOPS
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Multiplicity-of-positive-steps trigger
 \end_layout
 
@@ -5268,7 +5468,7 @@ External trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 5
 \end_layout
 
@@ -5280,8 +5480,8 @@ External trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
-COMPATIBILITY_SHWR_BUF_TRIG_RNDM
+\color black
+SHWR_BUF_TRIG_RNDM
 \end_layout
 
 \end_inset
@@ -5292,7 +5492,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_RNDM
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Random trigger
 \end_layout
 
@@ -5306,7 +5506,6 @@ Random trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color black
 6
 \end_layout
 
@@ -5341,7 +5540,6 @@ Pre-scale compatibility single bin trigger by 256 if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color black
 7
 \end_layout
 
@@ -5376,7 +5574,6 @@ Pre-scale time-over-threshold trigger if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color black
 8
 \end_layout
 
@@ -5411,7 +5608,6 @@ Pre-scale time-over-threshold deconvolved trigger if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
 9
 \end_layout
 
@@ -5432,7 +5628,7 @@ Pre-scale time-over-threshold deconvolved trigger if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Pre-scale MoPS trigger if set
 \end_layout
 
@@ -5481,7 +5677,7 @@ Pre-scale external trigger by 256 if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 11
 \end_layout
 
@@ -5502,7 +5698,7 @@ Pre-scale external trigger by 256 if set
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Pre-scale random trigger if set
 \end_layout
 
@@ -5574,6 +5770,40 @@ SB_TRIG
 
 \size footnotesize
 Full bandwidth single bin trigger
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\size footnotesize
+\color black
+Pre-scale single bin trigger by 256 if set
 \end_layout
 
 \end_inset
@@ -5767,7 +5997,7 @@ Initial time-over-threshold deconvoluted trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 3
 \end_layout
 
@@ -5779,7 +6009,7 @@ Initial time-over-threshold deconvoluted trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_MOPS
 \end_layout
 
@@ -5791,7 +6021,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_MOPS
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Multiplicity-of-positive-steps trigger
 \end_layout
 
@@ -5842,7 +6072,7 @@ Initial external trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 5
 \end_layout
 
@@ -5854,7 +6084,7 @@ Initial external trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_RNDM
 \end_layout
 
@@ -5866,7 +6096,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_RNDM
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Initial random trigger
 \end_layout
 
@@ -5880,7 +6110,7 @@ Initial random trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 8
 \end_layout
 
@@ -5892,6 +6122,7 @@ Initial random trigger
 \begin_layout Plain Layout
 
 \size footnotesize
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_SB_DLYD
 \end_layout
 
@@ -5903,7 +6134,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_SB_DLYD
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Additional single bin trigger
 \end_layout
 
@@ -5993,7 +6224,7 @@ Additional time-over-threshold deconvoluted trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 11
 \end_layout
 
@@ -6005,7 +6236,7 @@ Additional time-over-threshold deconvoluted trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_MOPS_DLYD
 \end_layout
 
@@ -6017,7 +6248,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_MOPS_DLYD
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Additional multiplicity-of-positive-steps trigger
 \end_layout
 
@@ -6031,7 +6262,7 @@ Additional multiplicity-of-positive-steps trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 12
 \end_layout
 
@@ -6068,7 +6299,7 @@ Additional external trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 13
 \end_layout
 
@@ -6080,7 +6311,7 @@ Additional external trigger
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 COMPATIBILITY_SHWR_BUF_TRIG_RNDM_DLYD
 \end_layout
 
@@ -6092,7 +6323,7 @@ COMPATIBILITY_SHWR_BUF_TRIG_RNDM_DLYD
 \begin_layout Plain Layout
 
 \size footnotesize
-\color cyan
+\color black
 Additional random trigger
 \end_layout
 
@@ -8592,7 +8823,7 @@ LED pulses
 LED pulses may be generated under program control through the trigger module.
  (Ported original code developed by Roberto Assiro, Lecce.) Timing of the
  pulses is controlled by the trigger module.
- Amplitude of the pulses is controlled by the slow control micro-controller.
+ Amplitude of the pulses is controlled by the DAQ program.
  There is one LED_CONTROL register at address LED_CONTROL_ADDR.
  The bit usage for this register is as follows:
 \begin_inset Separator latexpar
@@ -13740,7 +13971,7 @@ Anything else
 
 \begin_layout Plain Layout
 Fixed rate: 
-\begin_inset Formula $5s\ \mathrm{s}$
+\begin_inset Formula $5\ \mathrm{s}$
 \end_inset
 
  period
