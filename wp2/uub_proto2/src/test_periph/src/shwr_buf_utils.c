@@ -6,7 +6,8 @@
 #include "trigger_test.h"
 #include <math.h>
 
-#define VERBOSE
+// #define VERBOSE
+#define PRINT_TIME
 
 extern u32 *mem_addr, *mem_ptr;
 extern u32 start_offset[NUM_BUFFERS];
@@ -16,12 +17,16 @@ extern int nevents;
 extern int compat_sb_count;
 extern int compat_tot_count;
 extern int compat_totd_count;
+extern int compat_mops_count;
 extern int sb_count;
+extern int rndm_count;
 extern int compat_ext_count;
 extern int compat_sb_dlyd_count;
 extern int compat_tot_dlyd_count;
 extern int compat_totd_dlyd_count;
+extern int compat_mops_dlyd_count;
 extern int sb_dlyd_count;
+extern int rndm_dlyd_count;
 extern int compat_ext_dlyd_count;
 
 static int peaks[NUM_BUFFERS][10], areas[NUM_BUFFERS][10];
@@ -32,6 +37,8 @@ static int secondsu, delta_ticsu;
 
 static double prev_time = 0;
 static int first_second = 0;
+static int rndm_mode = 3;
+static int rndm_dwell =0;
 
 // Read shower memory buffers from PL memory into PS memory
 void read_shw_buffers()
@@ -75,7 +82,8 @@ void read_shw_buffers()
 #endif
 
   trig_id = read_trig(SHWR_BUF_TRIG_ID_ADDR);
-#ifdef VERBOSE
+#if defined(VERBOSE) || defined(PRINT_TIME)
+
   printf("trigger_test: Trigger ID = %x ==", trig_id);
   //  printf("trigger_test: Trigger ID =");
   if ((trig_id & SHWR_BUF_TRIG_SB) != 0)
@@ -84,6 +92,12 @@ void read_shw_buffers()
     printf(" COMPAT_SB");
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_TOT) != 0)
     printf(" COMPAT_TOT");
+  if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_TOTD) != 0)
+    printf(" COMPAT_TOTD");
+  if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_MOPS) != 0)
+    printf(" COMPAT_MOPS");
+  if ((trig_id & SHWR_BUF_TRIG_RNDM) != 0)
+    printf(" RNDM");
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_EXT) != 0)
     printf(" EXT");
   if ((trig_id & SHWR_BUF_TRIG_LED) != 0)
@@ -96,10 +110,32 @@ void read_shw_buffers()
     printf(" COMPAT_SB_DLYD");
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_TOT<<8)) != 0)
      printf(" COMPAT_TOT_DLYD");
+  if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_TOTD<<8)) != 0)
+     printf(" COMPAT_TOTD_DLYD");
+  if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_MOPS<<8)) != 0)
+     printf(" COMPAT_MOPS_DLYD");
+  if ((trig_id & (SHWR_BUF_TRIG_RNDM<<8)) != 0)
+    printf(" RNDM_DLYD");
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_EXT<<8)) != 0)
     printf(" EXT_DLYD");
   printf("  T = %f  DT = %f", time, dt);
   printf("\n");
+
+#ifdef RNDM_TRIGGER
+#ifdef ROTATE_RNDM
+  rndm_dwell = rndm_dwell + 1;
+    if (rndm_dwell >= 3)
+      {
+        rndm_mode = rndm_mode + 1;
+        if (rndm_mode > 8 || rndm_mode < 3) rndm_mode = 3;
+        write_trig(RANDOM_TRIG_MODE_ADDR, 0);
+        write_trig(RANDOM_TRIG_MODE_ADDR, rndm_mode);
+        printf("trigger_test: change random trigger mode to %d\n", rndm_mode);
+        rndm_dwell = 0;
+      }
+#endif
+#endif
+
   fflush(stdout);
 #endif
 
@@ -129,8 +165,12 @@ void read_shw_buffers()
     compat_tot_count++;
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_TOTD) != 0)
     compat_totd_count++;
+  if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_MOPS) != 0)
+    compat_mops_count++;
   if ((trig_id & SHWR_BUF_TRIG_SB) != 0)
     sb_count++;
+  if ((trig_id & SHWR_BUF_TRIG_RNDM) != 0)
+    rndm_count++;
   if ((trig_id & COMPATIBILITY_SHWR_BUF_TRIG_EXT) != 0)
     compat_ext_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_SB<<8)) != 0)
@@ -139,8 +179,12 @@ void read_shw_buffers()
     compat_tot_dlyd_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_TOTD<<8)) != 0)
     compat_totd_dlyd_count++;
+  if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_MOPS<<8)) != 0)
+    compat_mops_dlyd_count++;
   if ((trig_id & (SHWR_BUF_TRIG_SB<<8)) != 0)
     sb_dlyd_count++;
+  if ((trig_id & (SHWR_BUF_TRIG_RNDM<<8)) != 0)
+    rndm_dlyd_count++;
   if ((trig_id & (COMPATIBILITY_SHWR_BUF_TRIG_EXT<<8)) != 0)
     compat_ext_dlyd_count++;
 
@@ -309,10 +353,10 @@ void unpack_shw_buffers()
   secondsu= secondsn[unpack_shw_buf_num];
   delta_ticsu= delta_ticsn[unpack_shw_buf_num];
 #ifdef VERBOSE
-  printf("unpack_shw_buf_num=%d seconds=%d %d %d %d %d %d %d %d\n",
-	 unpack_shw_buf_num, secondsn[0], secondsn[1], 
-         secondsn[2], secondsn[3], secondsn[4], 
-         secondsn[5], secondsn[6], secondsn[7]);
+  //  printf("unpack_shw_buf_num=%d seconds=%d %d %d %d %d %d %d %d\n",
+  //	 unpack_shw_buf_num, secondsn[0], secondsn[1], 
+  //       secondsn[2], secondsn[3], secondsn[4], 
+  //       secondsn[5], secondsn[6], secondsn[7]);
 #endif
 
 
@@ -431,7 +475,7 @@ void print_shw_buffers()
   trig = 1;
 
   //  #define DETAIL_PRINT
-    #define PRINT_EVENT
+  //  #define PRINT_EVENT
 
 #ifndef ANY_DEBUG  // Some firmware debug flags disable info needed for this
 #ifdef COMPAT_SB_TRIGGER

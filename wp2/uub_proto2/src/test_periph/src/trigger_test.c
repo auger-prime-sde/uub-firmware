@@ -7,6 +7,7 @@
 // 11-Apr-2016 DFN Add simple polled DMA
 // 29-Apr-2016 DFN Implement TRIGGER_INTERRUPT
 // 30-Apr-2018 DFN Implement split shower & muon interrupts
+// 04-Nov-2019 DFN Add MoPS and Random triggers
 
 #include "trigger_test_options.h"
 #include "trigger_test.h"
@@ -32,8 +33,12 @@ volatile int compat_tot_count = 0;
 volatile int compat_tot_dlyd_count = 0;
 volatile int compat_totd_count = 0;
 volatile int compat_totd_dlyd_count = 0;
+volatile int compat_mops_count = 0;
+volatile int compat_mops_dlyd_count = 0;
 volatile int sb_count = 0;
 volatile int sb_dlyd_count = 0;
+volatile int rndm_count = 0;
+volatile int rndm_dlyd_count = 0;
 volatile int compat_ext_count = 0;
 volatile int compat_ext_dlyd_count = 0;
 
@@ -489,11 +494,15 @@ void trigger_test()
                    compat_sb_count, compat_tot_count);
             printf("  Compat ToTd %d  SB %d  EXT %d",
                    compat_totd_count, sb_count, compat_ext_count);
+            printf("  Compat MoPS %d  Rndm %d",
+                   compat_mops_count, rndm_count);
             printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
                    compat_sb_dlyd_count, compat_tot_dlyd_count);
-            printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d\n",
+            printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d",
                    compat_totd_dlyd_count, sb_dlyd_count, 
                    compat_ext_dlyd_count);
+            printf("  Compat MoPS dlyd %d  Rndm dlyd %d\n",
+                   compat_mops_dlyd_count, rndm_dlyd_count);
             fflush(stdout);
           //          compat_sb_count = 0;
           //compat_tot_count = 0;
@@ -740,23 +749,33 @@ void sde_shwr_intr_handler(void *CallbackRef)
             max_num_full = 0;
             max_num_used = 0;
 
-          printf("Trigger_test: Counts - Compat SB %d  Compat ToT %d",
-                 compat_sb_count, compat_tot_count);
-          printf("  Compat ToTd %d  SB %d  EXT %d",
-                 compat_totd_count, sb_count, compat_ext_count);
-          printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
-                 compat_sb_dlyd_count, compat_tot_dlyd_count);
-          printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d\n",
-                 compat_totd_dlyd_count, sb_dlyd_count, compat_ext_dlyd_count);
+            printf("Trigger_test: Counts - Compat SB %d  Compat ToT %d",
+                   compat_sb_count, compat_tot_count);
+            printf("  Compat ToTd %d  SB %d  EXT %d",
+                   compat_totd_count, sb_count, compat_ext_count);
+            printf("  Compat MoPS %d  Rndm %d",
+                   compat_mops_count, rndm_count);
+            printf("  Compat SB dlyd %d  Compat ToT dlyd %d",
+                   compat_sb_dlyd_count, compat_tot_dlyd_count);
+            printf("  Compat ToTd dlyd %d  SB dlyd %d  EXT dlyd %d",
+                   compat_totd_dlyd_count, sb_dlyd_count, 
+                   compat_ext_dlyd_count);
+            printf("  Compat MoPS dlyd %d  Rndm dlyd %d\n",
+                   compat_mops_dlyd_count, rndm_dlyd_count);
+
           compat_sb_count = 0;
           compat_tot_count = 0;
           compat_totd_count = 0;
+          compat_mops_count = 0;
           sb_count = 0;
+          rndm_count = 0;
           compat_ext_count = 0;
           compat_sb_dlyd_count = 0;
           compat_tot_dlyd_count = 0;
           compat_totd_dlyd_count = 0;
+          compat_mops_dlyd_count = 0;
           sb_dlyd_count = 0;
+          rndm_dlyd_count = 0;
           compat_ext_dlyd_count = 0;
         }
         if (toread_shwr_buf_num != ((prev_read+1) & 0x3))

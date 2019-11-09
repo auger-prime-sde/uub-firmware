@@ -86,6 +86,10 @@
      scaler_c_written_sync(.ASYNC_IN(AXI_SCALER_C_COUNT_WRITTEN),
                            .CLK(CLK120),.SYNC_OUT(LCL_SCALER_C_COUNT_WRITTEN));
 
+   synchronizer_32bit
+     random_mode_sync(.ASYNC_IN(RANDOM_TRIG_MODE),.CLK(CLK120),
+                      .SYNC_OUT(LCL_RNDM_MODE));
+   
    synchronizer_32bit shwr_trigid_sync
      (.ASYNC_IN(LCL_SHWR_BUF_TRIG_ID),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_TRIG_ID));

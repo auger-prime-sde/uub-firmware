@@ -49,7 +49,7 @@ single_bin_40mhz
                            `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                            `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
             .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
-                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS_SHIFT]),
 	    .TRIG(COMPATIBILITY_SB_TRIG)
 	    );
 
@@ -108,7 +108,7 @@ totd_40mhz
 mops_40mhz
   mops_40mhz1(.ENABLE40(ENABLE40),
 	     .CLK120(CLK120),
-             .RESET(SHWR_TRIGGER),
+             .RESET(LCL_RESET),
 	     .ADC0(FILTB_PMT0),
 	     .ADC1(FILTB_PMT1),
 	     .ADC2(FILTB_PMT2),
@@ -129,7 +129,8 @@ mops_40mhz
               .OCCUPANCY(COMPATIBILITY_MOPS_TRIG_OCC[`WIDTH_BITS-3:0]),
               .OFS(COMPATIBILITY_MOPS_TRIG_OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0]),
               .INT(COMPATIBILITY_TOTD_TRIG_INT[`COMPATIBILITY_INTEGRAL_BITS-1:0]),
-	     .TRIG(COMPATIBILITY_MOPS_TRIG)
+	     .TRIG(COMPATIBILITY_MOPS_TRIG),
+             .DEBUG(COMPATIBILITY_MOPS_DEBUG)
 	     );	
 
 
@@ -152,9 +153,10 @@ single_bin_120mhz
   	     );
 
 random
-  random1(.MODE(RANDOM_TRIG_MODE),
+  random1(.MODE(LCL_RNDM_MODE),
           .CLK(CLK120),
-          .TRIG(RNDM_TRIG)
+          .TRIG(RNDM_TRIG),
+          .DEBUG(RNDM_DEBUG)
   	  );
 
 // Generate muon triggers
@@ -238,7 +240,8 @@ scaler
                          [`COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT+
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
-           
+           .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS_SHIFT]),
            .RESET(LCL_RESET | LCL_SCALER_A_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_A_COUNT),
            .DEBUG(SCALER_A_DEBUG)
@@ -261,7 +264,7 @@ scaler
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
            .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
-                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS_SHIFT]),
            .RESET(LCL_RESET | LCL_SCALER_B_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_B_COUNT),
            .DEBUG(SCALER_B_DEBUG)
@@ -284,7 +287,7 @@ scaler
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_WIDTH-1:
                           `COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT]),
            .TWOBINS(COMPATIBILITY_SB_TRIG_ENAB
-                          [`COMPATIBILITY_SB_TRIG_REQ2BINS]),
+                          [`COMPATIBILITY_SB_TRIG_REQ2BINS_SHIFT]),
            .RESET(LCL_RESET | LCL_SCALER_C_COUNT_WRITTEN),
 	   .COUNT(LCL_SCALER_C_COUNT),
            .DEBUG(SCALER_C_DEBUG)
@@ -349,6 +352,9 @@ stretch #(2) stretch_compat_tot(.CLK(CLK120),
 stretch #(2) stretch_compat_totd(.CLK(CLK120),
                                   .IN(PRESCALED_COMPAT_TOTD_TRIG),
                                   .OUT(STRETCHED_COMPAT_TOTD_TRIG));
+stretch #(2) stretch_compat_mops(.CLK(CLK120),
+                                  .IN(PRESCALED_COMPAT_MOPS_TRIG),
+                                  .OUT(STRETCHED_COMPAT_MOPS_TRIG));
 stretch #(2) stretch_compat_ext(.CLK(CLK120),
                                  .IN(PRESCALED_COMPAT_EXT_TRIG),
                                  .OUT(STRETCHED_COMPAT_EXT_TRIG));
@@ -758,11 +764,13 @@ always @(posedge CLK120) begin
         LCL_SHWR_BUF_STATUS[31:`SHWR_EVT_ID_SHIFT] 
 	  <= LCL_SHWR_EVT_IDN[SHWR_BUF_RNUM];
 
-        // Send debug output to test pins P61 through P63
+        // Debug output -- route in block diagram to desired pins
 
-        P61 <= SCALER_A_DEBUG[0];
-        P62 <= SCALER_A_DEBUG[1];
-        P63 <= SCALER_A_DEBUG[2];
+        DBG1 <= RNDM_DEBUG[0];
+        DBG2 <= RNDM_DEBUG[1];
+        DBG3 <= RNDM_DEBUG[2];
+        DBG4 <= RNDM_DEBUG[3];
+        DBG5 <= RNDM_DEBUG[4];
          
      end // else: !if(LCL_RESET)
 end
