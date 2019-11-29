@@ -3851,6 +3851,11 @@ Coincidence level for multiplicity logic sub-trigger
 
 \end_layout
 
+\begin_layout Standard
+This porting of this module from the UB to the UUB was performed by Fabio
+ Convenga.
+\end_layout
+
 \begin_layout Subsection
 
 \color black
