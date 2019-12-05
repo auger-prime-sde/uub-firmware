@@ -3,10 +3,11 @@
  *      Author: Roberto Assiro
  */
 
-// UUB initialization file
+// ADC initialization file
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
@@ -14,274 +15,167 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <sys/select.h>
-#include <sys/stat.h>
-#include <signal.h>
-#include <time.h>
-#include <sys/mman.h>
 #include <string.h>
-#include <ctype.h>
-#include <termios.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include "shwr_evt_defs.h"
-#include "xparameters.h"
-#include "sde_trigger_defs.h"
 
+#define BUF_SIZE                35 // Tansmit and receive buffer size
+#define RCV_BUF_SIZE           256 // Tansmit and receive buffer size
+#define nb_initData_SI5347    1560 // Nb init data for SI5347 component
 
- char ADC_LVDS[3] = {0x00,0x14,0xA0} ; // ADC bus configuration LVDS interleave
- char ADC_LVDS_INV[3] = {0x00,0x14,0xA4} ; // ADC bus configuration LVDS interleave and inverted inputs enabled
- char ADC_RESET[3] = {0x00,0x00,0x3C} ; // ADC reset
- char ADC_VREF[3] = {0x00,0x18,0x04} ; // ADC VREF setting
- char ADC_PDWN[3] = {0x00,0x08,0x00} ; // ADC PDWN setting normal operation
- char ADC_DIG_RES[3] = {0x00,0x08,0x03} ; // ADC PWRD reset setting
- char ADC_DELAY[3] = {0x00,0x17,0x25} ; // ADC delay
+//static u8 RecvBuffer[RCV_BUF_SIZE] = {0x00}; /* Buffer for Receiving Data */
 
- char cmd2channel[3] = {0x00,0x05,0x03}; // Select the 2 channels for previous cmd
- char cmdchannelA[3] = {0x00,0x05,0x01}; // Select the channel A for previous cmd
- char cmdchannelB[3] = {0x00,0x05,0x02}; // Select the channel B for previous cmd
+char fake1[2];
+char fake2[2];
 
- char TestModeMS[3]  = {0x00,0x0D,0x01}; // ADC Test Mode Middle Scale
- char TestModeFS[3]  = {0x00,0x0D,0x02}; // ADC Test Mode Full Scale
- char NormalMode[3] = {0x00,0x0D,0x00}; // ADC Normal mode
- char TestModeRM[3] = {0x00,0x0D,0x5F}; // ADC Test Mode Ramp
- char TestModeA5[3] = {0x00,0x0D,0x44}; // ADC Test Mode AAA555
+char set[]={0xFE,0x01,0x00,0x1E,0x02};
 
- char TstUser1LSB[3] = {0x00,0x19,0x55}; // User defined pattern 1 LSB
- char TstUser1MSB[3] = {0x00,0x1A,0xAA}; // User defined pattern 1 MSB
- char TestModeUM[3]  = {0x00,0x0D,0x08}; // ADC Test Mode USER1
- char AdcDelay[5]    = {0x00};           // Calculated ADC delay table
+char ADC_LVDS[3] = { 0x00, 0x14, 0xA0 }; // ADC bus configuration LVDS interleave
+char ADC_LVDS_INV[3] = { 0x00, 0x14, 0xA4 }; // ADC bus configuration LVDS interleave and inverted inputs enabled
+char ADC_RESET[3] = { 0x00, 0x00, 0x3C }; // ADC reset
+char ADC_VREF[3] = { 0x00, 0x18, 0x04 }; // ADC VREF setting
+char ADC_PDWN[3] = { 0x00, 0x08, 0x00 }; // ADC PDWN setting normal operation
+char ADC_DIG_RES[3] = { 0x00, 0x08, 0x03 }; // ADC PWRD reset setting
+char ADC_DELAY[3] = { 0x00, 0x17, 0x25 }; // ADC delay
 
- static uint8_t mode = 0;
- static uint8_t bits = 8;
- static uint32_t speed = 5000000;
+char cmd2channel[3] = { 0x00, 0x05, 0x03 }; // Select the 2 channels for previous cmd
+char cmdchannelA[3] = { 0x00, 0x05, 0x01 }; // Select the channel A for previous cmd
+char cmdchannelB[3] = { 0x00, 0x05, 0x02 }; // Select the channel B for previous cmd
 
-#define SIG_WAKEUP SIGRTMIN+14
+char TestModeMS[3] = { 0x00, 0x0D, 0x01 }; // ADC Test Mode Middle Scale
+char TestModeFS[3] = { 0x00, 0x0D, 0x02 }; // ADC Test Mode Full Scale
+char NormalMode[3] = { 0x00, 0x0D, 0x00 }; // ADC Normal mode
+char TestModeRM[3] = { 0x00, 0x0D, 0x5F }; // ADC Test Mode Ramp
+char TestModeA5[3] = { 0x00, 0x0D, 0x44 }; // ADC Test Mode AAA555
 
-#define MAP_SIZE 4096UL
-#define MAP_MASK (MAP_SIZE - 1)
+char TstUser1LSB[3] = { 0x00, 0x19, 0x55 }; // User defined pattern 1 LSB
+char TstUser1MSB[3] = { 0x00, 0x1A, 0xAA }; // User defined pattern 1 MSB
+char TestModeUM[3] = { 0x00, 0x0D, 0x08 }; // ADC Test Mode USER1
+char AdcDelay[5] = { 0x00 };           // Calculated ADC delay table
 
-struct read_evt_global
-{
-  uint32_t id_counter;
-  uint32_t volatile *shwr_pt[5];
-  int shwr_mem_size;
+static uint8_t mode = 0;
+static uint8_t bits = 8;
+static uint32_t speed = 5000000;
 
-  uint32_t volatile *regs;
-  int regs_size;
-
-  sigset_t sigset; /*used to wake the process periodically */
-};
-
-static struct read_evt_global gl;
-
-static void pabort(const char *s)
-{
+static void pabort(const char *s) {
 	perror(s);
 	abort();
 }
-int adc = 0, adc_register, register_value;
-FILE *fp, *fp1, *fp2;
-int i, fd;
-int ret = 0;
-char filename[20];
 
-int main(int argc, char *argv[])
-{
-	unsigned page_addr, page_offset;
-	void *ptr,*pt[5],*ptrt,*ptrt1;
-	unsigned page_size=sysconf(_SC_PAGESIZE);
-	page_offset = 16;
-	void *map_base, *virt_addr;
-	unsigned long read_result, writeval;
-	off_t target;
+int verifyCommand(int fd, char *command) {
+	struct spi_ioc_transfer xfer[2];
+	unsigned char buf[3];
+	int status, address;
+
+	memset(xfer, 0, sizeof xfer);
+	memset(buf, 0, sizeof buf);
+
+	address = ((0x1f & command[0])<<16)|command[1];
+
+	/* Read one byte register */
+	buf[0] = 0x80 | (0x1f & command[0]);
+	buf[1] = command[1];
+
+	xfer[0].tx_buf = (unsigned long) buf;
+	xfer[0].len = 2;
+
+	xfer[1].rx_buf = (unsigned long) buf;
+	xfer[1].len = 1;
+
+	status = ioctl(fd, SPI_IOC_MESSAGE(2), xfer);
+	if (status < 0) {
+		perror("SPI_IOC_MESSAGE");
+		return 1;
+	}
+	// printf("Address Written Read : %04x %02x %02x\n", address, command[2], buf[0]);
+	return (buf[0] != command[2]);
+}
+
+int main() {
+	int file, k;
+	char filename[20];
 
 	// ADC POWER DOWN PIN
 	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
-	printf("Initialization of ADC PWD... OK\n\r");
+	printf("Initialization of ADCs PWD... OK\n\r");
 
-	printf ("Setup for ADC begin\n");
-	if (argc == 3) {
-		printf ("Setup for ADC begin\n");
-			if (!strcmp(argv[2],"-r")) {
-					adc_read();
-			}
-			adc = atoi (argv[1]);
-			printf ("Setup for ADC %d\n", adc);
-			spi();
-			adc_setup();
-	}
-	else if (argc <= 2 || argc > 5){
-		usage();
-	}
-	else {
-		adc = atoi (argv[1]);
-		adc_register = atoi (argv[2]);
-		register_value = atoi (argv[3]);
+//////////////////////// SPI CONFIGURATION ///////////////////////////////////////
+	int i, fd;
+	int ret = 0;
+	int adc_ok = 1;
+	printf("Initialization of ADCs on SPI-0... ");
+	for (i = 0; i < 5; i++) {
+		snprintf(filename, 19, "/dev/spidev32766.%d", i);
+		fd = open(filename, O_RDWR);
+		if (fd < 0)
+			pabort("can't open device");
+		// spi mode
+		ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
+		if (ret == -1)
+			pabort("can't set spi mode");
 
-		printf("\n\rADC %d command: 0x00 register = 0x%x  value = 0x%x\n\r",adc, adc_register, register_value);
-	}
+		ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
+		if (ret == -1)
+			pabort("can't get spi mode");
 
-/**/
-	spi();
+		// bits per word
+		ret = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+		if (ret == -1)
+			pabort("can't set bits per word");
 
-	if (write(fd, cmd2channel, sizeof(cmd2channel)) != sizeof(cmd2channel)) { //command sent for both channels
+		ret = ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &bits);
+		if (ret == -1)
+			pabort("can't get bits per word");
+
+		// max speed hz
+		ret = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
+		if (ret == -1)
+			pabort("can't set max speed hz");
+
+		ret = ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed);
+		if (ret == -1)
+			pabort("can't get max speed hz");
+
+		if (write(fd, cmd2channel, sizeof(cmd2channel))
+				!= sizeof(cmd2channel)) {
 			exit(3);
-	}
-
-	char adc_write[3] = {0x00,0x00,0x00} ;
-	adc_write[1] = adc_register;
-	adc_write[2] = register_value;
-
-	if (write(fd, adc_write, sizeof(adc_write)) != sizeof(adc_write)) {
+		}
+		adc_ok &= verifyCommand(fd, cmd2channel);
+		if (write(fd, ADC_DIG_RES, sizeof(ADC_DIG_RES))
+				!= sizeof(ADC_DIG_RES)) {
 			exit(3);
+		}
+		adc_ok &= verifyCommand(fd, ADC_DIG_RES);
+		if (write(fd, ADC_PDWN, sizeof(ADC_PDWN)) != sizeof(ADC_PDWN)) {
+			exit(3);
+		}
+		adc_ok &= verifyCommand(fd, ADC_PDWN);
+		if (write(fd, ADC_RESET, sizeof(ADC_RESET)) != sizeof(ADC_RESET)) {
+			exit(3);
+		}
+		ret = verifyCommand(fd, ADC_RESET);
+
+
+		// inversion
+	//	if (write(fd, ADC_LVDS, sizeof(ADC_LVDS)) != sizeof(ADC_LVDS)) {	// ADC input not inverted
+		if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV))!= sizeof(ADC_LVDS_INV)) {	// ADC input inverted
+			exit(3);
+		}
+
+	//	adc_ok &= verifyCommand(fd, ADC_LVDS);
+		adc_ok &= verifyCommand(fd, ADC_LVDS_INV);
+
+		if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {
+			exit(3);
+		}
+		adc_ok &= verifyCommand(fd, ADC_VREF);
+		if (write(fd, NormalMode, sizeof(NormalMode)) != sizeof(NormalMode)) {
+			exit(3);
+		}
+		adc_ok = verifyCommand(fd, NormalMode);
 	}
-
-
-	//close (fd); controllare
-
-
-
+	close(fd);
+	usleep(100);
 
 	printf("OK\n\r");
 
-}
 
-
-void adc_setup (void)
-{
-
-if (write(fd, cmd2channel, sizeof(cmd2channel)) != sizeof(cmd2channel)) {
-	printf("error opening adc_setup\n");
-		exit(3);
-}
-
-if (write(fd, ADC_DIG_RES, sizeof(ADC_DIG_RES)) != sizeof(ADC_DIG_RES)) {
-		exit(3);
-}
-
-if (write(fd, ADC_PDWN, sizeof(ADC_PDWN)) != sizeof(ADC_PDWN)) {
-		exit(3);
-}
-
-if (write(fd, ADC_RESET, sizeof(ADC_RESET)) != sizeof(ADC_RESET)) {
-		exit(3);
-}
-
-//if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV)) != sizeof(ADC_LVDS_INV)) {	// ADC input inverted
-if (write(fd, ADC_LVDS, sizeof(ADC_LVDS)) != sizeof(ADC_LVDS)) {	// ADC input not inverted
-    	exit(3);
-}
-
-
-if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {
-		exit(3);
-}
-if (write(fd, NormalMode, sizeof(NormalMode)) != sizeof(NormalMode)) {
-		exit(3);
-}
-return (1);
-}
-
-
-void spi(void)
-{
-									snprintf(filename, 19, "/dev/spidev32766.%d",adc);
-									printf("filename %s\n",filename);
-									fd = open(filename, O_RDWR);
-									if (fd < 0)
-										pabort("can't open device");
-								// spi mode
-									ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
-									if (ret == -1)
-										pabort("can't set spi mode");
-
-									ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
-									if (ret == -1)
-										pabort("can't get spi mode");
-
-								// bits per word
-									ret = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
-									if (ret == -1)
-										pabort("can't set bits per word");
-
-									ret = ioctl(fd, SPI_IOC_RD_BITS_PER_WORD, &bits);
-									if (ret == -1)
-										pabort("can't get bits per word");
-
-								// max speed hz
-									ret = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed);
-									if (ret == -1)
-										pabort("can't set max speed hz");
-
-									ret = ioctl(fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed);
-									if (ret == -1)
-										pabort("can't get max speed hz");
-						//			close (fd);
-}
-
-
-void adc_read(void)
-{
-	printf("ADC read function\n");
-	adc = 2;
-	spi();
-
-#define ARRAY_SIZE(array) sizeof(array)/sizeof(array[0])
-	int i;
-	char wr_buf[]={0x01,0x01,0x01};
-	char rd_buf[10]={0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01};
-//	rd_buf[0]=0x01;
-
-	printf("input reg:\n");
-	for (i=0;i<ARRAY_SIZE(rd_buf);i++) {
-	printf("0x%02X ", rd_buf[i]);
-	if (i%2)
-		printf("\n");
-}
-
-		char adc_read[3] = {0x00,0x01,0x00} ;
-		adc_read[1] = 8;
-		adc_read[2] = 0;
-
-/*
-		if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {
-				exit(3);
-		}
-*/
-
-	if (write(fd, wr_buf, ARRAY_SIZE(wr_buf)) != ARRAY_SIZE(wr_buf))
-		perror("Write Error!");
-	if (read(fd, rd_buf, ARRAY_SIZE(rd_buf)) != ARRAY_SIZE(rd_buf))
-		perror("Read Error!!");
-	else{
-		printf("input reg:\n");
-		for (i=0;i<ARRAY_SIZE(rd_buf);i++) {
-		printf("0x%02X ", rd_buf[i]);
-		if (i%2)
-			printf("\n");
-		}
-	}
-
-
-
-printf("\n\rADC %d command: 0x00 register = 0x%x  value = 0x%x\n\r",adc, adc_read[1], adc_read[2]);
-
-	exit(1);
-
-
-	close(fd);
-}
-
-void usage(void)
-{
-	printf("|    ADC command help\n");
-	printf("|    adc <number> <command> <value>\n");
-	printf("|    adc -r add -- read adc address\n");
-	printf("|    example: adc 0 13 15 <ramp on adc 0>\n");
-	printf("|    example: \n");
-	printf("|    commands list: \n");
-	printf("|    example: \n");
-	exit(1);
 }

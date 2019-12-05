@@ -3,8 +3,6 @@
 // UUB initialization file
 #include <fcntl.h>
 
-
-
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
@@ -13,7 +11,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <string.h>
-
+#include "sde_sc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,104 +28,121 @@
 #define MAP_MASK (MAP_SIZE - 1)
 int file, i, j, ch, val, lt, counter;
 char filename[20];
+char* i2c_busy = "/home/root/i2c_busy";
+char i2c_file[] = "/home/root/i2c_busy";
+FILE *f_i2c;
+int ret;
+char buf[160];
+
+int frequency;
 
 int main()
 {
 	printf("Test I2C-0 is running... \n");
+
+
+		f_i2c = fopen(i2c_file, "w");
+		ret = remove(i2c_file);
+
+
+
 	while(1)	// infinite LOOP for watchdog
 	{
 
-/*		snprintf(filename, 19, "/dev/i2c-0");
-		file = open(filename, O_RDWR);
-		if (file < 0) {
-			printf("error opening %s\n",filename);
-			perror(" Error opening file");
-				exit (1);
-		}
-		if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
-				printf("Fail to setup slave addr!\n");
-				exit (1);
-		}
-		sc_livetime (file, &lt);// check if slow control is dead or alive
-//		printf("%d\n",lt);
-//		printf("%d\n",last_life_time);
 
-*/
+		if( access( i2c_busy, F_OK ) != -1 ) {
+		    printf("Test: file exist\n");
+		    frequency = 3000000;
+		} else {
+		  //  printf("file doesn't exists\n");
+			frequency = 1500000;
 
-		system ("slowc -a > /dev/null");
 
-/*		if (lt != last_life_time){
-				counter = 0;
-		//		printf("different life time, it's ok, counter: %d\n",counter);
-				last_life_time = lt;
-
-				// external watchdog control - pulse on W11
-				writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
-				*((unsigned long *) virt_addr) = writeval;
-				usleep (100000);
-				writeval = 0x0002;
-				*((unsigned long *) virt_addr) = writeval;
-
-		}else{
-				counter ++;
-//				printf("No reply from slowc, counter: %d\n",counter);
-				if (counter == 5){	// write event in log file
-			  			system ("mountflash > /dev/null &");
-			  			fp = fopen ("/flash/watchdog.log", "a" );
-			  			current_time();
-			  			fprintf(fp,"Slow control crash after up time: %d - UUB Killed\n\n",lt);
-			  			fclose (fp);
-			  			system ("umountflash > /dev/null &");
-
-				//		printf("UUB will be killed... \n\r");
-				//		exit (1);
+				snprintf(filename, 19, "/dev/i2c-1");
+				file = open(filename, O_RDWR);
+				if (file < 0) {
+					printf("error opening %s\n",filename);
+					perror(" Error opening file");
+						exit (1);
+				}
+				if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
+						printf("Fail to setup slave addr!\n");
+						exit (1);
 				}
 
 
-		}*/
-	//	fclose (file);
-		usleep (10000);
+
+
+
+					f_i2c = fopen(i2c_file, "w");
+
+		//		    system ("slowc -a > /dev/null");
+
+					sc_get_ADC_values (file);
+
+
+								//	 printf ("%d",adc_buffer[0]);
+								//	 printf ("\t %.1f",adc_buffer[1]);
+								//	 printf ("\n");
+									 if((float)adc_buffer[0] > 100){
+										 printf ("Test: ERROR!!!\n");
+									 }
+
+		/*			sc_serial(file, buf);
+				  // printf("SN: ");
+				   for (i=1; i<6; i++) printf("%.2x",buf[i]);
+				   printf("\n", buf[i]);
+				   char snumber =  buf[1];
+		printf(snumber);
+		if(snumber == "8f16190100"){
+			printf("serial is ok\n");
+		}
+		*/
+					usleep(10000);
+					fclose(f_i2c);
+				close(file);
+
+
+				usleep(200000);
+					ret = remove(i2c_file);
+		}
+
+
+	//	sleep(1);
+		usleep (frequency);
 	}
 }
 
-/*
 
-current_time(void){
-  	 time_t current_time;
-  	    char* c_time_string;
-  	    current_time = time(NULL);
-  	    if (current_time == ((time_t)-1))
-  	    {
-  	        (void) fprintf(stderr, "Failure to obtain the current time.\n");
-  	        exit(EXIT_FAILURE);
-  	    }
-  	    c_time_string = ctime(&current_time);
-  	    if (c_time_string == NULL)
-  	    {
-  	        (void) fprintf(stderr, "Failure to convert the current time.\n");
-  	        exit(EXIT_FAILURE);
-  	    }
-  	    fprintf(fp, c_time_string);
+
+
+
+void sc_serial ( int file, char *b)
+{   char reg[] ={0x01, 0x00};
+
+//	reg[0] = 0x01;
+//  reg[2] = 0x00;
+	  if (write(file, reg, 2) != 2) {
+	          	 	exit(3);
+	           	}
+	  usleep (100000);
+	  if (read(file,b,8)!= 8) {
+		  	  	  	exit(4);
+	  	  }
+	  return ;
 }
 
 
+void sc_get_ADC_values (int file) //, char *b)
+{   char reg[] ={0x09, 0x00};
+     if (write(file, reg, 2) != 2) {
+        	 	exit(3);
+     }
+     usleep (100000);
+     if (read(file,(char *)adc_buffer,2*MAX_VARS)!= 2*MAX_VARS) {
+	  	  	  	exit(4);
+	 }
 
-void sc_livetime (int file , int *l)
-{char reg [6] = {0x03, 0x00, 0x0, 0x0, 0x0, 0x0};
- char b[4];
-	if (write(file, reg, 2) != 2) {
-		counter ++;//printf("no device reply!\n");
-
-    }
-	usleep (100000);
-	if (read(file,b,4)!= 4) {
-		counter ++;//printf("no device reply!\n");
-	}
-
-//	printf("b: 0x%x 0x%x 0x%x 0x%x\n", b[0], b[1], b[2], b[3]);
-	*l =  b[0]
-		+ ( b[1] << 8 )
-		+ ( b[2] << 16 )
-		+ ( b[3] << 24 );
+     return ;
 }
-*/
+
