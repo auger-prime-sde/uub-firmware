@@ -4,7 +4,6 @@
 #include <linux/i2c-dev.h>
 
 #define IIC_SLAVE_SI5347         0x6C  // The slave address Cleaner Jitter
-//#define IIC_SLAVE_AD5316         0x0C  // The slave address Led controler
 #define BUF_SIZE                35 // Tansmit and receive buffer size
 #define RCV_BUF_SIZE           256 // Tansmit and receive buffer size
 #define nb_initData_SI5347    1560 // Nb init data for SI5347 component
@@ -132,11 +131,10 @@ int main ()
 {
 	int addr = 0x6C; /* The I2C address Jitter cleaner*/
 	int file, k;
-	int adapter_nr = 1; /* probably dynamically determined */
 	char filename[20];
 
 	printf("Initialization of Jitter Cleaner..... ");
-	snprintf(filename, 19, "/dev/i2c-%d", adapter_nr);
+	snprintf(filename, 19, "/dev/i2c-1");
 	file = open(filename, O_RDWR);
 	if (file < 0) {
 			exit(1);
@@ -160,12 +158,12 @@ int main ()
 		write(file, fake2,sizeof(fake2));
 	    }
 
-	printf("Done!\n\r");
+	printf("OK\n\r");
 }
 
 //********************************************
- //*    Is Jitter Cleaner Ready ?
- //********************************************
+//*    Is Jitter Cleaner Ready ?
+//********************************************
 
  int IsJitterCleanerReady(void)
  {

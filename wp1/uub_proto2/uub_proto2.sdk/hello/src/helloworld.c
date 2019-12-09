@@ -20,7 +20,7 @@
 
 int main()
 {
-    printf("Hello World\n");
+    printf("Hello Worl\n");
 
     return 0;
 }

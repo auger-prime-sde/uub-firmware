@@ -20,6 +20,11 @@
 int file, i, j, ch, val, lt, counter;
 char filename[20];
 FILE *fp;
+FILE *f_i2c;
+int ret;
+int frequency;
+
+//char* i2c_busy = "/home/root/i2c_busy";
 
 int main()
 {
@@ -36,76 +41,111 @@ int main()
     int opt = 0;
 
 //  printf("Opening device... ");
-  snprintf(filename, 19, "/dev/i2c-0");
-  	file = open(filename, O_RDWR);
-  	if (file < 0) {
-  		//	printf("error opening %s\n",filename);
-  		perror(" Error opening file");
-  			exit (1);
-  	}
-  	if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
-  		//	printf("Fail to setup slave addr!\n");
-  			exit (1);
-  	}
+/*		snprintf(filename, 19, "/dev/i2c-0");
+		file = open(filename, O_RDWR);
+		if (file < 0) {
+			//	printf("error opening %s\n",filename);
+			perror(" Error opening file");
+			exit (1);
+		}
+		if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
+			//	printf("Fail to setup slave addr!\n");
+				exit (1);
+		}
+*/
+		char i2c_file[] = "/home/root/i2c_busy";
 
+//system("rm /home/root/i2c_busy");
 
 	while(1)	// infinite LOOP for watchdog
 	{
-		// check if slow control is dead or alive
-		sc_livetime (file, &lt);
+
+
+
+
+		if( access( i2c_file, F_OK ) != -1 ) {
+			printf("WathcDog: file exist... I wait!\n");
+			frequency = 2000000;
+		} else {
+
+
+			//  printf("Opening device... ");
+					snprintf(filename, 19, "/dev/i2c-0");
+					file = open(filename, O_RDWR);
+					if (file < 0) {
+						perror(" Error opening file");
+						exit (1);
+					}
+					if (ioctl(file, I2C_SLAVE, SC_ADDR) < 0) {
+							exit (1);
+					}
+
+
+
+		  //  printf("file doesn't exist\n");
+			frequency = 1000000;
+
+			f_i2c = fopen(i2c_file, "w");
+
+
+			sc_livetime (file, &lt);	// check if slow control is dead or alive
+
+			usleep(10000);
+			fclose(f_i2c);
+			close(file);
+
+			usleep(200000);
+			ret = remove(i2c_file);
+
+
+
 //		printf("%d\n",lt);
 //		printf("%d\n",last_life_time);
 
+/*
+				if (lt != last_life_time){
+						counter = 0;
+					//	printf("different life time, it's ok, counter: %d\n",counter);
+						last_life_time = lt;
 
-		// MODIFICATION FOR I2C issue
-/*		writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
-		*((unsigned long *) virt_addr) = writeval;
-		usleep (100000);
-		writeval = 0x0002;
-		*((unsigned long *) virt_addr) = writeval;
-*/
+						// external watchdog control - pulse on W11
+						writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
+						*((unsigned long *) virt_addr) = writeval;
+						usleep (100000);
+						writeval = 0x0002;
+						*((unsigned long *) virt_addr) = writeval;
 
-		if (lt != last_life_time){
-				counter = 0;
-				printf("different life time, it's ok, counter: %d\n",counter);
-				last_life_time = lt;
+				}else{
+						counter ++;
+						printf("No reply from slowc, counter: %d\n",counter);
+					if (counter > 0){	// write event in log file
+								system ("mountflash > /dev/null &");
+								fp = fopen ("/flash/watchdog.log", "a" );
+								current_time();
+								fprintf(fp,"Alert! - No reply from Slow control\n");
+								fclose (fp);
+								system ("umountflash > /dev/null &");
 
-				// external watchdog control - pulse on W11
-				writeval = 0x0003; //Bit 0 - WATCHDOG output value  Bit 1 - Enable WATCHDOG output
-				*((unsigned long *) virt_addr) = writeval;
-				usleep (100000);
-				writeval = 0x0002;
-				*((unsigned long *) virt_addr) = writeval;
+						//		printf("UUB will be killed... \n\r");
+						//		exit (1);
+						}
+						if (counter > 4){	// write event in log file
+								system ("mountflash > /dev/null &");
+								fp = fopen ("/flash/watchdog.log", "a" );
+								current_time();
+								fprintf(fp,"Slow control crash after up time: %d - UUB Killed\n\n",lt);
+								fclose (fp);
+								system ("umountflash > /dev/null &");
 
-		}else{
-				counter ++;
-				printf("No reply from slowc, counter: %d\n",counter);
-				if (counter > 1){	// write event in log file
-			  			system ("mountflash > /dev/null &");
-			  			fp = fopen ("/flash/watchdog.log", "a" );
-			  			current_time();
-			  			fprintf(fp,"Alert! - No reply from Slow control\n");
-			  			fclose (fp);
-			  			system ("umountflash > /dev/null &");
+						//		printf("UUB will be killed... \n\r");
+						//		exit (1);
+						}
 
-				//		printf("UUB will be killed... \n\r");
-				//		exit (1);
-				}
-				if (counter == 4){	// write event in log file
-			  			system ("mountflash > /dev/null &");
-			  			fp = fopen ("/flash/watchdog.log", "a" );
-			  			current_time();
-			  			fprintf(fp,"Slow control crash after up time: %d - UUB Killed\n\n",lt);
-			  			fclose (fp);
-			  			system ("umountflash > /dev/null &");
-
-				//		printf("UUB will be killed... \n\r");
-				//		exit (1);
-				}
-
-
+				}*/
 		}
-		sleep (2);
+
+		usleep(frequency);
+		//sleep (1);
 	}
 }
 
@@ -138,12 +178,12 @@ void sc_livetime (int file , int *l)
 		counter ++;//printf("no device reply!\n");
 
     }
-	usleep (100000);
+	usleep (10000);
 	if (read(file,b,4)!= 4) {
 		counter ++;//printf("no device reply!\n");
 	}
-
-	printf("b: 0x%x 0x%x 0x%x 0x%x\n", b[0], b[1], b[2], b[3]);
+printf("0x%x 0x%x\n", b[0], b[1]);
+//	printf("b: 0x%x 0x%x 0x%x 0x%x\n", b[0], b[1], b[2], b[3]);
 	*l =  b[0]
 		+ ( b[1] << 8 )
 		+ ( b[2] << 16 )
