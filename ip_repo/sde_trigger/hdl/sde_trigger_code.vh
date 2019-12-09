@@ -25,7 +25,8 @@
 // 07-Feb-2019 DFN Add scalers
 // 31-Oct-2019 DFN Added Fabio's mops module
 // 01-Nov-2019 DFN Add random module; fix SB prescale
-// 02-Nov-2019 DFN Add two consequtive bins option to compat single bin
+// 02-Nov-2019 DFN Add two consecutive bins option to compat single bin
+// 09-Dec-2019 DFN Add readout latency measurement
 
 `include "sde_trigger_regs.vh"  // All the reg & wire declarations
 
@@ -380,24 +381,11 @@ always @(posedge CLK120) begin
         SHWR_BUF_FULL_FLAGS <= 0;
         SHWR_BUF_RNUM <= 0;
         SHWR_EVT_CTR <= 0;
-        //LCL_SHWR_BUF_TRIG_ID <= 0;
-        //LCL_SHWR_BUF_STATUS <= 0;
         DEAD <= 0;
         SHWR_INTR <= 0;
         SHWR_ADDR1 <= 0;
-        //EXT_TRIG <= 0;
-        //ADC_EXTRA <= 0;
-        //SOME_DLYD_TRIG <= 0;
         TRIGGERED <= 0;
         SOME_TRIG <= 0;
-        // COMPAT_SB_TRIG_COUNTER <= 0;
-        // COMPAT_TOT_TRIG_COUNTER <= 0;
-        // COMPAT_TOTD_TRIG_COUNTER <= 0;
-        // COMPAT_EXT_TRIG_COUNTER <= 0;
-        // PRESCALED_COMPAT_SB_TRIG <= 0;
-        // PRESCALED_COMPAT_TOT_TRIG <= 0;
-        // PRESCALED_COMPAT_TOTD_TRIG <= 0;
-        // PRESCALED_COMPAT_EXT_TRIG <= 0;
         for (DEADDLY = 0; DEADDLY<=`SHWR_DEAD_DLY; DEADDLY=DEADDLY+1)
 	  SHWR_DEAD_DLYD[DEADDLY] <= 0;
 	for (DELAY = 0; DELAY<=`SHWR_TRIG_DLY; DELAY=DELAY+1)
@@ -409,6 +397,20 @@ always @(posedge CLK120) begin
    else
      begin
 
+        if (!SHWR_TRIG_DLYD[`SHWR_TRIG_DLY])
+          begin 
+             // Create slow clock for measuring latency
+             if (LATENCY_CLK_CTR >= `CLK_FREQ) 
+               begin
+                  LATENCY_CLK_CTR <= 0;
+                  // Count event readout latency
+                  for (LINDEX = 0; LINDEX<`SHWR_MEM_NBUF; LINDEX=LINDEX+1)
+                    LCL_SHWR_BUF_LATENCY[LINDEX] <= LCL_SHWR_BUF_LATENCY[LINDEX]+1;
+                  end
+             else
+               LATENCY_CLK_CTR <= LATENCY_CLK_CTR+1;
+          end
+        
         // Debugging code.  Std. code uses stretch module above always loop.
         //  TRIG_OUT <= FILT_PMT0 > 300;
 
@@ -659,6 +661,8 @@ always @(posedge CLK120) begin
 		   SHWR_INTR <= 1;
 		   SHWR_EVT_CTR <= SHWR_EVT_CTR+1;
 		   TRIGGERED <= 0;
+                   // Start counting latency
+                   LCL_SHWR_BUF_LATENCY[LCL_SHWR_BUF_WNUM] <= 0;
 
 		   // Save event ID of this event
 		   LCL_SHWR_EVT_IDN[LCL_SHWR_BUF_WNUM] <= SHWR_EVT_ID;
@@ -766,8 +770,8 @@ always @(posedge CLK120) begin
 
         // Debug output -- route in block diagram to desired pins
 
-        DBG1 <= RNDM_DEBUG[0];
-        DBG2 <= RNDM_DEBUG[1];
+        DBG2 <= LATENCY_CLK_CTR == 0;
+        DBG1 <= RNDM_DEBUG[1];
         DBG3 <= RNDM_DEBUG[2];
         DBG4 <= RNDM_DEBUG[3];
         DBG5 <= RNDM_DEBUG[4];

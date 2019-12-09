@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-November 8, 2019
+December 9, 2019
 \end_layout
 
 \begin_layout Author
@@ -277,6 +277,16 @@ convolved (ToTd) trigger.
 
 \begin_layout Description
 08-Nov-2019 Add new random trigger documentation.
+\end_layout
+
+\begin_layout Description
+09-Dec-2019 Add register to report time from the trigger interrupt in order
+ to measure the DAQ/Linux latency in servicing the interrupt; add 5
+\begin_inset Formula $\mu s$
+\end_inset
+
+ time after transfer of RD data before a new trigger can be sent to the
+ RD; add flag if RD transfer times out.
 \end_layout
 
 \begin_layout Section
@@ -4963,7 +4973,7 @@ This bank of registers controls aspects of the shower memories and provides
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="6" columns="4">
+<lyxtabular version="3" rows="7" columns="4">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -5160,11 +5170,49 @@ Reports shower memory buffer status
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 SHWR_BUF_START_ADDR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+R
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Word offset to start of trace in buffer being read
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SHWR_BUF_LATENCY_ADDR
 \end_layout
 
 \end_inset
@@ -5191,7 +5239,11 @@ R
 \begin_inset Text
 
 \begin_layout Plain Layout
-Word offset to start of trace in buffer being read
+Time in 
+\begin_inset Formula $\mu s$
+\end_inset
+
+ since trigger interrupt asserted for this buffer
 \end_layout
 
 \end_inset
@@ -12039,7 +12091,7 @@ The bit usage for the RD_IFC_STATUS register is as follows:
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="7" columns="3">
+<lyxtabular version="3" rows="8" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0pt">
 <column alignment="center" valignment="top" width="0pt">
@@ -12219,7 +12271,7 @@ Bit mask of buffers with parity errors on serial stream 0
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -12228,7 +12280,7 @@ Bit mask of buffers with parity errors on serial stream 0
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -12237,11 +12289,40 @@ RD_PARITY1
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 Bit mask of buffers with parity errors on serial stream 1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23:20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RD_BUF_TIMEOUT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bit mask of buffers timing-out during transfer
 \end_layout
 
 \end_inset

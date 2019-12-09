@@ -309,6 +309,7 @@ void config_trigger()
 #endif
 
 #ifdef RNDM_TRIGGER
+  write_trig(RANDOM_TRIG_MODE_ADDR, 0);
   write_trig(RANDOM_TRIG_MODE_ADDR,(int) (RNDM_MODE));
   rndm_mode = read_trig(RANDOM_TRIG_MODE_ADDR);
   if (rndm_mode != RNDM_MODE) 

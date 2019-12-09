@@ -23,6 +23,10 @@
 // 10-Jul-2019 DFN Add watchdog timer provided by Sjoerd
 // 18-Jul-2019 DFN Added block against triggers for 25 clock cycles after
 //                 end of transfer.
+// 03-Dec-2019 DFN Increase block to 600 clock cycles. This is a quick
+//                 kludge, not most efficient way to do it.
+// 03-Dec-2019 DFN Add flag if timout occurred. May not be so easy to see,
+//                 however.
 
 `include "rd_interface_defs.vh"
 
@@ -116,7 +120,11 @@ module rd_interface
    // This will work to ignore 11 extra clock cycles only if XFR clock
    // frequency is 60 MHz or greater.  If not, or there are more than
    // 11 extra clock cycles, may need to increase delay.
-   stretch #(25) busy120_stretch(.IN(RD_BUSY120),
+   // stretch #(25) busy120_stretch(.IN(RD_BUSY120),
+   //                               .CLK(CLK120),
+   //                               .OUT(RD_BUSY120_STRETCH));
+   // Increase ignore to 5us.
+   stretch #(600) busy120_stretch(.IN(RD_BUSY120),
                                  .CLK(CLK120),
                                  .OUT(RD_BUSY120_STRETCH));
 
@@ -131,7 +139,7 @@ module rd_interface
      begin
 
         DBG4 <= RD_BUSY120;
-        DBG5 <= ENABLE_XFR120;
+        DBG5 <= RD_BUSY120_STRETCH;
 
         if (RST || (LCL_RESET && LCL_RESET_WRITTEN))
           begin
@@ -198,6 +206,7 @@ module rd_interface
                     STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 1;
                   STATUS[`RD_BUF_FULL_SHIFT+LCL_BUF_NUM] <= 1;
                   STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= 0;
+                  STATUS[`RD_BUF_TIMEOUT_SHIFT+LCL_BUF_NUM] <= 0;
                end
 
              // Decrement and check watchdog timer
@@ -206,6 +215,7 @@ module rd_interface
                   if (WATCHDOG_COUNTER == 0)
                     begin
                        ENABLE_XFR120 <= 0;
+                       STATUS[`RD_BUF_TIMEOUT_SHIFT+LCL_BUF_NUM] <= 1;
                     end
                   else
                     begin
@@ -223,9 +233,9 @@ module rd_interface
 
    always @(posedge SERIAL_CLK_IN)
      begin
-        DBG1 <= ENABLE_XFR;  //p62
-        DBG2 <= ENABLE_MEM_WRT;  //p63
-        DBG3 <= SERIAL_DATA0_IN;  //
+        DBG1 <= ENABLE_XFR; 
+        DBG2 <= ENABLE_MEM_WRT; 
+        DBG3 <= RD_BUSY;
 
         if (!ENABLE_XFR)
           begin

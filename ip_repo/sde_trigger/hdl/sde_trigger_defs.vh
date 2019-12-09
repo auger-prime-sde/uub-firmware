@@ -33,6 +33,7 @@
 `ifndef _TRIGGER_DEFS
  `define _TRIGGER_DEFS 1
 
+
 // Debug definitions -- may have a problem with defines nested very deeply
 // so don't nest the DEBUG defines.
 // `define ANY_DEBUG 1  // Enable if any of the following is set.
@@ -46,6 +47,7 @@
  `define COMPAT_MOPS_DEBUG 1
 // End of debug enable definitions
 
+ `define CLK_FREQ 120 // Clock frequency in MHz
  `define ADC_WIDTH 12 // Number of bits per ADC
  `define NUM_ADCS 10  // Number of ADCs
 // `define ADC_FILT_DELAY 22 // ADC filter delay
@@ -255,6 +257,7 @@
  `define SHWR_EVT_ID_SHIFT 16
  `define SHWR_EVT_ID_MASK  ((1<<(`SHWR_EVT_ID_WIDTH))-1)
  `define SHWR_BUF_START_ADDR 132
+ `define SHWR_BUF_LATENCY_ADDR 133
 
 `define MUON_TRIG1_THR0_ADDR 140
 `define MUON_TRIG1_THR1_ADDR 141

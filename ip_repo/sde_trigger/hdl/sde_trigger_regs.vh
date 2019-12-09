@@ -12,6 +12,7 @@
 // 16-May-2018 DFN Add registers to keep track of compatibility ToT triggers
 // 31-Oct-2019 DFN_FC Add registers to keep track of compatibility MoPS triggers
 // 01-Nov-2019 DFN Add register to keep track of random triggers
+// 03-Dec-2019 DFN Add register to keep track of readout latency
 
 // Shower buffer handling registers
 reg [`SHWR_TRIG_DLY:0] SHWR_TRIG_DLYD; // Trigger delayed to end of buf
@@ -33,6 +34,8 @@ reg [31:0] LCL_SHWR_BUF_TRIG_ID;
 reg [31:0] LCL_SHWR_BUF_TRIG_IDN[0:`SHWR_MEM_NBUF-1];
 reg [`SHWR_EVT_ID_WIDTH-1:0] LCL_SHWR_EVT_IDN[0:`SHWR_MEM_NBUF-1];
 wire LCL_COMPATIBILITY_GLOBAL_CONTROL;
+reg [31:0] LCL_SHWR_BUF_LATENCY[0:`SHWR_MEM_NBUF-1];
+reg [7:0] LATENCY_CLK_CTR;
 
 // AXI interface registers
 reg AXI_REG_WRITE;
@@ -161,4 +164,5 @@ integer DELAY;
 integer DEADDLY;
 integer MUON_EXTDLY;
 integer DLY_IDX;
+integer LINDEX;
 

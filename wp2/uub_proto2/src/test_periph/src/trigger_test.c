@@ -75,12 +75,12 @@ int toread_shwr_buf_num;
 int toread_muon_buf_num;
 int status;
 
-#ifdef DMA
-static XAxiCdma AxiCdmaInstance0;	// Instance of the XAxiCdma 0
-static  XAxiCdma_Config *DmaCfgPtr0;
-static XAxiCdma AxiCdmaInstance1;	// Instance of the XAxiCdma 1
-static  XAxiCdma_Config *DmaCfgPtr1;
-#endif
+/* #ifdef DMA */
+/* static XAxiCdma AxiCdmaInstance0;	// Instance of the XAxiCdma 0 */
+/* static  XAxiCdma_Config *DmaCfgPtr0; */
+/* static XAxiCdma AxiCdmaInstance1;	// Instance of the XAxiCdma 1 */
+/* static  XAxiCdma_Config *DmaCfgPtr1; */
+/* #endif */
 
 #ifdef TRIGGER_INTERRUPT
 static XScuGic IntController;	// Instance of the Interrupt Controller
@@ -132,6 +132,7 @@ void trigger_test()
   int cntrl_word = 0;
   int num_full;
   int shwr_status, muon_status;
+  int latency;
 #endif
   int id;
 
@@ -259,88 +260,88 @@ void trigger_test()
   status = read_trig(SHWR_BUF_TRIG_MASK_ADDR);
   if (status != 0) printf("trigger_test: Error reading TRIG_MASK %x\n",status);
 
- #ifdef DMA
-  // Initialize the XAxiCdma device.
-  DmaCfgPtr0 = XAxiCdma_LookupConfig(XPAR_ZYNC_BLOCK_AXI_CDMA_0_DEVICE_ID);
-  if (status != XST_SUCCESS)
-    {
-      printf("trigger_test: Failed to lookup XAxiCdma device 0.\n");
-      return;
-    }
-  // Initialize the XAxiCdma device.
-  DmaCfgPtr1 = XAxiCdma_LookupConfig(XPAR_ZYNC_BLOCK_AXI_CDMA_1_DEVICE_ID);
-  if (status != XST_SUCCESS)
-    {
-      printf("trigger_test: Failed to lookup XAxiCdma device 1.\n");
-      return;
-    }
+ /* #ifdef DMA */
+/*   // Initialize the XAxiCdma device. */
+/*   DmaCfgPtr0 = XAxiCdma_LookupConfig(XPAR_ZYNC_BLOCK_AXI_CDMA_0_DEVICE_ID); */
+/*   if (status != XST_SUCCESS) */
+/*     { */
+/*       printf("trigger_test: Failed to lookup XAxiCdma device 0.\n"); */
+/*       return; */
+/*     } */
+/*   // Initialize the XAxiCdma device. */
+/*   DmaCfgPtr1 = XAxiCdma_LookupConfig(XPAR_ZYNC_BLOCK_AXI_CDMA_1_DEVICE_ID); */
+/*   if (status != XST_SUCCESS) */
+/*     { */
+/*       printf("trigger_test: Failed to lookup XAxiCdma device 1.\n"); */
+/*       return; */
+/*     } */
   
-  status = XAxiCdma_CfgInitialize(&AxiCdmaInstance0, DmaCfgPtr0,
-                                  DmaCfgPtr0->BaseAddress);
-  if (status != XST_SUCCESS) 
-    {
-      printf("trigger_test: Failed to initialize XAxiCdma device0.\n");
-      return;
-    }
+/*   status = XAxiCdma_CfgInitialize(&AxiCdmaInstance0, DmaCfgPtr0, */
+/*                                   DmaCfgPtr0->BaseAddress); */
+/*   if (status != XST_SUCCESS)  */
+/*     { */
+/*       printf("trigger_test: Failed to initialize XAxiCdma device0.\n"); */
+/*       return; */
+/*     } */
 
-  status = XAxiCdma_CfgInitialize(&AxiCdmaInstance1, DmaCfgPtr1,
-                                  DmaCfgPtr1->BaseAddress);
-  if (status != XST_SUCCESS) 
-    {
-      printf("trigger_test: Failed to initialize XAxiCdma device 1.\n");
-      return;
-    }
+/*   status = XAxiCdma_CfgInitialize(&AxiCdmaInstance1, DmaCfgPtr1, */
+/*                                   DmaCfgPtr1->BaseAddress); */
+/*   if (status != XST_SUCCESS)  */
+/*     { */
+/*       printf("trigger_test: Failed to initialize XAxiCdma device 1.\n"); */
+/*       return; */
+/*     } */
 
-#ifdef SCATTER_GATHER
-  // Set up BD rings
-  ShwrBdCount = XAxiCdma_BdRingCntCalc(XAXICDMA_BD_MINIMUM_ALIGNMENT,
-                                       sizeof(shwr_bd_space),
-                                       (unsigned int) shwr_bd_space);
+/* #ifdef SCATTER_GATHER */
+/*   // Set up BD rings */
+/*   ShwrBdCount = XAxiCdma_BdRingCntCalc(XAXICDMA_BD_MINIMUM_ALIGNMENT, */
+/*                                        sizeof(shwr_bd_space), */
+/*                                        (unsigned int) shwr_bd_space); */
 
-  status = XAxiCdma_BdRingCreate(&AxiCdmaInstance0, 
-                                 (unsigned int) shwr_bd_space,
-                                 (unsigned int) shwr_bd_space,
-                                 XAXICDMA_BD_MINIMUM_ALIGNMENT, ShwrBdCount);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Create Shwr BD ring failed %d\r\n",status);
-    return;
-  }
+/*   status = XAxiCdma_BdRingCreate(&AxiCdmaInstance0,  */
+/*                                  (unsigned int) shwr_bd_space, */
+/*                                  (unsigned int) shwr_bd_space, */
+/*                                  XAXICDMA_BD_MINIMUM_ALIGNMENT, ShwrBdCount); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Create Shwr BD ring failed %d\r\n",status); */
+/*     return; */
+/*   } */
 
-  MuonBdCount = XAxiCdma_BdRingCntCalc(XAXICDMA_BD_MINIMUM_ALIGNMENT,
-                                       sizeof(muon_bd_space),
-                                       (unsigned int) muon_bd_space);
+/*   MuonBdCount = XAxiCdma_BdRingCntCalc(XAXICDMA_BD_MINIMUM_ALIGNMENT, */
+/*                                        sizeof(muon_bd_space), */
+/*                                        (unsigned int) muon_bd_space); */
 
-  status = XAxiCdma_BdRingCreate(&AxiCdmaInstance1, 
-                                 (unsigned int) muon_bd_space,
-                                 (unsigned int) muon_bd_space,
-                                 XAXICDMA_BD_MINIMUM_ALIGNMENT, MuonBdCount);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Create Muon BD ring failed %d\r\n",status);
-    return;
-  }
+/*   status = XAxiCdma_BdRingCreate(&AxiCdmaInstance1,  */
+/*                                  (unsigned int) muon_bd_space, */
+/*                                  (unsigned int) muon_bd_space, */
+/*                                  XAXICDMA_BD_MINIMUM_ALIGNMENT, MuonBdCount); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Create Muon BD ring failed %d\r\n",status); */
+/*     return; */
+/*   } */
 
-  // Setup a BD templates to copy to every BD.
-  XAxiCdma_BdClear(&ShwrBdTemplate);
-  status = XAxiCdma_BdRingClone(&AxiCdmaInstance0, &ShwrBdTemplate);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Clone Shwr BD ring failed %d\r\n",status);
-    return;
-  }
-  XAxiCdma_BdClear(&MuonBdTemplate);
-  status = XAxiCdma_BdRingClone(&AxiCdmaInstance1, &MuonBdTemplate);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Clone Muon BD ring failed %d\r\n",status);
-    return;
-  }
-#endif
+/*   // Setup a BD templates to copy to every BD. */
+/*   XAxiCdma_BdClear(&ShwrBdTemplate); */
+/*   status = XAxiCdma_BdRingClone(&AxiCdmaInstance0, &ShwrBdTemplate); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Clone Shwr BD ring failed %d\r\n",status); */
+/*     return; */
+/*   } */
+/*   XAxiCdma_BdClear(&MuonBdTemplate); */
+/*   status = XAxiCdma_BdRingClone(&AxiCdmaInstance1, &MuonBdTemplate); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Clone Muon BD ring failed %d\r\n",status); */
+/*     return; */
+/*   } */
+/* #endif */
 
-  // Set up interrupt system
-#ifndef DMA_INTERRUPT
-  // Disable DMA interrupts, we use polling mode for DMA completion
-  XAxiCdma_IntrDisable(&AxiCdmaInstance0, XAXICDMA_XR_IRQ_ALL_MASK);
-  XAxiCdma_IntrDisable(&AxiCdmaInstance1, XAXICDMA_XR_IRQ_ALL_MASK);
-#endif
-#endif  //DMA
+/*   // Set up interrupt system */
+/* #ifndef DMA_INTERRUPT */
+/*   // Disable DMA interrupts, we use polling mode for DMA completion */
+/*   XAxiCdma_IntrDisable(&AxiCdmaInstance0, XAXICDMA_XR_IRQ_ALL_MASK); */
+/*   XAxiCdma_IntrDisable(&AxiCdmaInstance1, XAXICDMA_XR_IRQ_ALL_MASK); */
+/* #endif */
+/* #endif  //DMA */
 
 #ifdef TRIGGER_INTERRUPT
   // Initialize the interrupt controller driver so that it is ready to use.
@@ -567,6 +568,8 @@ void trigger_test()
       }
       }
 #endif
+      latency = read_trig(SHWR_BUF_LATENCY_ADDR);
+        printf("Event read latency = %d microseconds\n", latency);
         cntrl_word = toread_shwr_buf_num;
         write_trig(SHWR_BUF_CONTROL_ADDR,cntrl_word);
 
@@ -658,59 +661,59 @@ void trigger_test()
 }
 
 
-#if defined(SIMPLE) && defined(DMA)
-int do_simple_polled_shwr_dma(u32 *SrcPtr, u32 *DestPtr, int length)
-{
-  status = 
-    XAxiCdma_SimpleTransfer(&AxiCdmaInstance0, (int) SrcPtr,
-                            (int) DestPtr, length, NULL, NULL);
-  if (status != XST_SUCCESS) return XST_FAILURE;
+/* #if defined(SIMPLE) && defined(DMA) */
+/* int do_simple_polled_shwr_dma(u32 *SrcPtr, u32 *DestPtr, int length) */
+/* { */
+/*   status =  */
+/*     XAxiCdma_SimpleTransfer(&AxiCdmaInstance0, (int) SrcPtr, */
+/*                             (int) DestPtr, length, NULL, NULL); */
+/*   if (status != XST_SUCCESS) return XST_FAILURE; */
 
-  // Wait until the DMA transfer is done
-  while (XAxiCdma_IsBusy(&AxiCdmaInstance0));
+/*   // Wait until the DMA transfer is done */
+/*   while (XAxiCdma_IsBusy(&AxiCdmaInstance0)); */
 
-  // If the hardware has errors, this example fails
-  // This is a poll example, no interrupt handler is involved.
-  // Therefore, error conditions are not cleared by the driver.
-  int Shwr_DMA_Error = XAxiCdma_GetError(&AxiCdmaInstance0);
-  if (Shwr_DMA_Error != 0x0) {
-    printf("trigger_test: AXI shwr DMA error\n");
-    return XST_FAILURE;
-  }
+/*   // If the hardware has errors, this example fails */
+/*   // This is a poll example, no interrupt handler is involved. */
+/*   // Therefore, error conditions are not cleared by the driver. */
+/*   int Shwr_DMA_Error = XAxiCdma_GetError(&AxiCdmaInstance0); */
+/*   if (Shwr_DMA_Error != 0x0) { */
+/*     printf("trigger_test: AXI shwr DMA error\n"); */
+/*     return XST_FAILURE; */
+/*   } */
 
-  // Invalidate the DestBuffer before receiving the data, in case the
-  // Data Cache is enabled
-  Xil_DCacheInvalidateRange((int) DestPtr, length);		
+/*   // Invalidate the DestBuffer before receiving the data, in case the */
+/*   // Data Cache is enabled */
+/*   Xil_DCacheInvalidateRange((int) DestPtr, length);		 */
 
-  return XST_SUCCESS;
-}
+/*   return XST_SUCCESS; */
+/* } */
 
-int do_simple_polled_muon_dma(u32 *SrcPtr, u32 *DestPtr, int length)
-{
-  status = 
-    XAxiCdma_SimpleTransfer(&AxiCdmaInstance1, (int) SrcPtr,
-                            (int) DestPtr, length, NULL, NULL);
-  if (status != XST_SUCCESS) return XST_FAILURE;
+/* int do_simple_polled_muon_dma(u32 *SrcPtr, u32 *DestPtr, int length) */
+/* { */
+/*   status =  */
+/*     XAxiCdma_SimpleTransfer(&AxiCdmaInstance1, (int) SrcPtr, */
+/*                             (int) DestPtr, length, NULL, NULL); */
+/*   if (status != XST_SUCCESS) return XST_FAILURE; */
 
-  // Wait until the DMA transfer is done
-  while (XAxiCdma_IsBusy(&AxiCdmaInstance1));
+/*   // Wait until the DMA transfer is done */
+/*   while (XAxiCdma_IsBusy(&AxiCdmaInstance1)); */
 
-  // If the hardware has errors, this example fails
-  // This is a poll example, no interrupt handler is involved.
-  // Therefore, error conditions are not cleared by the driver.
-  int Muon_DMA_Error = XAxiCdma_GetError(&AxiCdmaInstance1);
-  if (Muon_DMA_Error != 0x0) {
-    printf("trigger_test: AXI muon DMA error\n");
-    return XST_FAILURE;
-  }
+/*   // If the hardware has errors, this example fails */
+/*   // This is a poll example, no interrupt handler is involved. */
+/*   // Therefore, error conditions are not cleared by the driver. */
+/*   int Muon_DMA_Error = XAxiCdma_GetError(&AxiCdmaInstance1); */
+/*   if (Muon_DMA_Error != 0x0) { */
+/*     printf("trigger_test: AXI muon DMA error\n"); */
+/*     return XST_FAILURE; */
+/*   } */
 
-  // Invalidate the DestBuffer before receiving the data, in case the
-  // Data Cache is enabled
-  Xil_DCacheInvalidateRange((int) DestPtr, length);		
+/*   // Invalidate the DestBuffer before receiving the data, in case the */
+/*   // Data Cache is enabled */
+/*   Xil_DCacheInvalidateRange((int) DestPtr, length);		 */
 
-  return XST_SUCCESS;
-}
-#endif
+/*   return XST_SUCCESS; */
+/* } */
+/* #endif */
 
 #ifdef TRIGGER_INTERRUPT
 void sde_shwr_intr_handler(void *CallbackRef)
@@ -885,354 +888,354 @@ void sde_muon_intr_handler(void *CallbackRef)
 }
 #endif  // TRIGGER_INTERRUPT
 
-#ifdef SCATTER_GATHER
-int check_shwr_scatter_gather_completion()
-{
-  int BdCount;
+/* #ifdef SCATTER_GATHER */
+/* int check_shwr_scatter_gather_completion() */
+/* { */
+/*   int BdCount; */
 
-  /* Check whether the hardware has encountered any problems.
-   * In some error cases, the DMA engine may not able to update the
-   * BD that has caused the problem.
-   */
-  if (XAxiCdma_GetError(&AxiCdmaInstance0) != 0x0) {
-    printf("trigger_test: Transfer error %x\r\n",
-           (unsigned int)XAxiCdma_GetError(&AxiCdmaInstance0));
-    Shwr_DMA_Error = 1;
-    return 0;
-  }
+/*   /\* Check whether the hardware has encountered any problems. */
+/*    * In some error cases, the DMA engine may not able to update the */
+/*    * BD that has caused the problem. */
+/*    *\/ */
+/*   if (XAxiCdma_GetError(&AxiCdmaInstance0) != 0x0) { */
+/*     printf("trigger_test: Transfer error %x\r\n", */
+/*            (unsigned int)XAxiCdma_GetError(&AxiCdmaInstance0)); */
+/*     Shwr_DMA_Error = 1; */
+/*     return 0; */
+/*   } */
 
-  // Get all processed BDs from hardware
-  BdCount = XAxiCdma_BdRingFromHw(&AxiCdmaInstance0, XAXICDMA_ALL_BDS, 
-                                  &ShwrBdPtr);
+/*   // Get all processed BDs from hardware */
+/*   BdCount = XAxiCdma_BdRingFromHw(&AxiCdmaInstance0, XAXICDMA_ALL_BDS,  */
+/*                                   &ShwrBdPtr); */
 
-  // Check finished BDs then release them
-  if(BdCount > 0) {
-    ShwrBdCurPtr = ShwrBdPtr;
-    for (ShwrIndex = 0; ShwrIndex < BdCount; ShwrIndex++) {
-      // If the completed BD has error bit set,
-      // then the example fails
-      if (XAxiCdma_BdGetSts(ShwrBdCurPtr) &
-          XAXICDMA_BD_STS_ALL_ERR_MASK)	{
-        printf("trigger_test: BD error bit set\n");
-        Shwr_DMA_Error = 1;
-        return 0;
-      }
+/*   // Check finished BDs then release them */
+/*   if(BdCount > 0) { */
+/*     ShwrBdCurPtr = ShwrBdPtr; */
+/*     for (ShwrIndex = 0; ShwrIndex < BdCount; ShwrIndex++) { */
+/*       // If the completed BD has error bit set, */
+/*       // then the example fails */
+/*       if (XAxiCdma_BdGetSts(ShwrBdCurPtr) & */
+/*           XAXICDMA_BD_STS_ALL_ERR_MASK)	{ */
+/*         printf("trigger_test: BD error bit set\n"); */
+/*         Shwr_DMA_Error = 1; */
+/*         return 0; */
+/*       } */
 
-      ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr);
-    }
+/*       ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr); */
+/*     } */
 
-    // Release the BDs so later submission can use them
-    //    printf("trigger_test: Releasing BDs, BdCount=%d\n", BdCount);
-    status = XAxiCdma_BdRingFree(&AxiCdmaInstance0, BdCount, ShwrBdPtr);
-    if(status != XST_SUCCESS) {
-      printf("trigger_test: Error free BD %x\r\n", status);
-      Shwr_DMA_Error = 1;
-      return 0;
-    }
-    Shwr_DMA_Done += BdCount;
-  }
-  return Shwr_DMA_Done;
-}
-int check_muon_scatter_gather_completion()
-{
-  int BdCount;
+/*     // Release the BDs so later submission can use them */
+/*     //    printf("trigger_test: Releasing BDs, BdCount=%d\n", BdCount); */
+/*     status = XAxiCdma_BdRingFree(&AxiCdmaInstance0, BdCount, ShwrBdPtr); */
+/*     if(status != XST_SUCCESS) { */
+/*       printf("trigger_test: Error free BD %x\r\n", status); */
+/*       Shwr_DMA_Error = 1; */
+/*       return 0; */
+/*     } */
+/*     Shwr_DMA_Done += BdCount; */
+/*   } */
+/*   return Shwr_DMA_Done; */
+/* } */
+/* int check_muon_scatter_gather_completion() */
+/* { */
+/*   int BdCount; */
 
-  /* Check whether the hardware has encountered any problems.
-   * In some error cases, the DMA engine may not able to update the
-   * BD that has caused the problem.
-   */
-  if (XAxiCdma_GetError(&AxiCdmaInstance1) != 0x0) {
-    printf("trigger_test: Transfer error %x\r\n",
-           (unsigned int)XAxiCdma_GetError(&AxiCdmaInstance1));
-    Muon_DMA_Error = 1;
-    return 0;
-  }
+/*   /\* Check whether the hardware has encountered any problems. */
+/*    * In some error cases, the DMA engine may not able to update the */
+/*    * BD that has caused the problem. */
+/*    *\/ */
+/*   if (XAxiCdma_GetError(&AxiCdmaInstance1) != 0x0) { */
+/*     printf("trigger_test: Transfer error %x\r\n", */
+/*            (unsigned int)XAxiCdma_GetError(&AxiCdmaInstance1)); */
+/*     Muon_DMA_Error = 1; */
+/*     return 0; */
+/*   } */
 
-  // Get all processed BDs from hardware
-  BdCount = XAxiCdma_BdRingFromHw(&AxiCdmaInstance1, XAXICDMA_ALL_BDS, 
-                                  &MuonBdPtr);
+/*   // Get all processed BDs from hardware */
+/*   BdCount = XAxiCdma_BdRingFromHw(&AxiCdmaInstance1, XAXICDMA_ALL_BDS,  */
+/*                                   &MuonBdPtr); */
 
-  // Check finished BDs then release them
-  if(BdCount > 0) {
-    MuonBdCurPtr = MuonBdPtr;
-    for (MuonIndex = 0; MuonIndex < BdCount; MuonIndex++) {
-      // If the completed BD has error bit set,
-      // then the example fails
-      if (XAxiCdma_BdGetSts(MuonBdCurPtr) &
-          XAXICDMA_BD_STS_ALL_ERR_MASK)	{
-        printf("trigger_test: BD error bit set\n");
-        Muon_DMA_Error = 1;
-        return 0;
-      }
+/*   // Check finished BDs then release them */
+/*   if(BdCount > 0) { */
+/*     MuonBdCurPtr = MuonBdPtr; */
+/*     for (MuonIndex = 0; MuonIndex < BdCount; MuonIndex++) { */
+/*       // If the completed BD has error bit set, */
+/*       // then the example fails */
+/*       if (XAxiCdma_BdGetSts(MuonBdCurPtr) & */
+/*           XAXICDMA_BD_STS_ALL_ERR_MASK)	{ */
+/*         printf("trigger_test: BD error bit set\n"); */
+/*         Muon_DMA_Error = 1; */
+/*         return 0; */
+/*       } */
 
-      MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr);
-    }
+/*       MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr); */
+/*     } */
 
-    // Release the BDs so later submission can use them
-    //    printf("trigger_test: Releasing BDs, BdCount=%d\n", BdCount);
-    status = XAxiCdma_BdRingFree(&AxiCdmaInstance1, BdCount, MuonBdPtr);
-    if(status != XST_SUCCESS) {
-      printf("trigger_test: Error free BD %x\r\n", status);
-      Muon_DMA_Error = 1;
-      return 0;
-    }
-    Muon_DMA_Done += BdCount;
-  }
-  return Muon_DMA_Done;
-}
+/*     // Release the BDs so later submission can use them */
+/*     //    printf("trigger_test: Releasing BDs, BdCount=%d\n", BdCount); */
+/*     status = XAxiCdma_BdRingFree(&AxiCdmaInstance1, BdCount, MuonBdPtr); */
+/*     if(status != XST_SUCCESS) { */
+/*       printf("trigger_test: Error free BD %x\r\n", status); */
+/*       Muon_DMA_Error = 1; */
+/*       return 0; */
+/*     } */
+/*     Muon_DMA_Done += BdCount; */
+/*   } */
+/*   return Muon_DMA_Done; */
+/* } */
 
-int do_scatter_gather_polled_shwr_dma()
-{
-  status = XAxiCdma_BdRingAlloc(&AxiCdmaInstance0,
-                                NUM_SHWR_BDS_TO_TRANSFER, &ShwrBdPtr);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Failed shwr bd alloc\r\n");
-    return XST_FAILURE;
-  }
-  ShwrBdCurPtr = ShwrBdPtr;
+/* int do_scatter_gather_polled_shwr_dma() */
+/* { */
+/*   status = XAxiCdma_BdRingAlloc(&AxiCdmaInstance0, */
+/*                                 NUM_SHWR_BDS_TO_TRANSFER, &ShwrBdPtr); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Failed shwr bd alloc\r\n"); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   ShwrBdCurPtr = ShwrBdPtr; */
 
-  // Set up the BDs
+/*   // Set up the BDs */
 
-  // Shower buffer 0
-  mem_addr = (u32*) TRIGGER_MEMORY_SHWR0_BASE;
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set shwr src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int) 
-                                    &shw_mem0[readto_shw_buf_num][0]);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set shwr dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)shw_mem0);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set shwr BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr);
+/*   // Shower buffer 0 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_SHWR0_BASE; */
+/*   mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set shwr src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int)  */
+/*                                     &shw_mem0[readto_shw_buf_num][0]); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set shwr dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)shw_mem0); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set shwr BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr); */
 
-  // Shower buffer 1
-  mem_addr = (u32*) TRIGGER_MEMORY_SHWR1_BASE;
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set shwr src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int) 
-                                    &shw_mem1[readto_shw_buf_num][0]);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)shw_mem1);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr);
+/*   // Shower buffer 1 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_SHWR1_BASE; */
+/*   mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set shwr src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int)  */
+/*                                     &shw_mem1[readto_shw_buf_num][0]); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)shw_mem1); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr); */
 
-  // Shower buffer 2
-  mem_addr = (u32*) TRIGGER_MEMORY_SHWR2_BASE;
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int) 
-                                    &shw_mem2[readto_shw_buf_num][0]);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)shw_mem2);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr);
+/*   // Shower buffer 2 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_SHWR2_BASE; */
+/*   mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int)  */
+/*                                     &shw_mem2[readto_shw_buf_num][0]); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)shw_mem2); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr); */
 
-  // Shower buffer 3
-  mem_addr = (u32*) TRIGGER_MEMORY_SHWR3_BASE;
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int) 
-                                    &shw_mem3[readto_shw_buf_num][0]);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)shw_mem3);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr);
+/*   // Shower buffer 3 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_SHWR3_BASE; */
+/*   mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int)  */
+/*                                     &shw_mem3[readto_shw_buf_num][0]); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)shw_mem3); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   ShwrBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance0, ShwrBdCurPtr); */
 
-  // Shower buffer 4
-  mem_addr = (u32*) TRIGGER_MEMORY_SHWR4_BASE;
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int) 
-                                    &shw_mem4[readto_shw_buf_num]);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)ShwrBdCurPtr,
-           (unsigned int)shw_mem4);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
+/*   // Shower buffer 4 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_SHWR4_BASE; */
+/*   mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(ShwrBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(ShwrBdCurPtr, (unsigned int)  */
+/*                                     &shw_mem4[readto_shw_buf_num]); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)ShwrBdCurPtr, */
+/*            (unsigned int)shw_mem4); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(ShwrBdCurPtr, 4*SHWR_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
 
-  // Give the BDs to hardware
-  status = XAxiCdma_BdRingToHw(&AxiCdmaInstance0, NUM_SHWR_BDS_TO_TRANSFER,
-                               ShwrBdPtr, NULL, NULL);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Failed to give BDs to hw %d\r\n", status);
-    return XST_FAILURE;
-  } 
-  //  else
-  //  printf("trigger_test: Scatter gather DMA started\n"); 
+/*   // Give the BDs to hardware */
+/*   status = XAxiCdma_BdRingToHw(&AxiCdmaInstance0, NUM_SHWR_BDS_TO_TRANSFER, */
+/*                                ShwrBdPtr, NULL, NULL); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Failed to give BDs to hw %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   }  */
+/*   //  else */
+/*   //  printf("trigger_test: Scatter gather DMA started\n");  */
 
-  // Wait until the DMA transfer is done or error occurs
-  Shwr_DMA_Done = 0;
-  while ((check_shwr_scatter_gather_completion() < NUM_SHWR_BDS_TO_TRANSFER)
-         && !Shwr_DMA_Error) {
-    /* Wait */
-  }
-  AxiCdmaInstance0.SgHandlerHead = AxiCdmaInstance0.SgHandlerTail; 
+/*   // Wait until the DMA transfer is done or error occurs */
+/*   Shwr_DMA_Done = 0; */
+/*   while ((check_shwr_scatter_gather_completion() < NUM_SHWR_BDS_TO_TRANSFER) */
+/*          && !Shwr_DMA_Error) { */
+/*     /\* Wait *\/ */
+/*   } */
+/*   AxiCdmaInstance0.SgHandlerHead = AxiCdmaInstance0.SgHandlerTail;  */
 
-  if (Shwr_DMA_Error) {
-    printf("trigger_test: Transfer has error %x\r\n",
-           Shwr_DMA_Error);
-    return XST_FAILURE;
-  } else {
-    //    printf("trigger_test: Scatter gather DMA completed\n");
-    return XST_SUCCESS;
-  }
-}
+/*   if (Shwr_DMA_Error) { */
+/*     printf("trigger_test: Transfer has error %x\r\n", */
+/*            Shwr_DMA_Error); */
+/*     return XST_FAILURE; */
+/*   } else { */
+/*     //    printf("trigger_test: Scatter gather DMA completed\n"); */
+/*     return XST_SUCCESS; */
+/*   } */
+/* } */
 
-int do_scatter_gather_polled_muon_dma()
-{
-  status = XAxiCdma_BdRingAlloc(&AxiCdmaInstance1, 
-                                NUM_MUON_BDS_TO_TRANSFER, &MuonBdPtr);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Failed muon bd alloc\r\n");
-    return XST_FAILURE;
-  }
-  MuonBdCurPtr = MuonBdPtr;
+/* int do_scatter_gather_polled_muon_dma() */
+/* { */
+/*   status = XAxiCdma_BdRingAlloc(&AxiCdmaInstance1,  */
+/*                                 NUM_MUON_BDS_TO_TRANSFER, &MuonBdPtr); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Failed muon bd alloc\r\n"); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   MuonBdCurPtr = MuonBdPtr; */
 
-  // Set up the BDs
+/*   // Set up the BDs */
 
-  // Muon buffer 0
-  mem_addr = (u32*) TRIGGER_MEMORY_MUON0_BASE;
-  mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(MuonBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)MuonBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(MuonBdCurPtr, (unsigned int) muon_mem0);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)MuonBdCurPtr,
-           (unsigned int)muon_mem0);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(MuonBdCurPtr, 4*MUON_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr);
+/*   // Muon buffer 0 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_MUON0_BASE; */
+/*   mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(MuonBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)MuonBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(MuonBdCurPtr, (unsigned int) muon_mem0); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)MuonBdCurPtr, */
+/*            (unsigned int)muon_mem0); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(MuonBdCurPtr, 4*MUON_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr); */
 
-  // Muon buffer 1
-  mem_addr = (u32*) TRIGGER_MEMORY_MUON1_BASE;
-  mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS;
-  status = XAxiCdma_BdSetSrcBufAddr(MuonBdCurPtr, (unsigned int) mem_addr);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon src addr failed %d, %x/%x\r\n",
-           status, (unsigned int)MuonBdCurPtr,
-           (unsigned int)mem_addr);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetDstBufAddr(MuonBdCurPtr, (unsigned int) muon_mem1);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon dst addr failed %d, %x/%x\r\n",
-           status, (unsigned int)MuonBdCurPtr,
-           (unsigned int)muon_mem1);
-    return XST_FAILURE;
-  }
-  status = XAxiCdma_BdSetLength(MuonBdCurPtr, 4*MUON_MEM_WORDS);
-  if(status != XST_SUCCESS) {
-    printf("trigger_test: Set muon BD length failed %d\r\n", status);
-    return XST_FAILURE;
-  }
-  MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr);
+/*   // Muon buffer 1 */
+/*   mem_addr = (u32*) TRIGGER_MEMORY_MUON1_BASE; */
+/*   mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS; */
+/*   status = XAxiCdma_BdSetSrcBufAddr(MuonBdCurPtr, (unsigned int) mem_addr); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon src addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)MuonBdCurPtr, */
+/*            (unsigned int)mem_addr); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetDstBufAddr(MuonBdCurPtr, (unsigned int) muon_mem1); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon dst addr failed %d, %x/%x\r\n", */
+/*            status, (unsigned int)MuonBdCurPtr, */
+/*            (unsigned int)muon_mem1); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   status = XAxiCdma_BdSetLength(MuonBdCurPtr, 4*MUON_MEM_WORDS); */
+/*   if(status != XST_SUCCESS) { */
+/*     printf("trigger_test: Set muon BD length failed %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   } */
+/*   MuonBdCurPtr = XAxiCdma_BdRingNext(&AxiCdmaInstance1, MuonBdCurPtr); */
 
-  // Give the BDs to hardware
-  status = XAxiCdma_BdRingToHw(&AxiCdmaInstance1, 
-                               NUM_MUON_BDS_TO_TRANSFER, MuonBdPtr, NULL, NULL);
-  if (status != XST_SUCCESS) {
-    printf("trigger_test: Failed to give muon BDs to hw %d\r\n", status);
-    return XST_FAILURE;
-  } 
-  //else
-  //  printf("trigger_test: Scatter gather muon DMA started\n");
+/*   // Give the BDs to hardware */
+/*   status = XAxiCdma_BdRingToHw(&AxiCdmaInstance1,  */
+/*                                NUM_MUON_BDS_TO_TRANSFER, MuonBdPtr, NULL, NULL); */
+/*   if (status != XST_SUCCESS) { */
+/*     printf("trigger_test: Failed to give muon BDs to hw %d\r\n", status); */
+/*     return XST_FAILURE; */
+/*   }  */
+/*   //else */
+/*   //  printf("trigger_test: Scatter gather muon DMA started\n"); */
 
-  // Wait until the DMA transfer is done or error occurs
-  Muon_DMA_Done = 0;
-  while ((check_muon_scatter_gather_completion() < NUM_MUON_BDS_TO_TRANSFER)
-         && !Muon_DMA_Error) {
-    /* Wait */
-  }
-  AxiCdmaInstance1.SgHandlerHead = AxiCdmaInstance1.SgHandlerTail; 
+/*   // Wait until the DMA transfer is done or error occurs */
+/*   Muon_DMA_Done = 0; */
+/*   while ((check_muon_scatter_gather_completion() < NUM_MUON_BDS_TO_TRANSFER) */
+/*          && !Muon_DMA_Error) { */
+/*     /\* Wait *\/ */
+/*   } */
+/*   AxiCdmaInstance1.SgHandlerHead = AxiCdmaInstance1.SgHandlerTail;  */
 
-  if (Muon_DMA_Error) {
-    printf("trigger_test: Muon buffer transfer has error %x\r\n",
-           Muon_DMA_Error);
-    return XST_FAILURE;
-  } else {
-    printf("trigger_test: Muon buffer scatter gather DMA completed\n");
-    return XST_SUCCESS;
-  }
-}
-#endif
+/*   if (Muon_DMA_Error) { */
+/*     printf("trigger_test: Muon buffer transfer has error %x\r\n", */
+/*            Muon_DMA_Error); */
+/*     return XST_FAILURE; */
+/*   } else { */
+/*     printf("trigger_test: Muon buffer scatter gather DMA completed\n"); */
+/*     return XST_SUCCESS; */
+/*   } */
+/* } */
+/* #endif */
 
  void enable_trigger_intr()
  {

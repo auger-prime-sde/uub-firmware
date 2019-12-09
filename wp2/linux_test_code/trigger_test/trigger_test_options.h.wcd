@@ -81,8 +81,8 @@
   #define RNDM_TRIGGER
 // Modes 1=10ms 2=100ms 3=1s, 4=10s, 5=100s, 6=200s, 7=400s, 8=800s
 // 11, 15, 18, 21, 22, 23, 25, 28, 31 pseudo random delays
-  #define RNDM_MODE 3
-  #define ROTATE_RNDM // Rotate through 3-8 if defined
+  #define RNDM_MODE 18
+//  #define ROTATE_RNDM // Rotate through 3-8 if defined
 #endif
 //#define MUON_TRIGGERS
 //#define MUON_SIPM_CAL

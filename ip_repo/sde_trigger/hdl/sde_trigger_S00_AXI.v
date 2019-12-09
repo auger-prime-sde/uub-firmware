@@ -1,3 +1,5 @@
+//
+// 03-Dec-2019 DFN Add SHWR_BUF_LATENCY register.
 
 `timescale 1 ns / 1 ps
 
@@ -243,6 +245,7 @@ module sde_trigger_S00_AXI #
    reg [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_CONTROL;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_STATUS;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_START;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_LATENCY;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA0;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA1;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA2;
@@ -1076,6 +1079,8 @@ module sde_trigger_S00_AXI #
                  reg_data_out <= SHWR_BUF_STATUS;
 	       `SHWR_BUF_START_ADDR :
                  reg_data_out <= SHWR_BUF_START;
+	       `SHWR_BUF_LATENCY_ADDR :
+                 reg_data_out <= SHWR_BUF_LATENCY;
 	       `SHWR_PEAK_AREA0_ADDR :
                  reg_data_out <= SHWR_PEAK_AREA0;
 	       `SHWR_PEAK_AREA1_ADDR :
