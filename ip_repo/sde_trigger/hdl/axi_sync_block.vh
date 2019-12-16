@@ -102,69 +102,72 @@
      (.ASYNC_IN(LCL_SHWR_BUF_START),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_START));
 
+// Need to be careful here, SHWR_BUF_RNUM is in CLK120 domain, not AXI_CLK domain in
+// in spite of common use of LCL prefix for other registers to mean CLK120 domain
+   
    synchronizer_32bit shwr_buf_latency_sync
-     (.ASYNC_IN(LCL_SHWR_BUF_LATENCY[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BUF_LATENCY[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_LATENCY));
 
-// Peak, area, & baseline .... hm... should this use lcl_shwr....
+// Peak, area, & baseline
    synchronizer_32bit shwr_peak_area0
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA0[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA0[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA0));
 
    synchronizer_32bit shwr_peak_area1
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA1[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA1[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA1));
 
    synchronizer_32bit shwr_peak_area2
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA2[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA2[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA2));
 
    synchronizer_32bit shwr_peak_area3
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA3[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA3[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA3));
 
    synchronizer_32bit shwr_peak_area4
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA4[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA4[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA4));
 
    synchronizer_32bit shwr_peak_area5
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA5[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA5[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA5));
 
    synchronizer_32bit shwr_peak_area6
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA6[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA6[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA6));
 
    synchronizer_32bit shwr_peak_area7
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA7[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA7[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA7));
 
    synchronizer_32bit shwr_peak_area8
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA8[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA8[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA8));
 
    synchronizer_32bit shwr_peak_area9
-     (.ASYNC_IN(LCL_SHWR_PEAK_AREA9[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_PEAK_AREA9[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_PEAK_AREA9));
 
    synchronizer_32bit shwr_baseline0
-     (.ASYNC_IN(LCL_SHWR_BASELINE0[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BASELINE0[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BASELINE0));
 
    synchronizer_32bit shwr_baseline1
-     (.ASYNC_IN(LCL_SHWR_BASELINE1[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BASELINE1[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BASELINE1));
 
    synchronizer_32bit shwr_baseline2
-     (.ASYNC_IN(LCL_SHWR_BASELINE2[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BASELINE2[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BASELINE2));
 
    synchronizer_32bit shwr_baseline3
-     (.ASYNC_IN(LCL_SHWR_BASELINE3[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BASELINE3[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BASELINE3));
 
    synchronizer_32bit shwr_baseline4
-     (.ASYNC_IN(LCL_SHWR_BASELINE4[LCL_SHWR_BUF_RNUM]),
+     (.ASYNC_IN(LCL_SHWR_BASELINE4[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BASELINE4));
 
    // Scalers

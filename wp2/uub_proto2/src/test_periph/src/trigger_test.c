@@ -569,7 +569,8 @@ void trigger_test()
       }
 #endif
       latency = read_trig(SHWR_BUF_LATENCY_ADDR);
-        printf("Event read latency = %d microseconds\n", latency);
+        printf("Event read latency = %d microseconds for buffer %d\n",
+               latency, toread_shwr_buf_num);
         cntrl_word = toread_shwr_buf_num;
         write_trig(SHWR_BUF_CONTROL_ADDR,cntrl_word);
 

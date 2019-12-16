@@ -9,7 +9,7 @@
 
 
 //#define STAND_ALONE
-#define MAX_EVENTS 1000
+#define MAX_EVENTS 10000
 //#define CHECK_MISSING_EVENT
 //#define EXT_IN_PERIOD 0.1
 #define EXT_IN_TOLERANCE 0.01
@@ -81,7 +81,7 @@
   #define RNDM_TRIGGER
 // Modes 1=10ms 2=100ms 3=1s, 4=10s, 5=100s, 6=200s, 7=400s, 8=800s
 // 11, 15, 18, 21, 22, 23, 25, 28, 31 pseudo random delays
-  #define RNDM_MODE 18
+  #define RNDM_MODE 21
 //  #define ROTATE_RNDM // Rotate through 3-8 if defined
 #endif
 //#define MUON_TRIGGERS
