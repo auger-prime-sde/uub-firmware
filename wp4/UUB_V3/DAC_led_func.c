@@ -4,7 +4,7 @@
 #include "USCIAB0.h"
 void dac_led_init ()
 {
-unsigned char i;
+//unsigned char i;
 // set all channels to 0x00
 //for (i=0; 8>i; i++) dac_set ( i, 0);
 }

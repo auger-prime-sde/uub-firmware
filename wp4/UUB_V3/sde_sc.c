@@ -10,7 +10,7 @@
 #include "DAC_func.h"
 #include "DAC_led_func.h"
 #include "eeprom.h"
-//#include "ds18x20.h"
+#include "i2c.h"
 // test for BME280
 #include "bme280.h"
 #define I2C_IF           0x06      // I2C bits
@@ -19,13 +19,11 @@
 #include "adc.h"
 #include "ishan.h"
 #include "DS28CM00_func.h"
-//#include "BMP180_func.h"
-//
 //
 #define FIELD 1 // uncomment if field version
+void PON_SEQ();
 void POR_FPGA();
 void POR_B_FPGA();
-void SRST_B_FPGA();
 void QSPI_RST();
 void receive_cb(unsigned char receive);
 void transmit_cb(unsigned char volatile *receive);
@@ -34,12 +32,17 @@ void stop_cb();
 void gencall_cb();
 void Parse_UART();
 void show_lifetime();
+void show_button_t();
+int check ( int v, int n, int t); // v= value, n= nominal, t= tolerance in %
+unsigned char tb = 0;
 unsigned char flag = 0;
 unsigned char flag1 = 0;
 unsigned char TXData[260];
 unsigned char RXData[260];
+unsigned char tSec[4];
 unsigned char stop=0;
 unsigned char start=0;
+unsigned char nstrt=0;
 unsigned char gencall=0;
 unsigned char gcall=0;
 unsigned char rcv_bytes=0;
@@ -70,6 +73,7 @@ unsigned char mTX[3];
 
 #define U_BAT_CRIT 0x0004
 #define U_BAT_WARN 0x0100
+// TBC #define SLEEPING   0x0200
 volatile extern unsigned long Second;
 unsigned long WD_TIME;
 unsigned long UpdateSensor;
@@ -81,19 +85,33 @@ unsigned long UpdateSensor;
 unsigned char x=0;
 unsigned int  has_DS1820;
 char buffer [80];
-//unsigned int status_reg; // now in sde_sc.h
 #define WD_INTERVAL 	5	// Watchdog Interval [sec]
 #define T1		300	//Time delay after start powersupplies in ms
+void SLEEP ()
+{
+// Take over watchdog
+   SC_WD_ENABLE;
+   WD_TIME = Second + 1;
+// Set sleepmode
+
+// Power down all power supplies
+
+
+}
+void Wake_Up ()
+{
+// Force watchdog reset
+
+}
 // BME280
+
 int8_t user_i2c_read ( uint8_t id, uint8_t reg_addr, uint8_t *data, uint16_t len)
 {
-int i;
 	I2C_Read_Reg ( id, reg_addr, len, data);
 	return 0;
 }
 int8_t user_i2c_write ( uint8_t id, uint8_t reg_addr, uint8_t *data, uint16_t len)
 {
-int i;
 uint8_t buff[2];
 buff[0] = reg_addr;
 buff[1] = *data;
@@ -205,17 +223,6 @@ void setup() {
 	Read_DS28CM00_ASCII ( buffer );
  	UART_sprint(buffer);
  	UART_sprint(" \n\r>");
-/*
-	if (BMP180_IsConnected ()) {
-		 BMP180_GetValues(&adc_results[T_AIR], &adc_results[P_AIR]);
-		 uprintf (PF, "BMP180 is connected, T= %d *0.1K, P= %d mBar\r",adc_results[T_AIR],adc_results[P_AIR]);
-		bmp180_update_time = Second + UPD_BMP180_Delta;	 
-	}
-	if ( ResetDS1820 () ) {
-		adc_results[T_WAT] = GetData();
-		uprintf (PF, "DS18x20 connected, data: %d\r>", adc_results[T_WAT]);
-	}
-*/
 	UART_sprint("Starting FPGA:");
 //	P5DIR |= B3V3_QSPI_B | NMI_FPGA | RST_FPGA; // 
 	P5DIR |= NMI_FPGA | RST_FPGA; // 
@@ -235,7 +242,6 @@ void setup() {
  	UART_sprint("Initialize ADCs \r");
 
 	dac_init();
-//	dac_set (1, 1640); // set dac chan 1 to 1V, reference for adc
 	adc_init();
 
   TI_USCI_I2C_slaveinit(start_cb, stop_cb, gencall_cb, transmit_cb, receive_cb, I2C_ADDRESS);
@@ -255,15 +261,9 @@ void check_stat()
 				WD_TIME = Second + WD_INTERVAL;
 			}
 	}
-	if (SRST_B_STATE) {
-		delay (1000);
-		digitalWrite (NMI_FPGA_PIN, HIGH);
-		status_reg &= ~SRST_B;
-	}
 }
 // the loop routine runs over and over again forever:
 void loop() {
-char b[10];
 #ifdef FIELD 
   
   if (act_mask & QSPI_RST_N_IRQ ) {
@@ -288,6 +288,12 @@ long dt;
 
   }
 #endif
+        tSec[0] = (char) (Second & 0xff);
+        tSec[1] = (char) ((Second >> 8) & 0xff);
+        tSec[2] = (char) ((Second >> 16) & 0xff);
+        tSec[3] = (char) ((Second >> 24) & 0xff);
+
+
         if ( Second == bme280_update_time ) {
 		rslt = bme280_set_sensor_mode ( BME280_FORCED_MODE, &bme280);
 		bme280.delay_ms (40);
@@ -297,12 +303,6 @@ long dt;
 		adc_results[P_AIR] = (unsigned int) (comp_data.pressure/10);
 		adc_results[H_AIR] = (unsigned int) (comp_data.humidity/100);
 	}
-//		 BMP180_GetValues(&adc_results[T_AIR], &adc_results[P_AIR]);
-//		bmp180_update_time += UPD_BMP180_Delta;
-//		if ( ResetDS1820 () ) {
-//			adc_results[T_WAT] = GetData();
-//		}
-//	}
 	check_stat ();
   if (EOT) Parse_UART();
   EOT = 0;
@@ -322,40 +322,49 @@ if (act_mask & UPD_ADC ) {
   if ( stop == 1 ) {
 unsigned char *cp;
 int i;
+unsigned char nb;
 unsigned int reg, mask;
+   	stop = 0;
+	nb = rcv_bytes;
+//                uprintf(PF,"STP =1; rcv_bytes= %d nb: %d  \r",rcv_bytes, nb);
+	rcv_bytes = 0;
 	reg = RXData[1]<<8 | RXData[0];
     switch (reg) {  
-      case 0x1:
+      case 0x1:   // Serial number
 	cp = Read_DS28CM00_BIN();
 	for (i=0; i<=7; i++) TXData[i] = *cp++;
-	
+	tb = 8;	
 	break;
-      case 0x2:
+      case 0x2:  // Status Reg
 		TXData[0] = (char) (status_reg & 0xff);
 		TXData[1] = (char) ((status_reg >> 8) & 0xff);
+	tb = 2;	
 	break;
-      case 0x3:
-                TXData[0] = (char) (Second & 0xff);
-                TXData[1] = (char) ((Second >> 8) & 0xff);
-                TXData[2] = (char) ((Second >> 16) & 0xff);
-                TXData[3] = (char) ((Second >> 24) & 0xff);
-	break;
-      case 0x4:
-	if (rcv_bytes == 2 ) {
+  //    case 0x3: // Livetime
+  //              TXData[0] = (char) (Second & 0xff);
+  //              TXData[1] = (char) ((Second >> 8) & 0xff);
+  //              TXData[2] = (char) ((Second >> 16) & 0xff);
+  //              TXData[3] = (char) ((Second >> 24) & 0xff);
+  //	tb = 4;	
+  //	break;
+      case 0x4:           // Power ctrl
+	if ( nb == 2 ) {  // read
 		TXData[0] = P1IN;
 		TXData[1] = P2IN & 0x03; 
- 	} else
+	tb = 2;	
+ 	} else            // write
 	{
+//                uprintf(PF,"PWR: P1 0x%x P2: 0x%x\r",RXData[2],RXData[3]);
 		mask = 0x3a | RXData[2];
 		P1OUT = mask; // make sure not to switch off FPGA
-		if (rcv_bytes > 3 ) {
+		if (nb > 3 ) {
 			mask = P2IN & 0xfc;
 			P2OUT = mask | (RXData[3] & 0x3);
 		}
 	}	
 	break;
       case 0x5: // DAC control
-	if (rcv_bytes == 4 ) {
+	if (nb  == 4 ) {
 	long int li1, li2;
 		li1 = (RXData[3] & 0x70)>>4;
                 li2 = (RXData[3] & 0x0f)<<8 | RXData[2];
@@ -366,7 +375,7 @@ unsigned int reg, mask;
 	}
 	break;
       case 0x8: // LED DAC control
-        if (rcv_bytes == 4 ) {
+        if (nb == 4 ) {
         long int li1, li2;
                 li1 = (RXData[3] & 0x70)>>4;
                 li2 = (RXData[3] & 0x0f)<<8 | RXData[2];
@@ -396,10 +405,12 @@ unsigned int reg, mask;
       case 0x9: // ADC values
 	cp = (char *) adc_results;
 	for (i=0; i<2*MAX_VARS; i++) TXData[i] = *cp++;
+	tb = 2*MAX_VARS;
 	break;
      case 0xa:  // Test
 	TXData[0] = 0x21;
         TXData[1] = 0x43;
+	tb = 2;	
 	break;
       case 0xb:
 //	while (1); // Stop, wait for WD
@@ -432,15 +443,18 @@ unsigned int reg, mask;
 
         TXData[0] = VERSION & 0xff;
         TXData[1] = VERSION >> 8;
+	tb = 2;	
 
 	break;
       case 0x0f: // Read/Write EEProm
-        if (rcv_bytes == 2 ) {
-//                TXData[0] = P1IN;
-//                TXData[1] = P2IN & 0x03;
+//                uprintf(PF,"EEPROM nb: %d  ",nb);
+        if (nb == 2 ) {
 		EEProm_r ( 0 , TXData, 4);
+	tb = 4;	
+//                uprintf(PF," read: 0x%x 0x%x 0x%x 0x%x \r",TXData[0],TXData[1],TXData[2],TXData[3]);
         } else
         {
+//                uprintf(PF," write: 0x%x 0x%x 0x%x 0x%x \r",RXData[2],RXData[3],RXData[4],RXData[5]);
                 EEProm_w (0, &RXData[2], 4);
                 
         }
@@ -458,23 +472,30 @@ unsigned int reg, mask;
       default:
 	break;
    }
-   rcv_bytes=0;
+//   rcv_bytes=0;
   }
-  stop = 0;
   __bis_SR_register(LPM0_bits + GIE);     // Enter LPM0, enable interrupts
 //   _EINT();
 }
 void start_cb(){
   flag1 = 0;
   flag = 0;
+  nstrt++;
+  rcv_bytes=0;
 }
-
 void stop_cb(){
   stop = direction;
+  nstrt = 0;
+if (direction ) {
+//	uprintf (PF, "r %d \r",flag1);
+	} else {
+//	uprintf (PF, "s %d \r",flag);
+	};
   gencall = gcall;
   burst = RXData[0]+2;
   direction = 0;
   gcall = 0;
+
 }
 
 void gencall_cb(){
@@ -489,10 +510,13 @@ void receive_cb(unsigned char receive){
 
 void transmit_cb(unsigned char volatile *byte){
   direction = 0;
+  if (nstrt > 1 ) {
+        *byte  = tSec[flag++];
+  } else {
   *byte = TXData[flag++];
+  }	
 }
 char * pEnd;
-// long int li1, li2, li3;
 int li1, li2, li3;
 char str[24];
 void print_f ( float f, char *str) 
@@ -520,7 +544,7 @@ void Parse_UART()
 			if (status_reg & TMP_ERR) uprintf (PF, "\r%s","TMP_ERR");
 			if (status_reg & PS_MAIN) uprintf (PF, "\r%s","PS_MAIN");
 			if (status_reg & WD_STAT) uprintf (PF, "\r%s","WD_STAT");
-			if (status_reg & SRST_B) uprintf (PF, "\r%s","SRST_B");
+//			if (status_reg & SRST_B) uprintf (PF, "\r%s","SRST_B");
 			if (status_reg & FPGA_DONE_STAT) uprintf (PF, "\r%s\r U_BAT:","FPGA_DONE");
 		 uprintf (PF," adc: %d \r", adc_results[BAT_OUT]);
 
@@ -616,7 +640,7 @@ void Parse_UART()
 			if (check (adc_results[V_EXT1_24V], 0xa8d, 5)) uprintf (PF, "<----- ERROR");
                         uprintf( PF, "\rSensors ");
                         uprintf (PF, "\r T = %d *0.1K\r P = %d *0.1 mBar \r",adc_results[T_AIR],adc_results[P_AIR]);
-                        uprintf (PF, " H = %d *0.1 %\r",adc_results[H_AIR]);
+                        uprintf (PF, " H = %d *0.1 %%\r",adc_results[H_AIR]);
                         uprintf (PF, " T_WAT = %d *0.1K\r",adc_results[T_WAT]);
 				                        
 			break;
@@ -841,21 +865,6 @@ void POR_B_FPGA()
         P5DIR &= ~RST_FPGA;     // release NMI_FPGA
 
 }
-
-void SRST_B_FPGA()
-{
-// drive RST_FPGA low
-        P5DIR |= NMI_FPGA;      // B3V3_QSPI_B set to low
-//drive 3V3_QSPI_B high
-        P4DIR &= ~B3V3_QSPI_B;   // release 3v3_QSPI
-        delay (10);             // wait 15 ms
-        P4DIR |= B3V3_QSPI_B;   // B3V3_QSPI_B set to low
-        delay (100);             // wait 15 ms
-        P5DIR &= ~NMI_FPGA;     // release NMI_FPGA
-
-}
-
-
 
 void QSPI_RST()
 {
