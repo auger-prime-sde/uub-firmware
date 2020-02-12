@@ -11,30 +11,9 @@ extern int toread_shwr_buf_num;
 extern int toread_muon_buf_num;
 extern int status;
 
-#ifdef DMA
-extern XAxiCdma AxiCdmaInstance1;	// Instance of the XAxiCdma 
-extern XScuGic IntController;	// Instance of the Interrupt Controller
-extern XScuGic_Config *IntCfgPtr;    // The configuration parameters of the controller
-extern XAxiCdma_Config *DmaCfgPtr1;
-
-extern int Muon_DMA_Error;	/* Dma Error occurs */
-extern int Muon_Data_Read;
-extern int Muon_DMA_Done1;
-#endif
-
-#ifdef SCATTER_GATHER
-extern XAxiCdma_Bd BdTemplate;
-extern XAxiCdma_Bd *BdPtr;
-extern XAxiCdma_Bd *BdCurPtr;
-extern int BdCount;
-extern u8 *SrcBufferPtr;
-extern int Index;
-extern u32 bd_space[512] __attribute__((aligned(64)));;
-#endif
-
 static double prev_time = 0;
 
-  // Read muon memory buffers from PL memory into PS memory via DMA or PDT
+  // Read muon memory buffers from PL memory into PS memory via PDT
   void read_muon_buffers()
   {
     int i;
@@ -91,29 +70,6 @@ static double prev_time = 0;
         if (mem_ptr >= mem_addr+MUON_MEM_WORDS) 
           mem_ptr = mem_ptr-MUON_MEM_WORDS;
       }
-#endif
-
-    #if defined(SIMPLE) && defined(DMA)
-
-    // Muon buffer 0
-    mem_addr=
-      (u32*) TRIGGER_MEMORY_MUON0_BASE;
-    mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS;
-    mem_ptr = mem_addr;
-    status = do_simple_polled_muon_dma(mem_ptr, muon_mem0, 4*mu_word_count);
-    if (status != XST_SUCCESS) printf("Error doing simple polled DMA");
- 
-    // Muon buffer 1
-    mem_addr=
-      (u32*) TRIGGER_MEMORY_MUON1_BASE;
-    mem_addr = mem_addr + toread_muon_buf_num * MUON_MEM_WORDS;
-    mem_ptr = mem_addr;
-    status = do_simple_polled_muon_dma(mem_ptr, muon_mem1, 4*mu_word_count);
-    if (status != XST_SUCCESS) printf("Error doing simple polled DMA");
-#endif
-
-#ifdef SCATTER_GATHER
-    status = do_scatter_gather_polled_muon_dma();
 #endif
   }
 

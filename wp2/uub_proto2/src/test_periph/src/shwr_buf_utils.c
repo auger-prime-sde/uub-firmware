@@ -295,53 +295,6 @@ void read_shw_buffers()
     }
 #endif
 
-#if defined(SIMPLE) && defined(DMA)
-
-  // Shower buffer 0
-  mem_addr = (u32*) shwr_mem_ptr[0];
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  mem_ptr = mem_addr;
-  status = do_simple_polled_shwr_dma(mem_ptr, &shw_mem0[readto_shw_buf_num][0],
-                                     4*SHWR_MEM_WORDS);
-  if (status != XST_SUCCESS) printf("Error doing simple polled shwr DMA");
- 
-  // Shower buffer 1
-  mem_addr = (u32*) shwr_mem_ptr[1];
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  mem_ptr = mem_addr;
-  status = do_simple_polled_shwr_dma(mem_ptr, &shw_mem1[readto_shw_buf_num][0],
-                                     4*SHWR_MEM_WORDS);
-  if (status != XST_SUCCESS) printf("Error doing simple polled shwr DMA");
-
-  // Shower buffer 2
-  mem_addr = (u32*) shwr_mem_ptr[2];
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  mem_ptr = mem_addr;
-  status = do_simple_polled_shwr_dma(mem_ptr, &shw_mem2[readto_shw_buf_num][0],
-                                     4*SHWR_MEM_WORDS);
-  if (status != XST_SUCCESS) printf("Error doing simple polled shwr DMA");
-
-  // Shower buffer 3
-  mem_addr = (u32*) shwr_mem_ptr[3];
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  mem_ptr = mem_addr;
-  status = do_simple_polled_shwr_dma(mem_ptr, &shw_mem3[readto_shw_buf_num][0],
-                                     4*SHWR_MEM_WORDS);
-  if (status != XST_SUCCESS) printf("Error doing simple polled shwr DMA");
-
-  // Shower buffer 4
-  mem_addr = (u32*) shwr_mem_ptr[4];
-  mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
-  mem_ptr = mem_addr;
-  status = do_simple_polled_shwr_dma(mem_ptr, &shw_mem4[readto_shw_buf_num][0],
-                                     4*SHWR_MEM_WORDS);
-  if (status != XST_SUCCESS) printf("Error doing simple polled shwr DMA");
-#endif  
-
-#ifdef SCATTER_GATHER
-  status = do_scatter_gather_polled_shwr_dma();
-#endif
-
 }
 
 // Unpack shower memory buffers 
@@ -475,7 +428,7 @@ void print_shw_buffers()
   trig = 1;
 
   //  #define DETAIL_PRINT
-  //  #define PRINT_EVENT
+#define PRINT_EVENT
 
 #ifndef ANY_DEBUG  // Some firmware debug flags disable info needed for this
 #ifdef COMPAT_SB_TRIGGER

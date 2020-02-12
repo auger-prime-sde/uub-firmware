@@ -51,7 +51,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0999f335</spirit:value>
+            <spirit:value>33e44def</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -66,7 +66,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0999f335</spirit:value>
+            <spirit:value>33e44def</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -146,6 +146,32 @@
           </spirit:wireTypeDefs>
         </spirit:wire>
       </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG_ASYNC</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG_SYNC</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
     </spirit:ports>
   </spirit:model>
   <spirit:fileSets>
@@ -158,7 +184,7 @@
       <spirit:file>
         <spirit:name>ddr_synchronizer_24bit.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_4e76a916</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_90bdb199</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -202,7 +228,7 @@
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>auger.org:auger:ddr_synchronizer_26bit:1.0</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2016-04-28T18:29:39Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2020-02-09T17:51:31Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="nopcore"/>
         <xilinx:tag xilinx:name="auger.org:auger:ddr_synchronizer_26bit:1.0_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/svn_checkouts/beyond_2015_sde_pld/trunk/ip_repo/ddr_synchronizer_24bit</xilinx:tag>
@@ -212,8 +238,8 @@
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="80a83e51"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a5809c0e"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="74a329e8"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="6fa961a3"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="89500a98"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="9d2f4b6e"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

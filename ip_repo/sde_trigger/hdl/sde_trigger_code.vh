@@ -413,7 +413,8 @@ always @(posedge CLK120) begin
         
         // Debugging code.  Std. code uses stretch module above always loop.
         //  TRIG_OUT <= FILT_PMT0 > 300;
-
+	//  TRIG_OUT <= ADC0[2*`ADC_WIDTH-1];  // Early pick to debug jitter
+        
 	// Send SHWR_TRIG_FAST signal for AMIGA & possibly other use
 	// For now this is just a copy of TRIGGERED, but keep separate so
 	// we can add extra logic to this pulse, like shortening it from the
@@ -770,8 +771,8 @@ always @(posedge CLK120) begin
 
         // Debug output -- route in block diagram to desired pins
 
-        DBG2 <= LATENCY_CLK_CTR == 0;
-        DBG1 <= RNDM_DEBUG[1];
+        DBG1 <= FILT_PMT0 > 2000;
+	DBG2 <= ADC0[2*`ADC_WIDTH-1];  // Early pick to debug jitter
         DBG3 <= RNDM_DEBUG[2];
         DBG4 <= RNDM_DEBUG[3];
         DBG5 <= RNDM_DEBUG[4];
