@@ -73,6 +73,7 @@ unsigned char mTX[3];
 
 #define U_BAT_CRIT 0x0004
 #define U_BAT_WARN 0x0100
+#define KILLED 	   0x2000
 // TBC #define SLEEPING   0x0200
 volatile extern unsigned long Second;
 unsigned long WD_TIME;
@@ -93,15 +94,17 @@ void SLEEP ()
    SC_WD_ENABLE;
    WD_TIME = Second + 1;
 // Set sleepmode
-
+status_reg |= KILLED;
 // Power down all power supplies
-
+P1OUT &= ~( PS_AN_EN | PS_5V_EN | PS_3V3_EN | PS_1V8_EN | 
+	    PS_1V_EN | PS_EXT1_24V_EN | PS_EXT2_24V_EN  );
+P2OUT &= ~( PS_PMT_12V_EN | PS_RADIO_12V_EN);
 
 }
 void Wake_Up ()
 {
 // Force watchdog reset
-
+while (1);
 }
 // BME280
 
@@ -125,7 +128,9 @@ void check_battery()
 	if (adc_results[BAT_OUT] < U_CRITICAL ) status_reg |= U_BAT_CRIT;
 	if (adc_results[BAT_OUT] < U_WARN ) status_reg |= U_BAT_WARN;
 	if (adc_results[BAT_OUT] > U_WARN + 0xa0) status_reg &= ~U_BAT_WARN; //release warn at ~10% above
-	if (adc_results[BAT_OUT] > U_HIGH) status_reg &= ~U_BAT_CRIT;
+	if (adc_results[BAT_OUT] > U_HIGH) {
+		if (status_reg & KILLED ) Wake_Up ();
+	}
 }
 void SlowControl_WD_Enable ()
 {
@@ -198,6 +203,7 @@ void setup() {
 	digitalWrite(SLAVE_SDA_PIN, LOW);
 	pinMode(SLAVE_SCL_PIN, OUTPUT);
 	digitalWrite(SLAVE_SCL_PIN, LOW);
+	status_reg = 0;
 //
 // power down I2C slaves
 //
@@ -243,7 +249,6 @@ void setup() {
 
 	dac_init();
 	adc_init();
-
   TI_USCI_I2C_slaveinit(start_cb, stop_cb, gencall_cb, transmit_cb, receive_cb, I2C_ADDRESS);
  led_fblink (0);           //set LED1 blink 5Hz
 }
@@ -413,7 +418,7 @@ unsigned int reg, mask;
 	tb = 2;	
 	break;
       case 0xb:
-//	while (1); // Stop, wait for WD
+	SLEEP();
 	break;
       case 0xc:	   // Radio reset, pin 47 (P5_3) low for 300ms
 	pinMode ( RAD_RST_OUT_PIN, OUTPUT );

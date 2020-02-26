@@ -6,7 +6,7 @@ K.H. Becker
 // adc channel mapping
 #include <inttypes.h>
 #define MAYOR_VERSION 3
-#define MINOR_VERSION 3
+#define MINOR_VERSION 4
 #define VERSION (MAYOR_VERSION << 8 | MINOR_VERSION)
 #define PMT4_HVM  0  // chan 0
 #define PMT3_HVM  8
