@@ -5,6 +5,7 @@
 // implementation.
 //
 // 05-Apr-2019 DFN Initial version
+// 02-nOV-2019 DFN Add option for 2 consequtive bins requirement
 
 `include "sde_trigger_defs.vh"
 
@@ -22,6 +23,7 @@ module scaler(
 	      input [`ADC_WIDTH-1:0] THRES2,
 	      input [2:0] TRIG_ENABLE,
 	      input [1:0] MULTIPLICITY,
+              input TWOBINS,
               output reg [31:0] COUNT,
               output reg [2:0] DEBUG
 	      );
@@ -29,6 +31,8 @@ module scaler(
    reg [2:0] 			   PMT_TRIG;
    reg [1:0] 			   SUM_PMT_TRIGS;
    reg                             ITRIG;
+   reg                             ITRIG1;
+   reg                             ITRIG2;
    reg [`ADC_WIDTH-1:0] 	   THRES[2:0];
    reg [`ADC_WIDTH-1:0] 	   ADC[2:0];
    reg [`TRG_DLY-1:0]             ITRIG_PREV;
@@ -55,9 +59,14 @@ module scaler(
       end
       SUM_PMT_TRIGS <= PMT_TRIG[0] + PMT_TRIG[1] + PMT_TRIG[2];
       if ((SUM_PMT_TRIGS >= MULTIPLICITY) && (MULTIPLICITY != 0))
-	ITRIG <= 1;
+	ITRIG1 <= 1;
       else
-	ITRIG <= 0;
+	ITRIG1 <= 0;
+      ITRIG2 <= ITRIG1;
+      if (TWOBINS)
+        ITRIG <= ITRIG1 & ITRIG2;
+      else
+        ITRIG <= ITRIG1;
 
       // Need to insert logic here to avoid double counting.  Previous code
       // required no triger previous 40 MHz clock. 

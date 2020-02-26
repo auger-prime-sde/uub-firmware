@@ -1,6 +1,6 @@
 /*
  * uub_init.c
- *  Intitialization for UUB V3 layout
+ *  Intitialization for UUB V2 layout
  *  Created on: may 2019
  *      Author: Roberto Assiro
  */

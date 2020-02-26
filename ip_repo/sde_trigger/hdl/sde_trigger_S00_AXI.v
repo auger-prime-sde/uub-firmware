@@ -1,3 +1,5 @@
+//
+// 03-Dec-2019 DFN Add SHWR_BUF_LATENCY register.
 
 `timescale 1 ns / 1 ps
 
@@ -58,9 +60,11 @@ module sde_trigger_S00_AXI #
     output wire MUON_INTR,     // Remains high until no full buffers
     output wire TRIG_OUT,       // External trigger output
     //output reg TRIG_OUT,// "reg" for debug - restore to "wire" for std code
-    output reg P61,       // Test points P63 through P61
-    output reg P62,       // Test points P63 through P61
-    output reg P63,       // Test points P63 through P61
+    output reg DBG1,       // Test point
+    output reg DBG2,       // Test point
+    output reg DBG3,       // Test point
+    output reg DBG4,       // Test point
+    output reg DBG5,       // Test point
     output wire LED,
                 
     // User ports ends
@@ -204,9 +208,7 @@ module sde_trigger_S00_AXI #
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_SB_TRIG_THR1;
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_SB_TRIG_THR2;
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_SB_TRIG_ENAB;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_RANDOM_TRIG_DELAY_A;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_RANDOM_TRIG_DELAY_B;
-   reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_RANDOM_TRIG_START;
+   reg [C_S_AXI_DATA_WIDTH-1:0]   RANDOM_TRIG_MODE;
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_TOT_TRIG_THR0;
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_TOT_TRIG_THR1;
    reg [C_S_AXI_DATA_WIDTH-1:0]   COMPATIBILITY_TOT_TRIG_THR2;
@@ -243,6 +245,7 @@ module sde_trigger_S00_AXI #
    reg [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_CONTROL;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_STATUS;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_START;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_LATENCY;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA0;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA1;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA2;
@@ -429,9 +432,7 @@ module sde_trigger_S00_AXI #
 	     COMPATIBILITY_SB_TRIG_THR1 <= 0;
 	     COMPATIBILITY_SB_TRIG_THR2 <= 0;
              COMPATIBILITY_SB_TRIG_ENAB <= 0;
-	     COMPATIBILITY_RANDOM_TRIG_DELAY_A <= 0;
-	     COMPATIBILITY_RANDOM_TRIG_DELAY_B <= 0;
-	     COMPATIBILITY_RANDOM_TRIG_START <= 0;
+	     RANDOM_TRIG_MODE <= 0;
 	     COMPATIBILITY_TOT_TRIG_THR0 <= 0;
 	     COMPATIBILITY_TOT_TRIG_THR1 <= 0;
 	     COMPATIBILITY_TOT_TRIG_THR2 <= 0;
@@ -560,12 +561,8 @@ module sde_trigger_S00_AXI #
 	            COMPATIBILITY_SB_TRIG_THR2 <= S_AXI_WDATA;
 	          `COMPATIBILITY_SB_TRIG_ENAB_ADDR :
 	            COMPATIBILITY_SB_TRIG_ENAB <= S_AXI_WDATA;
-	          `COMPATIBILITY_RANDOM_TRIG_DELAY_A_ADDR :
-	            COMPATIBILITY_RANDOM_TRIG_DELAY_A <= S_AXI_WDATA;
-	          `COMPATIBILITY_RANDOM_TRIG_DELAY_B_ADDR :
-	            COMPATIBILITY_RANDOM_TRIG_DELAY_B <= S_AXI_WDATA;
-	          `COMPATIBILITY_RANDOM_TRIG_START_ADDR :
-	            COMPATIBILITY_RANDOM_TRIG_START <= S_AXI_WDATA;
+	          `RANDOM_TRIG_MODE_ADDR :
+	            RANDOM_TRIG_MODE <= S_AXI_WDATA;
 	          `COMPATIBILITY_TOT_TRIG_THR0_ADDR :
 	            COMPATIBILITY_TOT_TRIG_THR0 <= S_AXI_WDATA;
 	          `COMPATIBILITY_TOT_TRIG_THR1_ADDR :
@@ -726,12 +723,8 @@ module sde_trigger_S00_AXI #
                        <= COMPATIBILITY_SB_TRIG_THR2;
 	             COMPATIBILITY_SB_TRIG_ENAB 
                        <= COMPATIBILITY_SB_TRIG_ENAB;
-	             COMPATIBILITY_RANDOM_TRIG_DELAY_A 
-                       <= COMPATIBILITY_RANDOM_TRIG_DELAY_A;
-	             COMPATIBILITY_RANDOM_TRIG_DELAY_B 
-                       <= COMPATIBILITY_RANDOM_TRIG_DELAY_B;
-	             COMPATIBILITY_RANDOM_TRIG_START 
-                       <= COMPATIBILITY_RANDOM_TRIG_START;
+	             RANDOM_TRIG_MODE 
+                       <= RANDOM_TRIG_MODE;
 	             COMPATIBILITY_TOT_TRIG_THR0 
                        <= COMPATIBILITY_TOT_TRIG_THR0;
 	             COMPATIBILITY_TOT_TRIG_THR1 
@@ -1012,12 +1005,8 @@ module sde_trigger_S00_AXI #
                  reg_data_out <= COMPATIBILITY_SB_TRIG_THR2;
 	       `COMPATIBILITY_SB_TRIG_ENAB_ADDR :
                  reg_data_out <= COMPATIBILITY_SB_TRIG_ENAB;
-	       `COMPATIBILITY_RANDOM_TRIG_DELAY_A_ADDR :
-                 reg_data_out <= COMPATIBILITY_RANDOM_TRIG_DELAY_A;
-	       `COMPATIBILITY_RANDOM_TRIG_DELAY_B_ADDR :
-                 reg_data_out <= COMPATIBILITY_RANDOM_TRIG_DELAY_B;
-	       `COMPATIBILITY_RANDOM_TRIG_START_ADDR :
-                 reg_data_out <= COMPATIBILITY_RANDOM_TRIG_START;
+	       `RANDOM_TRIG_MODE_ADDR :
+                 reg_data_out <= RANDOM_TRIG_MODE;
 	       `COMPATIBILITY_TOT_TRIG_THR0_ADDR :
                  reg_data_out <= COMPATIBILITY_TOT_TRIG_THR0;
 	       `COMPATIBILITY_TOT_TRIG_THR1_ADDR :
@@ -1090,6 +1079,8 @@ module sde_trigger_S00_AXI #
                  reg_data_out <= SHWR_BUF_STATUS;
 	       `SHWR_BUF_START_ADDR :
                  reg_data_out <= SHWR_BUF_START;
+	       `SHWR_BUF_LATENCY_ADDR :
+                 reg_data_out <= SHWR_BUF_LATENCY;
 	       `SHWR_PEAK_AREA0_ADDR :
                  reg_data_out <= SHWR_PEAK_AREA0;
 	       `SHWR_PEAK_AREA1_ADDR :

@@ -1,6 +1,8 @@
 
 `timescale 1 ns / 1 ps
 
+// 12-Feb-2020 DFN Modify trig out logic to make synchronous with CLK120.
+
 module test_control_v1_0_S00_AXI #
   (
    // Users to add parameters here
@@ -34,7 +36,7 @@ module test_control_v1_0_S00_AXI #
     input wire FAKE_RD_SERIAL1,
     input wire TRUE_RD_SERIAL1,
     output wire RD_SERIAL1,
-    output wire TRIG_OUT,
+    output reg TRIG_OUT,
     
 
     // User ports ends
@@ -418,7 +420,15 @@ module test_control_v1_0_S00_AXI #
         NO_TRIGGER <= 0;
         
         FAKE_MODE <= FAKE_MODE_REG[31:0];
+     end // always @ ( posedge S_AXI_ACLK )
+
+   always @( posedge CLK120 )
+     begin
+        if (DISAB_TRGOUT) TRIG_OUT <= 0;
+        else if (GEN_TRGOUT) TRIG_OUT <= 1;
+        else TRIG_OUT <= TRIGGER;
      end
+          
 
    mux1 ppsmux(.SEL_B(USE_FAKE_PPS), .D({TRUE_PPS,FAKE_PPS}), .Q(PPS));
    mux1 rdclk(.SEL_B(USE_FAKE_RDCLK), .D({TRUE_RDCLK,FAKE_RDCLK}), .Q(RDCLK));
@@ -426,7 +436,6 @@ module test_control_v1_0_S00_AXI #
                .Q(RD_SERIAL0));
    mux1 rdser1(.SEL_B(USE_FAKE_RD), .D({TRUE_RD_SERIAL1,FAKE_RD_SERIAL1}), 
                .Q(RD_SERIAL1));
-   mux1 trig(.SEL_B(DISAB_TRGOUT), .D({DO_TRGOUT,NO_TRIGGER}), .Q(TRIG_OUT));
 
    // User logic ends
 

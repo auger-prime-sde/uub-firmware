@@ -718,7 +718,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>4bc110ad</spirit:value>
+            <spirit:value>fbf2afa5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -734,7 +734,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>00ff3123</spirit:value>
+            <spirit:value>f7540206</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -748,7 +748,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9307bb32</spirit:value>
+            <spirit:value>ff72d4ab</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1321,12 +1321,12 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>P61</spirit:name>
+        <spirit:name>DBG1</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:typeName>wire</spirit:typeName>
               <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -1334,12 +1334,12 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>P62</spirit:name>
+        <spirit:name>DBG2</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:typeName>wire</spirit:typeName>
               <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -1347,12 +1347,38 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>P63</spirit:name>
+        <spirit:name>DBG3</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG4</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>DBG5</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
               <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -2566,6 +2592,18 @@
         <spirit:userFileType>CHECKSUM_c1808ef2</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/mops_40mhz.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_486a93a3</spirit:userFileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/random.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_684802de</spirit:userFileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_verilogbehavioralsimulation_view_fileset</spirit:name>
@@ -2799,7 +2837,7 @@
       <xilinx:upgrades>
         <xilinx:canUpgradeFrom>auger.mtu.edu:user:sde_trigger:1.2</xilinx:canUpgradeFrom>
       </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2019-08-30T18:24:57Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2020-02-12T18:55:06Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="auger.mtu.edu:user:sde_trigger:1.2_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2</xilinx:tag>
         <xilinx:tag xilinx:name="auger.org:user:sde_trigger:1.2_ARCHIVE_LOCATION">/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2</xilinx:tag>
@@ -2810,8 +2848,8 @@
       <xilinx:xilinxVersion>2015.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="896bc180"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e0684295"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="21d061f9"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="504d1793"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="77d7d676"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="4774519c"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="f6423d62"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="7d8961fa"/>
     </xilinx:packagingInfo>

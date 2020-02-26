@@ -53,10 +53,12 @@ int main(int argc, char *argv[]){
 		printf("DAC value %d ....",dac);
 	}
 	spi();
-	char dac_write[2] = {0x0f, 0xff} ;
+//	char dac_write[2] = {0x0f, 0xff} ;
+//    dac_write[0] = (dac >> 8);
+//    dac_write[1] = (dac & 0xFF);
 
-    dac_write[0] = (dac >> 8);
-    dac_write[1] = (dac & 0xFF);
+	char dac_write[3] = {0x11, 0x35, 0x44};
+	char dac_ = 0xCC;
 
 	if (write(fd, dac_write, sizeof(dac_write)) != sizeof(dac_write)) {
 			exit(3);
@@ -64,7 +66,6 @@ int main(int argc, char *argv[]){
 	close(fd);
 	printf("OK\n\r");
 }
-
 
 
 void spi(void)
@@ -104,7 +105,7 @@ void spi(void)
 
 void usage(void)
 {
-	printf("|   DAC for clock frequency change\n");
+	printf("|    DAC for clock frequency change\n");
 	printf("|    DAC <val> (0 - 4095 12 bits)\n");
 	printf("|    val is number of DAC counting <0...4095>\n");
 	printf("|    example: dac7551 100\n");
@@ -131,4 +132,33 @@ void wave()
 	exit(3);
 }
 
+
+
+int dac_read(int adcfd, int address) {
+	struct spi_ioc_transfer xfer[2];
+	unsigned char buf[32];
+	int status;
+
+	memset(xfer, 0, sizeof xfer);
+	memset(buf, 0, sizeof buf);
+
+	// Read register 1
+	buf[0] = 0x80 | ((address>>8) & 0xff);
+	buf[1] = address & 0xff;
+
+	xfer[0].tx_buf = (unsigned long) buf;
+	xfer[0].len = 2;
+
+	xfer[1].rx_buf = (unsigned long) buf;
+	xfer[1].len = 1;
+
+	status = ioctl(adcfd, SPI_IOC_MESSAGE(2), xfer);
+	if (status < 0) {
+		perror("SPI_IOC_MESSAGE");
+		return (-1);
+	}
+
+	printf("Address value : %03x %02x\n", address, buf[0]);
+	return ((int) buf[0]);
+}
 

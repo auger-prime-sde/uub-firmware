@@ -1,4 +1,4 @@
-// integral_40mhz.v
+ // integral_40mhz.v
 //
 // This keeps track of the continuos integral of a shower signal for
 // triggering purposes.

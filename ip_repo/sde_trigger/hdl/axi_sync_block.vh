@@ -86,6 +86,10 @@
      scaler_c_written_sync(.ASYNC_IN(AXI_SCALER_C_COUNT_WRITTEN),
                            .CLK(CLK120),.SYNC_OUT(LCL_SCALER_C_COUNT_WRITTEN));
 
+   synchronizer_32bit
+     random_mode_sync(.ASYNC_IN(RANDOM_TRIG_MODE),.CLK(CLK120),
+                      .SYNC_OUT(LCL_RNDM_MODE));
+   
    synchronizer_32bit shwr_trigid_sync
      (.ASYNC_IN(LCL_SHWR_BUF_TRIG_ID),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_TRIG_ID));
@@ -97,6 +101,13 @@
    synchronizer_32bit shwr_buf_start_sync
      (.ASYNC_IN(LCL_SHWR_BUF_START),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_START));
+
+// Need to be careful here, SHWR_BUF_RNUM is in CLK120 domain, not AXI_CLK domain in
+// in spite of common use of LCL prefix for other registers to mean CLK120 domain
+   
+   synchronizer_32bit shwr_buf_latency_sync
+     (.ASYNC_IN(LCL_SHWR_BUF_LATENCY[SHWR_BUF_RNUM]),
+      .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_LATENCY));
 
 // Peak, area, & baseline
    synchronizer_32bit shwr_peak_area0

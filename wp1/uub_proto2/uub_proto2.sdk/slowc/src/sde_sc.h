@@ -87,8 +87,8 @@ K.H. Becker
 short int adc_buffer[MAX_VARS];
 
 // more to come .....
-#define LSB_TO_5V 1.8814
-//#define LSB_TO_5V 1.788
+//#define LSB_TO_5V 1.8814
+#define LSB_TO_5V 1.868
 #define LSB_TO_24V 8.88
 #define LSB_TO_12V 4.43
 #define LSB_TO_3V3 1.20

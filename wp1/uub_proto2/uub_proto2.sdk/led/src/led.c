@@ -19,7 +19,7 @@
 #define MAP_SIZE 4096UL
 #define MAP_MASK (MAP_SIZE - 1)
 
-#define DAC_ADDR		0x0C // DAC slave address DAC AD5316
+#define DAC_ADDR		0x0C // DAC slave address DAC AD5326
 
 int file, dac_led1, dac_led2, dac_led3, dac_led4, width, time;
 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 
   // 	printf("Initialization of I2C LED DAC..... ");
-	snprintf(filename, 19, "/dev/i2c-0");
+	snprintf(filename, 19, "/dev/i2c-2");
 	file = open(filename, O_RDWR);
 	if (file < 0) {
 			exit("no open file");
@@ -66,39 +66,38 @@ int main(int argc, char *argv[])
 	if (ioctl(file, I2C_SLAVE, DAC_ADDR) < 0) {
 			exit("Fail to setup slave addr!");
 	}
-    // Preparo i byte da inviare in buf
-     // calcolo canale 1
-     	buf[0] = 0x01;	//Seleziono canale del DAC
-     	buf[1] = (dac_led1/64) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
-     	buf[2] = (dac_led1 & 0x3F)*4;
+    // calcolo canale 1
+    	buf[0] = 0x01;	//Seleziono canale del DAC
+    	buf[1] = (dac_led1/256) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
+    	buf[2] = dac_led1 & 0xFF;
+   	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
+       	 	exit(3);
+        	}
+    	usleep(500);
+    // calcolo canale 2
+    	buf[0] = 0x02;	//Seleziono canale del DAC
+    	buf[1] = (dac_led2/256) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
+    	buf[2] = dac_led2 & 0xFF;
     	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
-        	 	exit(3);
-         	}
-     	usleep(500);
-     // calcolo canale 2
-     	buf[0] = 0x02;	//Seleziono canale del DAC
-     	buf[1] = (dac_led2/64) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
-     	buf[2] = (dac_led2 & 0x3F)*4;
-     	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
-     	       exit(3);
-     	}
-     	usleep(500);
-     // calcolo canale 3
-     	buf[0] = 0x04;	//Seleziono canale del DAC
-     	buf[1] = (dac_led3/64) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
-     	buf[2] = (dac_led3 & 0x3F)*4;
-     	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
-     	       exit(3);
-     	}
-     	usleep(500);
-     // calcolo canale 4
-     	buf[0] = 0x08;	//Seleziono canale del DAC
-     	buf[1] = (dac_led4/64) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
-     	buf[2] = (dac_led4 & 0x3F)*4;
-     	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
-     	    exit(3);
-     	}
-     	printf("OK... ");
+    	       exit(3);
+    	}
+    	usleep(500);
+    // calcolo canale 3
+    	buf[0] = 0x04;	//Seleziono canale del DAC
+    	buf[1] = (dac_led3/256) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
+    	buf[2] = dac_led3 & 0xFF;
+    	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
+    	       exit(3);
+    	}
+    	usleep(500);
+    // calcolo canale 4
+    	buf[0] = 0x08;	//Seleziono canale del DAC
+    	buf[1] = (dac_led4/64) + 112; //primi 4 bit piu' significativi di val trasferiti nei meno 4 significativi di a e aggiungo ctrl_reg=112
+    	buf[2] = dac_led4 & 0xFF;
+    	if (write(file, buf, sizeof(buf)) != sizeof(buf)) {
+    	    exit(3);
+    	}
+    	printf("Done!\n");
 
      	target = 0x43c203fc;
 
@@ -126,7 +125,7 @@ int main(int argc, char *argv[])
 void usage(void)
 {
 	printf("|    led <val LED1> <val LED2> <val LED3> <val LED4> <pulse x 100ns>\n");
-	printf("|    val is number of DAC counting <0...1023>\n");
+	printf("|    val is number of DAC counting <0...4095>\n");
 	printf("|    pulse is a number (number x 10ns) - pulse = 10 (x 100ns) = 1ms\n");
 	printf("|    example: led 500 500 300 300 10\n");
 	printf("|    example: led PX3 PX4 PX3 PX4\n");

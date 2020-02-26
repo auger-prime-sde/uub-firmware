@@ -29,6 +29,7 @@
 `define RD_PARITY1_WIDTH 4
 `define RD_PARITY1_MASK 0xf  // Parity error corresponding in buffer if set
 `define RD_PARITY1_SHIFT (`RD_PARITY0_SHIFT+`RD_PARITY0_WIDTH)
+`define RD_BUF_TIMEOUT_SHIFT (`RD_PARITY1_SHIFT+`RD_PARITY1_WIDTH)
 
 // Control register bit usage
 `define RD_BUF_RESET_MASK  0x3 // Buffer number to reset to empty

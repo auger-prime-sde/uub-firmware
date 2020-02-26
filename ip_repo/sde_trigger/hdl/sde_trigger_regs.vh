@@ -10,6 +10,9 @@
 // 21-Nov-2017 DFN Add temporary EVT_ID registers to keep unique version for
 //                 each shower buffer
 // 16-May-2018 DFN Add registers to keep track of compatibility ToT triggers
+// 31-Oct-2019 DFN_FC Add registers to keep track of compatibility MoPS triggers
+// 01-Nov-2019 DFN Add register to keep track of random triggers
+// 03-Dec-2019 DFN Add register to keep track of readout latency
 
 // Shower buffer handling registers
 reg [`SHWR_TRIG_DLY:0] SHWR_TRIG_DLYD; // Trigger delayed to end of buf
@@ -31,6 +34,8 @@ reg [31:0] LCL_SHWR_BUF_TRIG_ID;
 reg [31:0] LCL_SHWR_BUF_TRIG_IDN[0:`SHWR_MEM_NBUF-1];
 reg [`SHWR_EVT_ID_WIDTH-1:0] LCL_SHWR_EVT_IDN[0:`SHWR_MEM_NBUF-1];
 wire LCL_COMPATIBILITY_GLOBAL_CONTROL;
+reg [31:0] LCL_SHWR_BUF_LATENCY[0:`SHWR_MEM_NBUF-1];
+reg [7:0] LATENCY_CLK_CTR;
 
 // AXI interface registers
 reg AXI_REG_WRITE;
@@ -116,14 +121,21 @@ reg [7:0] COMPAT_SB_TRIG_COUNTER;
 reg [7:0] COMPAT_EXT_TRIG_COUNTER;
 reg [7:0] COMPAT_TOT_TRIG_COUNTER;
 reg [7:0] COMPAT_TOTD_TRIG_COUNTER;
+reg [7:0] COMPAT_MOPS_TRIG_COUNTER;
+reg [7:0] RNDM_TRIG_COUNTER;
+reg [7:0] SB_TRIG_COUNTER;
 reg PRESCALED_COMPAT_SB_TRIG;
 reg PRESCALED_COMPAT_EXT_TRIG;
 reg PRESCALED_COMPAT_TOT_TRIG;
 reg PRESCALED_COMPAT_TOTD_TRIG;
+reg PRESCALED_COMPAT_MOPS_TRIG;
+reg PRESCALED_RNDM_TRIG;
+reg PRESCALED_SB_TRIG;
 wire STRETCHED_COMPAT_SB_TRIG;
 wire STRETCHED_COMPAT_EXT_TRIG;
 wire STRETCHED_COMPAT_TOT_TRIG;
 wire STRETCHED_COMPAT_TOTD_TRIG;
+wire STRETCHED_COMPAT_MOPS_TRIG;
 wire TRIG_IN_SYNCED;
 reg TRIG_IN_PREV;
 reg EXT_TRIG;
@@ -131,10 +143,17 @@ reg [1:0] ENABLE40;
 wire COMPATIBILITY_SB_TRIG;
 wire COMPATIBILITY_TOT_TRIG;
 wire COMPATIBILITY_TOTD_TRIG;
+wire COMPATIBILITY_MOPS_TRIG;
 wire SB_TRIG;
 wire STRETCHED_SB_TRIG;
+wire RNDM_TRIG;
+wire STRETCHED_RNDM_TRIG;
+wire [31:0] LCL_RNDM_MODE;
+
 wire COMPATIBILITY_TOT_DEBUG;
 wire [59:0] COMPATIBILITY_TOTD_DEBUG;
+wire [4:0] COMPATIBILITY_MOPS_DEBUG;
+wire [4:0] RNDM_DEBUG;
 
 // Other registers
 reg LCL_RESET;
@@ -145,4 +164,5 @@ integer DELAY;
 integer DEADDLY;
 integer MUON_EXTDLY;
 integer DLY_IDX;
+integer LINDEX;
 

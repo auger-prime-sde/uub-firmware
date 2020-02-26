@@ -10,6 +10,7 @@
 // 24-Jun-16 DFN Add externally filtered PMT inputs
 // 22-Nov-17 DFN Add SHWR_TRIG_FAST
 // 28-Apr-18 DFN Split shower & muon interrupt modules
+// 05-Nov-19 DFN Change test point outputs to DBG1 to DBG5
 
 `timescale 1 ns / 1 ps
 
@@ -75,9 +76,11 @@ module sde_trigger #
     output wire [`MUON_BUF_NUM_WIDTH-1:0] MUON_BUF_RNUM,
     output wire [`MUON_EVT_CTR_WIDTH-1:0] MUON_EVT_CTR,
     output wire TRIG_OUT, // External trigger output
-    output wire P61,  // Test point outputs
-    output wire P62,  // Test point outputs
-    output wire P63,  // Test point outputs
+    output wire DBG1,  // Test point
+    output wire DBG2,  // Test point
+    output wire DBG3,  // Test point
+    output wire DBG4,  // Test point
+    output wire DBG5,  // Test point
     output wire LED,
    
     // User ports ends
@@ -158,9 +161,6 @@ module sde_trigger #
 
    wire          MUON_INTR;
    wire          SHWR_INTR;
-//   wire          P61A;
-//   wire          P62A;
-//   wire          P63A;
    
    
    // Instantiation of Axi Bus Interface S00_AXI
@@ -226,9 +226,11 @@ module sde_trigger #
                              .SHWR_INTR(SHWR_INTR),
                              .MUON_INTR(MUON_INTR),
                              .TRIG_OUT(TRIG_OUT),
-			     .P61(P61),
-			     .P62(P62),
-			     .P63(P63),
+			     .DBG1(DBG1),
+			     .DBG2(DBG2),
+			     .DBG3(DBG3),
+			     .DBG4(DBG4),
+			     .DBG5(DBG5),
                              .LED(LED)
 	                     );
 
@@ -311,7 +313,7 @@ module sde_trigger #
 //   assign P61 = P61A;
 //   assign P62 = P62A;
 //   assign P63 = P63A;
-        
+
    // User logic ends
 
 endmodule
