@@ -63,8 +63,8 @@ unsigned char mTX[3];
 #define LSB_TO_1V0 0.366
 #define CNV_TEMP 1.831
 //
-#define U_CRITICAL 0x5a0 	//crtical batterie state, switch PS off
-#define U_WARN 0x5e5	//warn DAQ (Ux*1000/(LSB*7.8)) for TPCB 7.5 
+#define U_CRITICAL 0x62a 	//23V crtical batterie state, switch PS off
+#define U_WARN 0x66f	//24V warn DAQ (Ux*1000/(LSB*7.8)) for TPCB 7.5 
 #define U_HIGH 0x73d	//recover from critical state
 // uncomment for TPCB
 //#define U_CRITICAL 0x5da        //crtical batterie state, switch PS off
@@ -127,7 +127,10 @@ void check_battery()
 { 
 	if (adc_results[BAT_OUT] < U_CRITICAL ) status_reg |= U_BAT_CRIT;
 	if (adc_results[BAT_OUT] < U_WARN ) status_reg |= U_BAT_WARN;
-	if (adc_results[BAT_OUT] > U_WARN + 0xa0) status_reg &= ~U_BAT_WARN; //release warn at ~10% above
+	if (adc_results[BAT_OUT] > U_WARN + 0xa0) {
+		status_reg &= ~U_BAT_WARN; //release warn at ~10% above
+		status_reg &= ~U_BAT_CRIT;
+	} //release warn & crit at ~10% above
 	if (adc_results[BAT_OUT] > U_HIGH) {
 		if (status_reg & KILLED ) Wake_Up ();
 	}
@@ -641,7 +644,8 @@ void Parse_UART()
                         uprintf( PF, "\r24V EXT1/2  ");
                         print_f((float)adc_results[V_EXT1_24V]*LSB_TO_24V,"[mV] ");
                         print_f((float)adc_results[V_EXT2_24V]*LSB_TO_24V,"[mV] ");
-                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
+//                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
+                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*41,67,"[mA] "); // 41,67=1/0.024
 			if (check (adc_results[V_EXT1_24V], 0xa8d, 5)) uprintf (PF, "<----- ERROR");
                         uprintf( PF, "\rSensors ");
                         uprintf (PF, "\r T = %d *0.1K\r P = %d *0.1 mBar \r",adc_results[T_AIR],adc_results[P_AIR]);

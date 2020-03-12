@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "sde_sc.h"
-#define VERSION_STRING " Version 3.4"
+#define VERSION_STRING " Version 3.5"
 #define LSB_TO_5V 1.868
 #define LSB_TO_24V 8.88
 #define LSB_TO_12V 4.43
@@ -326,7 +326,10 @@ float cnv_LOADCURR;
 	 printf("\n24V EXT1/2");
 	 printf("\t %.1f %s",(float)adc_buffer[V_EXT1_24V]*LSB_TO_24V,"[mV] ");
 	 printf("\t %.1f %s",(float)adc_buffer[V_EXT2_24V]*LSB_TO_24V,"[mV] ");
-	 printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
+
+// printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
+// New conversion factor for R65= 24mOhm
+	 printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*41.67,"[mA] "); // 41,67=1/0.024
 	 printf("\nTPCB \n");
 	 printf("BAT1/2/EXT_TEMP \t%.2f %.2f %.2f\n",
 			 adc_buffer[BAT1_TEMP]*cnv_TM,
