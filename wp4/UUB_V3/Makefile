@@ -59,6 +59,7 @@ SRC += DAC_led_func.c
 SRC += eeprom.c
 //TTY = $(wildcard /dev/tty.TIVCP*)
 TTY = $(wildcard /dev/tty.usbmodem24121)
+FL_PATH = ~/ti/MSPFlasher_1.3.20
 
 # Default target.
 #all: begin gccversion sizebefore build sizeafter end
@@ -76,10 +77,10 @@ testversion:
 
 program: $(TARGET).elf
 	msp430-objcopy -O ihex $(TARGET).elf $(TARGET).hex
-	export LD_LIBRARY_PATH=/home/khb/MSPFlasher_1.3.10/
+#	export LD_LIBRARY_PATH=/home/khb/MSPFlasher_1.3.10/
 #	MSP430Flasher
 #	MSP430Flasher -n MSP430F2618 -w $(TARGET).hex -v -z [VCC]
-	 LD_LIBRARY_PATH=/home/khb/MSPFlasher_1.3.10/ /home/khb/MSPFlasher_1.3.10/MSP430Flasher -n $(MCU)  -w $(TARGET).hex -v -g -z [VCC]
+	 LD_LIBRARY_PATH=$(FL_PATH) $(FL_PATH)/MSP430Flasher -n $(MCU)  -w $(TARGET).hex -v -g -z [VCC]
 # TTY
 #ifeq ($(TTY),)
 #	$(error no usable TTY found)

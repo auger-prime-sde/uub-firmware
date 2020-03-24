@@ -591,7 +591,6 @@ int8_t bme280_soft_reset(const struct bme280_dev *dev)
  */
 int8_t bme280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data, struct bme280_dev *dev)
 {
-int i;
 	int8_t rslt;
 	/* Array to store the pressure, temperature and humidity data read from
 	the sensor */

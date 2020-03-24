@@ -5,12 +5,12 @@
 #include "i2c.h"
 #include "eeprom.h"
 void readEEPROM( unsigned int eeaddress,  
-                 unsigned char* data, unsigned int num_chars) 
+                 char* data, int num_chars) 
 {
   I2C_Read_Reg16( eeprom_adr, eeaddress, num_chars, data);
 
 }
-void writeEEPROM( unsigned int page,  unsigned char *data) 
+void writeEEPROM( unsigned int page,  char *data) 
 {
   // Uses Page Write for 24LC256
   // Allows for 64 byte page boundary
@@ -24,7 +24,7 @@ void writeEEPROM( unsigned int page,  unsigned char *data)
   u8_buffer [0] = (unsigned char) ((address) & 0xFF);
   u8_buffer [1] = (unsigned char) ((address) >> 8);
    while(data[data_len]){
-	u8_buffer[2+data_len] = data[data_len]; 
+	u8_buffer[2+data_len] = (unsigned char) data[data_len]; 
 	data_len++;
   }   
   I2C_Write ( eeprom_adr, 2+data_len, u8_buffer);

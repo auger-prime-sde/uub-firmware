@@ -49,7 +49,6 @@ void adc_update_sgl(unsigned char chan)
 }
 void adc_update()
 {
-  int temp;
   unsigned char i=0, muxbits;
 //
 // - New 29/1/2016
