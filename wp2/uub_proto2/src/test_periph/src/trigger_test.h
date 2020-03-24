@@ -13,6 +13,7 @@
 #include "time_tagging.h"
 #include "interface_uub_dfn3.h"
 #include "test_control.h" 
+#include "test_control_defs.h"
 #include "xparameters.h"  // Peripheral parameters (GPIO addresses, etc.)
 
 #ifdef STAND_ALONE

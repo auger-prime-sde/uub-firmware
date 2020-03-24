@@ -1,0 +1,4 @@
+`ifndef _TEST_CTL_OPTIONS
+  `define _TEST_CTL_OPTIONS
+  `define TEST_CTL_COMPILE_DATE 'h13200320
+`endif

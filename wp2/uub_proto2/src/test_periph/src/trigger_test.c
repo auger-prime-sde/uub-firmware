@@ -144,12 +144,17 @@ void trigger_test()
 
   // Select fake or true GPS for 1pps
 #ifdef USE_FAKE_GPS
-  test_options = 1;
+  test_options = 1<<USE_FAKE_PPS_BIT;
+#endif
+
+  // Select normal TRIG_OUT or pattern
+#ifdef USE_TRIG_OUT_PATTERN
+  test_options = 1<<TRIG_OUT_PATTERN_BIT;
 #endif
 
   // Select fake or true signals
 #ifdef USE_FAKE_SIGNAL
-  test_options = test_options | 2;
+  test_options = test_options | (1 << USE_FAKE_SHWR_BIT);
       // FAKE_SIGNAL_MODE & 0x1f == 7 means load fake data!
       if ((FAKE_SIGNAL_MODE & 0x1f) == 7) 
     {

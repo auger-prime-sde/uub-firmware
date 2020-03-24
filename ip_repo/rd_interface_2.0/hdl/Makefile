@@ -25,7 +25,7 @@ rd_interface_options.vh: FORCE
 
 ../drivers/rd_interface_v2_0/src/rd_interface_defs.h: 	FORCE
 	sed -e "s/\`define/\#define/" \
-	<../../rd_interface_1.0/hdl/rd_interface_defs.vh | \
+	<../../rd_interface_2.0/hdl/rd_interface_defs.vh | \
 	sed -e "s/\`ifndef/\#ifndef/" | \
 	sed -e "s/\`endif/\#endif/" | \
 	sed -e "s/\`//" | \

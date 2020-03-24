@@ -402,9 +402,12 @@ module test_control_v1_0_S00_AXI #
    reg USE_FAKE_PPS;
    reg USE_FAKE_RDCLK;
    reg DISAB_TRGOUT;
-   reg NO_TRIGGER;
    reg GEN_TRGOUT;
-   reg DO_TRGOUT;
+   reg TRIG_PATTERN;
+   reg[1:0] PATTERN_COUNT;
+   reg      PREV_TRIG;
+   reg      TRG_DLY[`PATTERN_LEN:0];
+   integer  DLY_IDX;
       
    always @( posedge S_AXI_ACLK )
      begin
@@ -415,9 +418,7 @@ module test_control_v1_0_S00_AXI #
         USE_FAKE_RDCLK <= USE_FAKE_REG[`USE_FAKE_RDCLK_BIT];
         DISAB_TRGOUT <= USE_FAKE_REG[`DISABLE_TRIG_OUT_BIT];
         GEN_TRGOUT <= USE_FAKE_REG[`GENERATE_TRIG_OUT_BIT];
-        DO_TRGOUT <= GEN_TRGOUT || TRIGGER;
-        
-        NO_TRIGGER <= 0;
+        TRIG_PATTERN <= USE_FAKE_REG[`TRIG_OUT_PATTERN_BIT];
         
         FAKE_MODE <= FAKE_MODE_REG[31:0];
      end // always @ ( posedge S_AXI_ACLK )
@@ -426,6 +427,32 @@ module test_control_v1_0_S00_AXI #
      begin
         if (DISAB_TRGOUT) TRIG_OUT <= 0;
         else if (GEN_TRGOUT) TRIG_OUT <= 1;
+        else if (TRIG_PATTERN)
+          begin
+             PREV_TRIG <= TRIGGER;
+             TRG_DLY[`PATTERN_0] <= TRIGGER;
+             TRG_DLY[`PATTERN_1] <= TRIGGER;
+             TRG_DLY[`PATTERN_2] <= TRIGGER;
+             TRG_DLY[`PATTERN_3] <= TRIGGER;
+             for (DLY_IDX=1; DLY_IDX<=120; DLY_IDX=DLY_IDX+1)
+                TRG_DLY[DLY_IDX] <= TRG_DLY[DLY_IDX-1];
+             if (TRIGGER & !PREV_TRIG)
+               begin
+                  if (PATTERN_COUNT  == `NUM_PATTERNS-1)
+                    PATTERN_COUNT <= 0;
+                  else
+                    PATTERN_COUNT <= PATTERN_COUNT+1;
+               end
+             if (PATTERN_COUNT == 0) TRIG_OUT <= TRG_DLY[`PATTERN_0];
+             if (PATTERN_COUNT == 1) 
+               TRIG_OUT <= TRG_DLY[`PATTERN_0] || TRG_DLY[`PATTERN_1];
+             if (PATTERN_COUNT == 2) 
+               TRIG_OUT <= TRG_DLY[`PATTERN_0] || TRG_DLY[`PATTERN_1] 
+                 || TRG_DLY[`PATTERN_2];
+             if (PATTERN_COUNT == 3) 
+              TRIG_OUT <= TRG_DLY[`PATTERN_0] || TRG_DLY[`PATTERN_1] 
+                 || TRG_DLY[`PATTERN_2] || TRG_DLY[`PATTERN_3];
+           end
         else TRIG_OUT <= TRIGGER;
      end
           
