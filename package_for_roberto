@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Package together files that should be sent to Roberto for checking after
+# making substantial changes to the firmware.
+
+VERSION="`cat  ip_repo/sde_trigger/hdl/sde_trigger_id`"
+
+# Clean up any files left in temp directory
+rm -rf temp
+mkdir temp
+
+WD=`pwd`
+cd wp2/uub_v3
+find ./ -name uub_v3_wrapper.hdf -exec cp {} ../../temp/ \;
+cd $WD
+
+cp wp2/device_tree/auger_customized/system.dtb temp/
+cp wp2/uub_v3/uub_v3.sdk/uub-fsbl/src/ps7_parameters.xml temp/
+cp wp2/uub_v3/uub_v3.runs/impl_1/uub_v3_wrapper.bit temp/fpga.bit
+cp wp2/uub_v3/uub_v3.sdk/uub-fsbl/Debug/uub-fsbl.elf temp/
+
+# Package everything up into a tar file
+(cd temp; tar czf ../uub_update_${VERSION}.tgz ./*)
+mv uub_update*.tgz temp/
