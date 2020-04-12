@@ -13,6 +13,7 @@
 // 31-Oct-2019 DFN_FC Add registers to keep track of compatibility MoPS triggers
 // 01-Nov-2019 DFN Add register to keep track of random triggers
 // 03-Dec-2019 DFN Add register to keep track of readout latency
+// 06-Apr-2020 DFN Add register to track the 2 AXI bus clock frequencies
 
 // Shower buffer handling registers
 reg [`SHWR_TRIG_DLY:0] SHWR_TRIG_DLYD; // Trigger delayed to end of buf
@@ -29,6 +30,8 @@ reg [`SHWR_MEM_BUF_SHIFT+
      `SHWR_BUF_NUM_WIDTH-1:0] LCL_SHWR_BUF_STARTN[0:`SHWR_MEM_NBUF-1];
 reg [`SHWR_BUF_NUM_WIDTH-1:0] LCL_SHWR_BUF_WNUM;
 reg [`SHWR_BUF_NUM_WIDTH-1:0] TMP_SHWR_BUF_WNUM;
+wire [`SHWR_BUF_NUM_WIDTH-1:0] LCL_SHWR_BUF_WNUM0;
+wire [`SHWR_BUF_NUM_WIDTH-1:0] LCL_SHWR_BUF_WNUM1;
 reg [31:0] LCL_SHWR_BUF_STATUS;
 reg [31:0] LCL_SHWR_BUF_TRIG_ID;
 reg [31:0] LCL_SHWR_BUF_TRIG_IDN[0:`SHWR_MEM_NBUF-1];
@@ -36,6 +39,16 @@ reg [`SHWR_EVT_ID_WIDTH-1:0] LCL_SHWR_EVT_IDN[0:`SHWR_MEM_NBUF-1];
 wire LCL_COMPATIBILITY_GLOBAL_CONTROL;
 reg [31:0] LCL_SHWR_BUF_LATENCY[0:`SHWR_MEM_NBUF-1];
 reg [7:0] LATENCY_CLK_CTR;
+
+// Some clock diagnostic information
+reg [31:0] LCL_SHWR_BUF_LATENCY0[0:`SHWR_MEM_NBUF-1];
+reg [7:0] LATENCY0_CLK_CTR;
+reg [31:0] LCL_SHWR_BUF_LATENCY1[0:`SHWR_MEM_NBUF-1];
+reg [7:0] LATENCY1_CLK_CTR;
+wire TRIGRD0;
+wire TRIGRD1;
+wire LCL_CONTROL0;
+wire LCL_CONTROL1;
 
 // AXI interface registers
 reg AXI_REG_WRITE;
@@ -165,4 +178,10 @@ integer DEADDLY;
 integer MUON_EXTDLY;
 integer DLY_IDX;
 integer LINDEX;
+integer LINDEX0A;
+integer LINDEX0B;
+integer LINDEX0C;
+integer LINDEX1A;
+integer LINDEX1B;
+
 

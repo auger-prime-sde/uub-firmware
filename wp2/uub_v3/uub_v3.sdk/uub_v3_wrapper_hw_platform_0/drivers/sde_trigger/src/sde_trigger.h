@@ -7,8 +7,6 @@
 //                 Note that xparameters.h must be included before this
 //                 header file in application programs.
 // 29-Apr-2018 DFN Modify for separate shower & muon interrupts
-// 27-Mar-2020 DFN Modify for separate AXI bus for memories - this means
-//                 changing all the memory buffer addresses.
 
 /****************** Include Files ********************/
 #include "xil_types.h"

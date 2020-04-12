@@ -84,11 +84,7 @@ XStatus RD_INTERFACE_Reg_SelfTest(void * baseaddr_p);
 #endif
 
 #ifndef RD_EVENT_BASE
-  #ifdef  XPAR_RD_BLOCK_AXI_BRAM_CTRL_1_S_AXI_BASEADDR
-    #define RD_EVENT_BASE  XPAR_RD_BLOCK_AXI_BRAM_CTRL_1_S_AXI_BASEADDR
-  #else
-    #define RD_EVENT_BASE  0x80000000
-  #endif
+  #define RD_EVENT_BASE  0x80000000
 #endif
 
 #endif // RD_INTERFACE_H

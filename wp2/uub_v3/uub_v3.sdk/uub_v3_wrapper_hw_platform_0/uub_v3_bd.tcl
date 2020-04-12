@@ -413,7 +413,7 @@ proc create_hier_cell_zync_block { parentCell nameHier } {
 
   # Create instance: axi_interconnect_1, and set properties
   set axi_interconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_1 ]
-  set_property -dict [ list CONFIG.NUM_MI {8} CONFIG.NUM_SI {1}  ] $axi_interconnect_1
+  set_property -dict [ list CONFIG.ENABLE_ADVANCED_OPTIONS {0} CONFIG.NUM_MI {8} CONFIG.NUM_SI {1} CONFIG.S00_HAS_DATA_FIFO {0} CONFIG.STRATEGY {0}  ] $axi_interconnect_1
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
@@ -428,14 +428,14 @@ CONFIG.PCW_CRYSTAL_PERIPHERAL_FREQMHZ {50} CONFIG.PCW_ENET0_ENET0_IO {MIO 16 .. 
 CONFIG.PCW_ENET0_GRP_MDIO_ENABLE {1} CONFIG.PCW_ENET0_PERIPHERAL_ENABLE {1} \
 CONFIG.PCW_ENET0_RESET_ENABLE {1} CONFIG.PCW_ENET0_RESET_IO {MIO 50} \
 CONFIG.PCW_EN_CLK1_PORT {1} CONFIG.PCW_FCLK0_PERIPHERAL_CLKSRC {IO PLL} \
-CONFIG.PCW_FCLK1_PERIPHERAL_CLKSRC {IO PLL} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {50} \
-CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {125} CONFIG.PCW_GPIO_MIO_GPIO_ENABLE {1} \
+CONFIG.PCW_FCLK1_PERIPHERAL_CLKSRC {ARM PLL} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {50} \
+CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {111} CONFIG.PCW_GPIO_MIO_GPIO_ENABLE {1} \
 CONFIG.PCW_GPIO_MIO_GPIO_IO {MIO} CONFIG.PCW_I2C0_I2C0_IO {MIO 14 .. 15} \
 CONFIG.PCW_I2C0_PERIPHERAL_ENABLE {1} CONFIG.PCW_I2C1_I2C1_IO {MIO 48 .. 49} \
 CONFIG.PCW_I2C1_PERIPHERAL_ENABLE {1} CONFIG.PCW_IMPORT_BOARD_PRESET {None} \
 CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_PRESET_BANK1_VOLTAGE {LVCMOS 1.8V} \
 CONFIG.PCW_QSPI_GRP_SINGLE_SS_ENABLE {0} CONFIG.PCW_QSPI_GRP_SS1_ENABLE {1} \
-CONFIG.PCW_QSPI_PERIPHERAL_ENABLE {1} CONFIG.PCW_QSPI_PERIPHERAL_FREQMHZ {60} \
+CONFIG.PCW_QSPI_PERIPHERAL_ENABLE {1} CONFIG.PCW_QSPI_PERIPHERAL_FREQMHZ {200} \
 CONFIG.PCW_SPI0_GRP_SS1_ENABLE {1} CONFIG.PCW_SPI0_GRP_SS2_ENABLE {1} \
 CONFIG.PCW_SPI0_PERIPHERAL_ENABLE {1} CONFIG.PCW_SPI0_SPI0_IO {MIO 40 .. 45} \
 CONFIG.PCW_SPI1_GRP_SS1_ENABLE {1} CONFIG.PCW_SPI1_GRP_SS2_ENABLE {1} \
@@ -638,7 +638,7 @@ proc create_hier_cell_trigger_memory_block { parentCell nameHier } {
   connect_bd_net -net ADC3_1 [get_bd_pins ADC3] [get_bd_pins sde_trigger_0/ADC3]
   connect_bd_net -net ADC4_1 [get_bd_pins ADC4] [get_bd_pins sde_trigger_0/ADC4]
   connect_bd_net -net AXI_MEM_ARESET_1 [get_bd_pins AXI_MEM_ARESET] [get_bd_pins muon_memory_block/s_axi_aresetn] [get_bd_pins shower_memory_block/s_axi_aresetn]
-  connect_bd_net -net AXI_MEM_CLK_1 [get_bd_pins AXI_MEM_CLK] [get_bd_pins muon_memory_block/s_axi_aclk] [get_bd_pins shower_memory_block/s_axi_aclk]
+  connect_bd_net -net AXI_MEM_CLK_1 [get_bd_pins AXI_MEM_CLK] [get_bd_pins muon_memory_block/s_axi_aclk] [get_bd_pins sde_trigger_0/AXI_MEM_CLK] [get_bd_pins shower_memory_block/s_axi_aclk]
   connect_bd_net -net ENAB_PPS_1 [get_bd_pins LED_FLG] [get_bd_pins sde_trigger_0/LED_FLG]
   connect_bd_net -net FILT_PMT0_1 [get_bd_pins FILT_PMT0] [get_bd_pins sde_trigger_0/FILT_PMT0]
   connect_bd_net -net FILT_PMT1_1 [get_bd_pins FILT_PMT1] [get_bd_pins sde_trigger_0/FILT_PMT1]
@@ -1551,10 +1551,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins amiga_trigger_0/resetn] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins axi_uartlite_1/s_axi_aresetn] [get_bd_pins digital_interface_0/s00_axi_aresetn] [get_bd_pins interface_uub_dfn3_0/s00_axi_aresetn] [get_bd_pins rd_block/S00_AXI_ARESETN] [get_bd_pins test_control_block/s00_axi_aresetn] [get_bd_pins time_tagging_0/s00_axi_aresetn] [get_bd_pins time_tagging_0/s_axi_intr_aresetn] [get_bd_pins trigger_memory_block/S_AXI_ARESETN] [get_bd_pins zync_block/peripheral_aresetn]
   connect_bd_net -net proc_sys_reset_0_peripheral_reset [get_bd_pins rd_block/RST] [get_bd_pins test_control_block/RST] [get_bd_pins trigger_memory_block/RST] [get_bd_pins zync_block/peripheral_reset]
   connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins axi_uartlite_1/s_axi_aclk] [get_bd_pins digital_interface_0/s00_axi_aclk] [get_bd_pins interface_uub_dfn3_0/s00_axi_aclk] [get_bd_pins rd_block/S00_AXI_ACLK] [get_bd_pins test_control_block/s00_axi_aclk] [get_bd_pins time_tagging_0/s00_axi_aclk] [get_bd_pins time_tagging_0/s_axi_intr_aclk] [get_bd_pins trigger_memory_block/S_AXI_CLK] [get_bd_pins zync_block/FCLK_CLK0]
-  connect_bd_net -net rd_block_DBG1 [get_bd_ports P54] [get_bd_pins rd_block/DBG1]
   connect_bd_net -net rd_block_DBG2 [get_bd_ports P75] [get_bd_pins rd_block/DBG2]
   connect_bd_net -net rd_block_DBG3 [get_bd_ports P65] [get_bd_pins rd_block/DBG3]
-  connect_bd_net -net rd_block_DBG5 [get_bd_ports P76] [get_bd_pins rd_block/DBG5]
   connect_bd_net -net rd_block_TRIG_OUT [get_bd_pins digital_interface_0/RD_TRIG] [get_bd_pins rd_block/TRIG_OUT]
   connect_bd_net -net rx_1 [get_bd_ports GPS_RX] [get_bd_pins axi_uartlite_0/rx]
   connect_bd_net -net test_control_0_PPS [get_bd_pins test_control_block/PPS] [get_bd_pins time_tagging_0/pps] [get_bd_pins trigger_memory_block/ONE_PPS]
@@ -1572,6 +1570,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net trigger_memory_0_SHWR_BUF_WNUM [get_bd_pins rd_block/BUF_WNUM] [get_bd_pins time_tagging_0/address_wsb] [get_bd_pins trigger_memory_block/SHWR_BUF_WNUM]
   connect_bd_net -net trigger_memory_0_SHWR_EVT_CTR [get_bd_pins time_tagging_0/evtcnt] [get_bd_pins trigger_memory_block/SHWR_EVT_CTR]
   connect_bd_net -net trigger_memory_0_SHWR_TRIGGER [get_bd_pins test_control_block/FAKE_RD_TRIG] [get_bd_pins time_tagging_0/evtclkf] [get_bd_pins trigger_memory_block/SHWR_TRIGGER]
+  connect_bd_net -net trigger_memory_block_DBG4 [get_bd_ports P54] [get_bd_pins trigger_memory_block/DBG4]
+  connect_bd_net -net trigger_memory_block_DBG5 [get_bd_ports P76] [get_bd_pins trigger_memory_block/DBG5]
   connect_bd_net -net trigger_memory_block_LEDBAR [get_bd_ports LED_ASY] [get_bd_pins trigger_memory_block/LED]
   connect_bd_net -net trigger_memory_block_MUON_EVT_CTR [get_bd_pins time_tagging_0/evtcntm] [get_bd_pins trigger_memory_block/MUON_EVT_CTR]
   connect_bd_net -net trigger_memory_block_MUON_IRQ [get_bd_pins trigger_memory_block/MUON_IRQ] [get_bd_pins zync_block/MUON_INT]

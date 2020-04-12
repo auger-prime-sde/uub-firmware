@@ -434,7 +434,7 @@ module test_control_v1_0_S00_AXI #
              TRG_DLY[`PATTERN_1] <= TRIGGER;
              TRG_DLY[`PATTERN_2] <= TRIGGER;
              TRG_DLY[`PATTERN_3] <= TRIGGER;
-             for (DLY_IDX=1; DLY_IDX<=120; DLY_IDX=DLY_IDX+1)
+             for (DLY_IDX=1; DLY_IDX<`PATTERN_LEN; DLY_IDX=DLY_IDX+1)
                 TRG_DLY[DLY_IDX] <= TRG_DLY[DLY_IDX-1];
              if (TRIGGER & !PREV_TRIG)
                begin

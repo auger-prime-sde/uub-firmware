@@ -191,7 +191,6 @@ u32 InitQspi(void)
 {
 	XQspiPs_Config *QspiConfig;
 	int Status;
-	int i;
 
 	QspiInstancePtr = &QspiInstance;
 

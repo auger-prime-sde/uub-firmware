@@ -1,0 +1,59 @@
+To compile for UUB, use:
+
+make ARM=1
+
+It set the "CC" variable with the command
+"arm-xilinx-linux-gnueabi-gcc", before  compile the program.
+
+
+
+The main is at "check_latency" which starts the buffers using
+UIO or "/dev/mem", it depends on the line:
+
+"if(read_evt_init(1)==0){"
+
+in check_latency.c if the init argument is:
+
+0 -> for /dev/mem
+1 -> for UIO. See the definitions names at file linux_uio.h and
+        directory /dev/UIO in UUB.
+256 -> a simulation mode (it is in development phase), but it would
+        not make any difference in the DAQ, since it only generate
+	one socket at "init" function call.
+
+The "read_evt_read" function called by the main function is the same
+function which is going to be used in the main DAQ.
+
+Although in the program use the same function as in the DAQ, it only
+consider few parameters to be shown. To avoid spend time in read/write
+the results to the output, it store the parameters of 100 events before
+show something.
+
+The program do not control any trigger parameters, therefore, to see
+it run, one should make the electronics triggers (external pulse,
+led, ...).
+
+
+About the 32/64 bits alignment are done at the function read_evt_read
+define at the file read_evt.c with the lines:
+
+===========
+  static uint64_t trace_aux[1030];  //it is 64 bits to make it alligned in 8 bytes.
+  uint32_t *trace_aux_pt;
+  ...
+  trace_aux_pt=(uint32_t *)trace_aux;
+  trace_aux_pt++;
+==========
+
+the shower buffers and rd buffer copy are made in two steps:
+
+1)  buffer ->  trace_aux_pt
+2)  trace_aux_pt -> event data structure (struct shwr_evt_complete)
+     defined at shwr_evt_defs.h
+     
+
+The files "xil_types.h" and "xstatus.h" do not have any particular
+relation with the original files. They are used only to avoid
+compilation errors.
+
+

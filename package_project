@@ -17,6 +17,7 @@
 #  10-Oct-2018 DFN Add xparameters_ps.h
 #  22-Feb-2019 DFN Add rd_interface and test_control header files & driver code
 #  06-May-2019 DFN Clean up steps for pushing .tgz file to GitHub
+#  13-Apr-2020 DFN Add uboot.bin, system.dtb to package
 
 VERSION="`cat  ip_repo/sde_trigger/hdl/sde_trigger_id`"
 
@@ -37,20 +38,15 @@ cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/*.h temp/
 cp ip_repo/test_control_1.0/drivers/test_control_v1_0/src/test_control.c temp/
 
 WD=`pwd`
-#cd wp2/uub_proto2
-#find ./ -name xparameters.h -exec cp {} ../../temp/ \;
-#find ./ -name xparameters_ps.h -exec cp {} ../../temp/ \;
-#find ./ -name uub_proto2_wrapper.hdf -exec cp {} ../../temp/ \;
+
 cd wp2/uub_v3
 find ./ -name xparameters.h -exec cp {} ../../temp/ \;
 find ./ -name xparameters_ps.h -exec cp {} ../../temp/ \;
 find ./ -name uub_v3_wrapper.hdf -exec cp {} ../../temp/ \;
+find ./uub_v3.sdk -name uboot.bin -exec cp {} ../../temp/ \;
 cd $WD
 
-#cp wp2/uub_proto2/src/test_periph/src/*.c temp/
-#cp wp2/uub_proto2/src/test_periph/src/*.h temp/
-#cp wp2/uub_proto2/src/test_periph/src/README temp/README_${VERSION}
-#cp wp2/uub_proto2/uub_proto2.runs/impl_1/uub_proto2_wrapper.bit temp/fpga.bit
+cp wp2/device_tree/auger_customized/system.dtb temp/ \;
 cp wp2/uub_v3/src/test_periph/src/*.c temp/
 cp wp2/uub_v3/src/test_periph/src/*.h temp/
 cp wp2/uub_v3/src/test_periph/src/README temp/README_${VERSION}
@@ -59,10 +55,10 @@ cp wp2/uub_v3/uub_v3.runs/impl_1/uub_v3_wrapper.bit temp/fpga.bit
 # Package everything up into a tar file
 #(cd wp5; rm *.tgz)
 (cd temp; tar czf ../wp5/uub_firmware_${VERSION}.tgz ./*)
-git add wp5/uub_firmware_${VERSION}.tgz
+#git add wp5/uub_firmware_${VERSION}.tgz
 
 # Tag this version
-git tag ${VERSION}
+#git tag ${VERSION}
 
 echo "If all goes well, don't forget to do:"
 echo "  1) git status"

@@ -11,6 +11,7 @@
 // 22-Nov-17 DFN Add SHWR_TRIG_FAST
 // 28-Apr-18 DFN Split shower & muon interrupt modules
 // 05-Nov-19 DFN Change test point outputs to DBG1 to DBG5
+// 06-Apr-20 DFN Add AXI_MEM clock input
 
 `timescale 1 ns / 1 ps
 
@@ -48,8 +49,9 @@ module sde_trigger #
     input wire [`ADC_WIDTH+1:0] FILT_PMT0, // Filtered high gain PMT0
     input wire [`ADC_WIDTH+1:0] FILT_PMT1, // Filtered high gain PMT1
     input wire [`ADC_WIDTH+1:0] FILT_PMT2, // Filtered high gain PMT2
-    input wire                           CLK120,  // 120 MHz ADC clock
-    input wire                          TRIG_IN,  // External trigger input
+    input wire CLK120,  // 120 MHz ADC clock
+    input wire TRIG_IN,  // External trigger input
+    input wire AXI_MEM_CLK, // AXI clock for memory buffers
     input wire ONE_PPS, // One pulse per second from GPS
     input wire LED_FLG, // Flag that LED pulsed
 
@@ -191,6 +193,7 @@ module sde_trigger #
 		             .S_AXI_RVALID(s00_axi_rvalid),
 		             .S_AXI_RREADY(s00_axi_rready),
                              .CLK120(CLK120),
+                             .AXI_MEM_CLK(AXI_MEM_CLK),
                              .ADC0(ADC0),
                              .ADC1(ADC1),
                              .ADC2(ADC2),

@@ -20,6 +20,10 @@
 // 21-Jun-18 DFN Add definitions for compatibility totd trigger.
 // 31-Oct-19 DFN+FC Add definitions for compatibility mops trigger.
 // 01-Nov-19 DFN Update definitions for random trigger.
+// 27-Mar-20 DFN Add option to include or not delay of non-filtered data
+//               Previously this was included by default.
+// 06-Apr-20 DFN Add extra latency counters to verify fclk_clk0 and fclk_clk1
+//               frequencies in running system.
 //
 // ADC channel usage:
 //  0 Low gain WCD PMT1
@@ -53,6 +57,7 @@
  #define CLK_FREQ 120 // Clock frequency in MHz
  #define ADC_WIDTH 12 // Number of bits per ADC
  #define NUM_ADCS 10  // Number of ADCs
+ #define ENABLE_FILT_DELAY 1 // Add delay to non-filtered data if enabled
 // #define ADC_FILT_DELAY 22 // ADC filter delay
  #define ADC_FILT_DELAY 27 // ADC filter delay
  #define WIDTH_BITS 9 // Number of bits in ToT occupancy register
@@ -261,6 +266,10 @@
  #define SHWR_EVT_ID_MASK  ((1<<(SHWR_EVT_ID_WIDTH))-1)
  #define SHWR_BUF_START_ADDR 132
  #define SHWR_BUF_LATENCY_ADDR 133
+// The following 2 are useful for debugging to check clock frequencies
+// in case there is doubt about what is set in the FSBL
+ #define SHWR_BUF_LATENCY0_ADDR 134  // Same, but using AXI clock=fclk_clk
+ #define SHWR_BUF_LATENCY1_ADDR 135   // Same, but using AXI_MEM clock=fclk_clk1
 
 #define MUON_TRIG1_THR0_ADDR 140
 #define MUON_TRIG1_THR1_ADDR 141
