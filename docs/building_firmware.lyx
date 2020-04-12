@@ -1,0 +1,342 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize letterpaper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 0
+\use_package mathdots 0
+\use_package mathtools 1
+\use_package mhchem 0
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 0.75in
+\topmargin 0.75in
+\rightmargin 0.75in
+\bottommargin 0.75in
+\headheight 0.25in
+\headsep 0.25in
+\footskip 0.25in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Notes on Building UUB Firmware
+\end_layout
+
+\begin_layout Author
+D.
+ Nitz
+\end_layout
+
+\begin_layout Standard
+This document contains notes (mostly for myself) for bulding the UUB firmware,
+ device tree, and first stage boot loader.
+ These notes are a work in progress and have not yet been verified to work
+ for the device tree and first stage boot loader, and furthermore, are specific
+ to my working environment.
+\end_layout
+
+\begin_layout Subsubsection*
+Generating the Bitstream and Exporting the Hardware
+\end_layout
+
+\begin_layout Enumerate
+After cloning a fresh copy:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+cd uub-firmware/wp2
+\end_layout
+
+\begin_layout Enumerate
+Unzip the archive using: unzip uub_v3/uub_v3.zip
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Set up Vivado environment using 
+\begin_inset Quotes eld
+\end_inset
+
+setup_vivado
+\begin_inset Quotes erd
+\end_inset
+
+ command.
+ (Private command on my cluster)
+\end_layout
+
+\begin_layout Enumerate
+After starting Vivado fix IP path to point to uub-firmware/ip_repo only
+ rather than the in-project path that is set up when unzipping the archive.
+\end_layout
+
+\begin_layout Enumerate
+Open the block diagram and compile the firmware using the tcl script 
+\begin_inset Quotes eld
+\end_inset
+
+make_it_afs.tcl
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This will need to be modified if the location of the git clone is changed.
+ The tcl script will run through all of the compile steps up to and including
+ writing the bitstream file and exporting the hardware.
+\end_layout
+
+\begin_layout Enumerate
+Exit from Vivado
+\end_layout
+
+\begin_layout Subsubsection*
+Building the Device Tree
+\end_layout
+
+\begin_layout Standard
+This will need to be done whenever AXI devices are added or removed from
+ the design, or when any device address is changed.
+\end_layout
+
+\begin_layout Enumerate
+Using the setup_vivado environment, start up the Xilinx SDK using: xSDK
+\end_layout
+
+\begin_layout Enumerate
+Choose workspace ~wp2/uub_v3/uub_v3.sdk
+\end_layout
+
+\begin_layout Enumerate
+Regenerate BSP sources for 
+\begin_inset Quotes eld
+\end_inset
+
+device_tree_bsp_0
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This will make new versions of pl.dtsi, skeleton.dtsi, system.dts, zynq-7000.dtsi
+ incorporating the latest .hdf file.
+ We will not use these files directly, but instead merge them in to Auger
+ customized versions for the UUB.
+\end_layout
+
+\begin_layout Enumerate
+cd to the directory ~wp2/device_tree.
+ Run the command 
+\begin_inset Quotes eld
+\end_inset
+
+./merged_diff
+\begin_inset Quotes erd
+\end_inset
+
+ to check for changes that need to be merged into ~auger_customized/pl.dtsi
+ or ~auger_customized/zynq-7000.dtsi.
+ Unfortunately, the names of some of the components have been customized,
+ and the order in the file may not be exactly the same, so this will require
+ careful hand checking.
+ It is good to review the ~sdk_generated/pl.dtsi and zynq-7000.dtsi to verify
+ changed made in Vivado are correctly noted.
+\end_layout
+
+\begin_layout Enumerate
+After merging in any required changes go to the ~auger_customized directory
+ and run the command 
+\begin_inset Quotes eld
+\end_inset
+
+make
+\begin_inset Quotes erd
+\end_inset
+
+ to compile the source device tree files into the system.dtb file.
+\end_layout
+
+\begin_layout Subsubsection*
+Building the first stage boot loader
+\end_layout
+
+\begin_layout Standard
+The first stage boot loader code has been customized by Patrick Allison.
+ Thus we can't just use the standard xSDK setup to build it.
+ Rather we use the project uub-fsbl that he created.
+ But we need to update the ps7_parameters.xml file.
+ We do this automatically by sym-linking the ps7_parameters.xml file in the
+ uub-fsbl project to the one generated by Vivado in the uub_v3.srcs tree.
+ Rebuild the uub-fsbl project.
+ This will create a new uub-fsbl.elf file.
+\end_layout
+
+\begin_layout Subsubsection*
+Building the new uboot.bin
+\end_layout
+
+\begin_layout Standard
+Here we combine the fsbl.elf made in the previous step with u-boot.elf.
+ At this time the source code for u-boot.elf is not available, which is a
+ problem for the future.
+ Nevertheless, as long as the the u-boot.elf provided by Roberto is up to
+ date, we can make a new uboot.bin.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Package the files and send for review
+\end_layout
+
+\begin_layout Standard
+Package the files together using ~uub-firmware/package_for_roberto command
+ to put everything together to send to Roberto for checking.
+\end_layout
+
+\begin_layout Subsubsection*
+Loading the new uboot.bin onto a UUB
+\end_layout
+
+\begin_layout Standard
+The UUB QSPI memory organization is shown in Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:UUB-QSPI-Flash"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename uub_memory_map.pdf
+	width 90text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:UUB-QSPI-Flash"
+
+\end_inset
+
+UUB QSPI Flash Memory Map
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The new uboot.bin can be loaded from a running Petalinux system.
+ After transferring the new uboot.bin to the system, run the following sequence
+ of commands:
+\end_layout
+
+\begin_layout Enumerate
+
+\color red
+flash_erase /dev/mtd1 0 0
+\color inherit
+ to clean the MTD1 partition
+\end_layout
+
+\begin_layout Enumerate
+
+\color red
+flashcp uboot.bin /dev/mtd1
+\color inherit
+ to copy the new uboot.bin to the flash memory
+\end_layout
+
+\begin_layout Standard
+If the UUB does not restart, one must use the JTAG programmer to restore
+ a working system.
+\end_layout
+
+\end_body
+\end_document
