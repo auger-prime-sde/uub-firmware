@@ -148,6 +148,50 @@ make_it_afs.tcl
 Exit from Vivado
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename xSDK_projects.png
+	width 60text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:xSDK-projects-required"
+
+\end_inset
+
+xSDK projects required for this work.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection*
 Building the Device Tree
 \end_layout
@@ -155,14 +199,24 @@ Building the Device Tree
 \begin_layout Standard
 This will need to be done whenever AXI devices are added or removed from
  the design, or when any device address is changed.
+ 
 \end_layout
 
 \begin_layout Enumerate
-Using the setup_vivado environment, start up the Xilinx SDK using: xSDK
+Using the setup_vivado environment, start up the Xilinx SDK using: xsdk.
 \end_layout
 
 \begin_layout Enumerate
-Choose workspace ~wp2/uub_v3/uub_v3.sdk
+Choose workspace ~wp2/uub_v3/uub_v3.sdk.
+ After xsdk loads, you should see the projects listed in Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:xSDK-projects-required"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -238,7 +292,59 @@ Here we combine the fsbl.elf made in the previous step with u-boot.elf.
  problem for the future.
  Nevertheless, as long as the the u-boot.elf provided by Roberto is up to
  date, we can make a new uboot.bin.
+ The entries to fill out for this process are shown in Fig.
  
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:xSDK-screen-to"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename uboot.bin.png
+	width 70text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:xSDK-screen-to"
+
+\end_inset
+
+xSDK screen to create uboot.bin
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -336,6 +442,7 @@ flashcp uboot.bin /dev/mtd1
 \begin_layout Standard
 If the UUB does not restart, one must use the JTAG programmer to restore
  a working system.
+ The uub-integration GitHub repository has instructions for doing so.
 \end_layout
 
 \end_body
