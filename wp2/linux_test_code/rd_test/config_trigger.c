@@ -7,7 +7,6 @@
 // 26-Jun-2018 DFN Add compat_totd trigger
 
 #include "rd_test.h"
-//#include "trigger_test.h"
 
 void config_trigger()
 {
@@ -28,8 +27,14 @@ void config_trigger()
 #ifdef COMPAT_TOTD_TRIGGER
   int compat_totd_trig_enab, occd, intd, fn, fd;
 #endif
+#ifdef COMPAT_MOPS_TRIGGER
+  int compat_mops_trig_enab, occm, intm, ofsm;
+#endif
 #ifdef SB_TRIGGER
   int sb_trig_enab, thrssd;
+#endif
+#ifdef RNDM_TRIGGER
+  int rndm_trig_enab, rndm_mode;
 #endif
 #endif
 
@@ -67,6 +72,9 @@ void config_trigger()
     if (TRIG_THR2 != 4095)
       compat_sb_trig_enab |=  COMPATIBILITY_SB_TRIG_INCL_PMT2;
     compat_sb_trig_enab |= 1 << COMPATIBILITY_SB_TRIG_COINC_LVL_SHIFT;
+    #ifdef COMPAT_SB_TRIG_2BINS
+      compat_sb_trig_enab |=  COMPATIBILITY_SB_TRIG_REQ2BINS;
+    #endif
   write_trig(COMPATIBILITY_SB_TRIG_ENAB_ADDR, compat_sb_trig_enab);
   status = read_trig(COMPATIBILITY_SB_TRIG_ENAB_ADDR);
   if (status != compat_sb_trig_enab)
@@ -112,6 +120,7 @@ void config_trigger()
     printf("trigger_test: Trigger enable error - wrote %x read %x\n", 
 	   compat_tot_trig_enab, status);
 #endif
+
 #ifdef COMPAT_TOTD_TRIGGER
   write_trig(COMPATIBILITY_TOTD_TRIG_THR0_ADDR,(int) TRIG_THR0);
   write_trig(COMPATIBILITY_TOTD_TRIG_THR1_ADDR,(int) TRIG_THR1);
@@ -185,6 +194,73 @@ void config_trigger()
 	   compat_totd_trig_enab, status);
 #endif
 
+#ifdef COMPAT_MOPS_TRIGGER
+  write_trig(COMPATIBILITY_MOPS_TRIG_MIN0_ADDR,(int) COMPAT_MOPS_MIN);
+  write_trig(COMPATIBILITY_MOPS_TRIG_MIN1_ADDR,(int) COMPAT_MOPS_MIN);
+  write_trig(COMPATIBILITY_MOPS_TRIG_MIN2_ADDR,(int) COMPAT_MOPS_MIN);
+  thr0 = read_trig(COMPATIBILITY_MOPS_TRIG_MIN0_ADDR);
+  thr1 = read_trig(COMPATIBILITY_MOPS_TRIG_MIN1_ADDR);
+  thr2 = read_trig(COMPATIBILITY_MOPS_TRIG_MIN2_ADDR);
+  if (thr0 != COMPAT_MOPS_MIN) 
+    printf("trigger_test: Trigger min 0 error - wrote %d read %d\n",
+	   TRIG_THR0,thr0);
+  if (thr1 != COMPAT_MOPS_MIN) 
+    printf("trigger_test: Trigger min 1 error - wrote %d read %d\n",
+	   TRIG_THR1,thr1);
+  if (thr2 != COMPAT_MOPS_MIN) 
+    printf("trigger_test: Trigger min 2 error - wrote %d read %d\n",
+	   TRIG_THR2,thr2);
+ 
+ write_trig(COMPATIBILITY_MOPS_TRIG_MAX0_ADDR,(int) COMPAT_MOPS_MAX);
+  write_trig(COMPATIBILITY_MOPS_TRIG_MAX1_ADDR,(int) COMPAT_MOPS_MAX);
+  write_trig(COMPATIBILITY_MOPS_TRIG_MAX2_ADDR,(int) COMPAT_MOPS_MAX);
+  thr0 = read_trig(COMPATIBILITY_MOPS_TRIG_MAX0_ADDR);
+  thr1 = read_trig(COMPATIBILITY_MOPS_TRIG_MAX1_ADDR);
+  thr2 = read_trig(COMPATIBILITY_MOPS_TRIG_MAX2_ADDR);
+  if (thr0 != COMPAT_MOPS_MAX) 
+    printf("trigger_test: Trigger max 0 error - wrote %d read %d\n",
+	   COMPAT_MOPS_MAX,thr0);
+  if (thr1 != COMPAT_MOPS_MAX) 
+    printf("trigger_test: Trigger max 1 error - wrote %d read %d\n",
+	   COMPAT_MOPS_MAX,thr1);
+  if (thr2 != COMPAT_MOPS_MAX) 
+    printf("trigger_test: Trigger max 2 error - wrote %d read %d\n",
+	   COMPAT_MOPS_MAX,thr2);
+
+  write_trig(COMPATIBILITY_MOPS_TRIG_OCC_ADDR,(int) COMPAT_MOPS_OCC);
+  occm = read_trig(COMPATIBILITY_MOPS_TRIG_OCC_ADDR);
+  if (occm != COMPAT_MOPS_OCC)
+    printf("trigger_test: MoPS trigger occupancy error - wrote %d read %d\n",
+           COMPAT_MOPS_OCC,occm);
+
+ write_trig(COMPATIBILITY_MOPS_TRIG_INT_ADDR,(int) COMPAT_MOPS_INT);
+  intm = read_trig(COMPATIBILITY_MOPS_TRIG_INT_ADDR);
+  if (intm != COMPAT_MOPS_INT)
+    printf("trigger_test: MoPS trigger integral error - wrote %d read %d\n",
+           COMPAT_MOPS_INT,intm);
+
+  write_trig(COMPATIBILITY_MOPS_TRIG_OFS_ADDR,(int) COMPAT_MOPS_OFS);
+  ofsm = read_trig(COMPATIBILITY_MOPS_TRIG_OFS_ADDR);
+  if (ofsm != COMPAT_MOPS_OFS)
+    printf("trigger_test: Mops trigger fd error - wrote %d read %d\n",
+           COMPAT_MOPS_OFS,ofsm);
+
+  // Define which PMTs to include & coincidence level required
+  compat_mops_trig_enab = 0;
+    if (TRIG_THR0 != 4095)
+      compat_mops_trig_enab |=  COMPATIBILITY_MOPS_TRIG_INCL_PMT0;
+    if (TRIG_THR1 != 4095)
+      compat_mops_trig_enab |=  COMPATIBILITY_MOPS_TRIG_INCL_PMT1;
+    if (TRIG_THR2 != 4095)
+      compat_mops_trig_enab |=  COMPATIBILITY_MOPS_TRIG_INCL_PMT2;
+    compat_mops_trig_enab |= 1 << COMPATIBILITY_MOPS_TRIG_COINC_LVL_SHIFT;
+  write_trig(COMPATIBILITY_MOPS_TRIG_ENAB_ADDR, compat_mops_trig_enab);
+  status = read_trig(COMPATIBILITY_MOPS_TRIG_ENAB_ADDR);
+  if (status != compat_mops_trig_enab)
+    printf("trigger_test: Trigger enable error - wrote %x read %x\n", 
+	   compat_mops_trig_enab, status);
+#endif
+
 #ifdef SB_TRIGGER
   write_trig(SB_TRIG_THR0_ADDR,(int) (TRIG_THR0));
   write_trig(SB_TRIG_THR1_ADDR,(int) (TRIG_THR1));
@@ -231,9 +307,28 @@ void config_trigger()
 	   sb_trig_enab, status);
 #endif
 
+#ifdef RNDM_TRIGGER
+  write_trig(RANDOM_TRIG_MODE_ADDR, 0);
+  write_trig(RANDOM_TRIG_MODE_ADDR,(int) (RNDM_MODE));
+  rndm_mode = read_trig(RANDOM_TRIG_MODE_ADDR);
+  if (rndm_mode != RNDM_MODE) 
+    printf("trigger_test: Random mode error - wrote %d read %d\n",
+	   RNDM_MODE, rndm_mode);
+#endif
+
+
   trigger_mask = 0;
 #ifdef SB_TRIGGER
   trigger_mask = trigger_mask | SHWR_BUF_TRIG_SB;
+#endif
+#ifdef PRESCALE_SB_TRIGGER
+  trigger_mask = trigger_mask | PRESCALE_SHWR_BUF_TRIG_SB;
+#endif
+#ifdef RNDM_TRIGGER
+  trigger_mask = trigger_mask | SHWR_BUF_TRIG_RNDM;
+#endif
+#ifdef PRESCALE_RNDM_TRIGGER
+  trigger_mask = trigger_mask | PRESCALE_SHWR_BUF_TRIG_RNDM;
 #endif
 #ifdef COMPAT_SB_TRIGGER
   trigger_mask = trigger_mask | COMPATIBILITY_SHWR_BUF_TRIG_SB;
@@ -250,8 +345,14 @@ void config_trigger()
 #ifdef COMPAT_TOTD_TRIGGER
   trigger_mask = trigger_mask | COMPATIBILITY_SHWR_BUF_TRIG_TOTD;
 #endif
+#ifdef COMPAT_MOPS_TRIGGER
+  trigger_mask = trigger_mask | COMPATIBILITY_SHWR_BUF_TRIG_MOPS;
+#endif
 #ifdef PRESCALE_COMPAT_TOTD_TRIG
   trigger_mask = trigger_mask | COMPAT_PRESCALE_SHWR_BUF_TRIG_TOTD;
+#endif
+#ifdef PRESCALE_COMPAT_MOPS_TRIG
+  trigger_mask = trigger_mask | COMPAT_PRESCALE_SHWR_BUF_TRIG_MOPS;
 #endif
 #ifdef EXT_TRIGGER
   trigger_mask = trigger_mask |  COMPATIBILITY_SHWR_BUF_TRIG_EXT;
@@ -263,19 +364,28 @@ void config_trigger()
   trigger_mask = trigger_mask |  SHWR_BUF_TRIG_LED;
 #endif
 
+  printf("Trigger_test: Trigger mask =%x\n", trigger_mask);
   printf("Trigger_test: Enabled triggers = ");
   if ((trigger_mask & SHWR_BUF_TRIG_SB) != 0) 
     printf(" SB");
+  if ((trigger_mask & PRESCALE_SHWR_BUF_TRIG_SB) != 0) 
+    printf(" PRESCALE_SB");
+  if ((trigger_mask & SHWR_BUF_TRIG_RNDM) != 0) 
+    printf(" RNDM");
+  if ((trigger_mask & PRESCALE_SHWR_BUF_TRIG_RNDM) != 0) 
+    printf(" PRESCALE_RNDM");
   if ((trigger_mask & COMPATIBILITY_SHWR_BUF_TRIG_SB) != 0) 
     printf(" COMPAT_SB");
   if ((trigger_mask & COMPATIBILITY_SHWR_BUF_TRIG_TOT) != 0) 
     printf(" COMPAT_TOT");
   if ((trigger_mask & COMPATIBILITY_SHWR_BUF_TRIG_TOTD) != 0) 
     printf(" COMPAT_TOTD");
+  if ((trigger_mask & COMPATIBILITY_SHWR_BUF_TRIG_MOPS) != 0) 
+    printf(" COMPAT_MOPS");
   if ((trigger_mask & COMPATIBILITY_SHWR_BUF_TRIG_EXT) != 0) 
     printf(" EXT");
   if ((trigger_mask & COMPAT_PRESCALE_SHWR_BUF_TRIG_SB) != 0) 
-    printf(" PRESCALE_SB");
+    printf(" PRESCALE_COMPAT_SB");
   if ((trigger_mask & COMPAT_PRESCALE_SHWR_BUF_TRIG_TOT) != 0) 
     printf(" PRESCALE_COMPAT_TOT");
   if ((trigger_mask & COMPAT_PRESCALE_SHWR_BUF_TRIG_TOTD) != 0) 
@@ -285,7 +395,7 @@ void config_trigger()
   if ((trigger_mask & SHWR_BUF_TRIG_LED) != 0)
     printf(" LED");
   printf("\n");
-#if defined(SB_TRIGGER)  || defined(COMPAT_SB_TRIGGER) || defined(COMPAT_TOT_TRIGGER) || defined(COMPAT_TOTD_TRIGGER)
+#if defined(SB_TRIGGER)  || defined(COMPAT_SB_TRIGGER) || defined(COMPAT_TOT_TRIGGER) || defined(COMPAT_TOTD_TRIGGER) || defined(COMPAT_MOPS_TRIGGER)
   printf("Trigger_test: Shower trigger thresholds = %d %d %d %d\n",
 	 (int) (TRIG_THR0), (int) (TRIG_THR1), (int) (TRIG_THR2), 
 	 (int) (TRIG_SSD));

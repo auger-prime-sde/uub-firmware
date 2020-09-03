@@ -27,6 +27,7 @@
 // 01-Nov-2019 DFN Add random module; fix SB prescale
 // 02-Nov-2019 DFN Add two consecutive bins option to compat single bin
 // 09-Dec-2019 DFN Add readout latency measurement
+// 06-Apr-2020 DFN Add measurement of AXI clocks (via latency logic)
 
 `include "sde_trigger_regs.vh"  // All the reg & wire declarations
 
@@ -393,6 +394,8 @@ always @(posedge CLK120) begin
 	SHWR_EVT_ID <= 0;
         for (INDEX = 0; INDEX<`SHWR_MEM_NBUF; INDEX=INDEX+1)
              LCL_SHWR_EVT_IDN[INDEX] <= 0;
+        for (LINDEX = 0; LINDEX<`SHWR_MEM_NBUF; LINDEX=LINDEX+1)
+          LCL_SHWR_BUF_LATENCY[LINDEX] <= 0;
      end
    else
      begin
@@ -614,7 +617,8 @@ always @(posedge CLK120) begin
 
            // Process trigger delay 
            if (TRIGGERED) begin
-              
+              // Reset latency for this buffer
+              LCL_SHWR_BUF_LATENCY[LCL_SHWR_BUF_WNUM] <= 0;
               // "or" of delayed triggers
               SOME_DLYD_TRIG <=  ((STRETCHED_COMPAT_SB_TRIG << 
                                    `COMPATIBILITY_SHWR_BUF_TRIG_SB_SHIFT) &
@@ -662,8 +666,6 @@ always @(posedge CLK120) begin
 		   SHWR_INTR <= 1;
 		   SHWR_EVT_CTR <= SHWR_EVT_CTR+1;
 		   TRIGGERED <= 0;
-                   // Start counting latency
-                   LCL_SHWR_BUF_LATENCY[LCL_SHWR_BUF_WNUM] <= 0;
 
 		   // Save event ID of this event
 		   LCL_SHWR_EVT_IDN[LCL_SHWR_BUF_WNUM] <= SHWR_EVT_ID;
@@ -773,12 +775,101 @@ always @(posedge CLK120) begin
 
         DBG1 <= FILT_PMT0 > 2000;
 	DBG2 <= ADC0[2*`ADC_WIDTH-1];  // Early pick to debug jitter
-        DBG3 <= RNDM_DEBUG[2];
-        DBG4 <= RNDM_DEBUG[3];
-        DBG5 <= RNDM_DEBUG[4];
+        DBG3 <= SHWR_TRIG_DLYD[`SHWR_TRIG_DLY];
+        DBG5 <= TRIGGERED;
          
      end // else: !if(LCL_RESET)
-end
+end // always @ (posedge CLK120)
+
+synchronizer_1bit trigrd0_sync(.ASYNC_IN(TRIGGERED),
+                             .CLK(S_AXI_ACLK),.SYNC_OUT(TRIGRD0));
+synchronizer_2bit wnum0_sync(.ASYNC_IN(LCL_SHWR_BUF_WNUM),
+                             .CLK(S_AXI_ACLK),.SYNC_OUT(LCL_SHWR_BUF_WNUM0));
+synchronizer_1bit lcl_control0(.ASYNC_IN(COMPATIBILITY_GLOBAL_CONTROL[0]),
+                             .CLK(S_AXI_ACLK),.SYNC_OUT(LCL_CONTROL0));
+
+always @(posedge S_AXI_ACLK)
+  begin
+// Reset?
+     if((LCL_CONTROL0 & `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0)
+     begin
+        for (LINDEX0A = 0; LINDEX0A<`SHWR_MEM_NBUF; LINDEX0A=LINDEX0A+1)
+          LCL_SHWR_BUF_LATENCY0[LINDEX0A] <= 0;
+     end
+     else
+       begin
+          DBG4 <= TRIGRD0;
+          if (TRIGRD0)
+            begin
+               LCL_SHWR_BUF_LATENCY0[LCL_SHWR_BUF_WNUM0] <= 0;
+            end
+          else
+            begin 
+               // Create slow clock for measuring latency.  Note that we still
+               // roll over on the 120 MHz clock! So the ratio of this latency
+               // to the normal latency will tell us the AXI_CLK frequency
+               // relative to the 120 MHz clock frequency.
+               if (LATENCY0_CLK_CTR >= `CLK_FREQ) 
+                 begin
+                    LATENCY0_CLK_CTR <= 0;
+                    // Count event readout latency
+                    for (LINDEX0B = 0; LINDEX0B<`SHWR_MEM_NBUF;
+                         LINDEX0B=LINDEX0B+1)
+                      LCL_SHWR_BUF_LATENCY0[LINDEX0B] 
+                      <= LCL_SHWR_BUF_LATENCY0[LINDEX0B]+1;
+                 end
+               else
+                 begin
+                    LATENCY0_CLK_CTR <= LATENCY0_CLK_CTR+1;
+                 end
+            end
+       end // else: !if((LCL_CONTROL0 & `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0)
+     
+  end // always @ (posedge S_AXI_ACLK)
+
+
+synchronizer_1bit trigrd1_sync(.ASYNC_IN(TRIGGERED),
+                             .CLK(AXI_MEM_CLK),.SYNC_OUT(TRIGRD1));
+synchronizer_2bit wnum1_sync(.ASYNC_IN(LCL_SHWR_BUF_WNUM),
+                             .CLK(AXI_MEM_CLK),.SYNC_OUT(LCL_SHWR_BUF_WNUM1));
+synchronizer_1bit lcl_control1(.ASYNC_IN(COMPATIBILITY_GLOBAL_CONTROL[0]),
+                             .CLK(AXI_MEM_CLK),.SYNC_OUT(LCL_CONTROL1));
+        
+always @(posedge AXI_MEM_CLK)
+  begin
+     // Reset?
+     if((LCL_CONTROL1 & `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0)
+       begin
+          for (LINDEX1A = 0; LINDEX1A<`SHWR_MEM_NBUF; LINDEX1A=LINDEX1A+1)
+            LCL_SHWR_BUF_LATENCY1[LINDEX1A] <= 0;
+       end
+     else
+       begin
+          if (TRIGRD1)
+            begin
+               LCL_SHWR_BUF_LATENCY1[LCL_SHWR_BUF_WNUM1] <= 0;
+            end
+          else
+            begin 
+               // Create slow clock for measuring latency.  Note that we still
+               // roll over on the 120 MHz clock! So the ratio of this latency
+               // to the normal latency will tell us the AXI_CLK frequency
+               // relative to the 120 MHz clock frequency.
+               if (LATENCY1_CLK_CTR >= `CLK_FREQ) 
+                 begin
+                    LATENCY1_CLK_CTR <= 0;
+                    // Count event readout latency
+                    for (LINDEX1B = 0; LINDEX1B<`SHWR_MEM_NBUF;
+                         LINDEX1B=LINDEX1B+1)
+                      LCL_SHWR_BUF_LATENCY1[LINDEX1B] 
+                      <= LCL_SHWR_BUF_LATENCY1[LINDEX1B]+1;
+                 end
+               else
+                 LATENCY1_CLK_CTR <= LATENCY1_CLK_CTR+1;
+            end
+       end // else: !if((LCL_CONTROL1 & `COMPATIBILITY_GLOBAL_CONTROL_RESET) != 0)
+  end
+        
 
 // Include code to synchronize between the AXI bus & local registers
 `include "axi_sync_block.vh"

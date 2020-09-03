@@ -27,6 +27,8 @@
 //                 kludge, not most efficient way to do it.
 // 03-Dec-2019 DFN Add flag if timout occurred. May not be so easy to see,
 //                 however.
+// 23-Mar-2020 DFN Watchdog not working if not XFR clock. Change countdown
+//                 enable from RD_BUSY120 to ENABLE_XFR120
 
 `include "rd_interface_defs.vh"
 
@@ -82,7 +84,7 @@ module rd_interface
    wire       ENABLE_XFR;
    reg        ENABLE_XFR120;
    reg        PREV_ENABLE_XFR120;
-   reg [16:0] WATCHDOG_COUNTER;
+   reg [15:0] WATCHDOG_COUNTER;
    
 
    rd_sync_1bit control_wrtsync(.ASYNC_IN(AXI_CONTROL_WRITTEN),
@@ -138,15 +140,15 @@ module rd_interface
    always @(posedge CLK120)
      begin
 
-        DBG4 <= RD_BUSY120;
-        DBG5 <= RD_BUSY120_STRETCH;
+        DBG4 <= ENABLE_XFR120;
+        DBG5 <= WATCHDOG_COUNTER[12];
 
         if (RST || (LCL_RESET && LCL_RESET_WRITTEN))
           begin
              STATUS <= 0;
              ENABLE_XFR120 <= 0;
              PREV_RD_BUSY120 <= 0;
-             WATCHDOG_COUNTER <= 0;
+             WATCHDOG_COUNTER <= 16'hffff;
           end
         else
           begin
@@ -180,12 +182,14 @@ module rd_interface
                        
                        // Arm for next transfer
                        ENABLE_XFR120 <= 1;
-                       WATCHDOG_COUNTER <= 16'hffff;
+                       WATCHDOG_COUNTER <= 16'hffff;  //546 us
                        
-                       // Reset parity error indicators
-                       STATUS[`RD_PARITY0_SHIFT+LCL_BUF_NUM] <= 0;
-                       STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 0;
-                    end // if (TRIG_IN)
+                       // Reset error indicators
+                       STATUS[`RD_PARITY0_SHIFT+BUF_WNUM] <= 0;
+                       STATUS[`RD_PARITY1_SHIFT+BUF_WNUM] <= 0;
+                       STATUS[`RD_BUF_TIMEOUT_SHIFT+BUF_WNUM] <= 0;
+                       DBG1 <= 0;
+                   end // if (TRIG_IN)
 
                   // We assume here that trigger is shorter than delay
                   // from trigger to start of serial clock. 
@@ -206,16 +210,16 @@ module rd_interface
                     STATUS[`RD_PARITY1_SHIFT+LCL_BUF_NUM] <= 1;
                   STATUS[`RD_BUF_FULL_SHIFT+LCL_BUF_NUM] <= 1;
                   STATUS[`RD_BUF_BUSY_SHIFT+LCL_BUF_NUM] <= 0;
-                  STATUS[`RD_BUF_TIMEOUT_SHIFT+LCL_BUF_NUM] <= 0;
-               end
+                end
 
              // Decrement and check watchdog timer
-             if (RD_BUSY120)
+             if (ENABLE_XFR120)
                begin
                   if (WATCHDOG_COUNTER == 0)
                     begin
                        ENABLE_XFR120 <= 0;
                        STATUS[`RD_BUF_TIMEOUT_SHIFT+LCL_BUF_NUM] <= 1;
+                       DBG1 <= 1;
                     end
                   else
                     begin
@@ -233,9 +237,8 @@ module rd_interface
 
    always @(posedge SERIAL_CLK_IN)
      begin
-        DBG1 <= ENABLE_XFR; 
-        DBG2 <= ENABLE_MEM_WRT; 
-        DBG3 <= RD_BUSY;
+        DBG2 <= SERIAL_DATA0_IN; 
+        DBG3 <= SERIAL_DATA1_IN;
 
         if (!ENABLE_XFR)
           begin

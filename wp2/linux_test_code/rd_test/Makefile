@@ -8,9 +8,9 @@ HEADERS = xil_assert.h xstatus.h xil_types.h \
 all: rd_test
 
 
-rd_test: rd_test.c  map_rd.c config_trigger.c $(HEADERS)
+rd_test: rd_test.c  map_rd.c config_trigger.c print_events.c $(HEADERS)
 	$(CCARM) -o rd_test rd_test.c map_rd.c config_trigger.c \
-	$(cflags) -lrt
+	print_events.c $(cflags) -lrt
 
 clean:;
 	rm rd_test

@@ -1,0 +1,16 @@
+#!//bin/bash
+
+echo "Comparing pl.dtsi"
+diff -y --suppress-common-lines -w sdk_generated/pl.dtsi auger_customized/pl.dtsi
+
+
+#echo "Comparing skeleton.dtsi"
+#diff -y --suppress-common-lines -w sdk_generated/skeleton.dtsi auger_customized/skeleton.dtsi
+
+
+echo "Comparing zynq-7000.dtsi"
+diff -y --suppress-common-lines -w sdk_generated/zynq-7000.dtsi auger_customized/zynq-7000.dtsi
+
+
+#echo "Comparing system.dts"
+#diff -y --suppress-common-lines -w  sdk_generated/system.dts auger_customized/system-top.dts

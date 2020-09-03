@@ -6,6 +6,7 @@
 // 17-May-2018 DFN Add compatibility tot trigger option
 // 26-Jun-2018 DFN Add compatibility totd trigger option
 // 04-Nov-2019 DFN Add MoPS and Random trigger options
+// 13-Mar-2020 DFN Add symbolic TEST_CONTROL bits
 
 
 //#define STAND_ALONE
@@ -30,6 +31,8 @@
 #define FAKE_SIGNAL_MODE (8 | (PMT0_DLY<<5) | (PMT1_DLY<<7) | (PMT2_DLY<<9) | (FAKE_SIGNAL_WIDTH<<11) | (EXP_DECAY<<19) | (SIGNAL_HT<<20))
 //#define RAMP
 #define USE_FAKE_GPS
+#define USE_TRIG_OUT_PATTERN
+
 //#define DO_LED_PULSE
 //#define DO_LED_NOW
 #define LED_DELAY0 50
@@ -97,21 +100,6 @@
 // PDT mode. Read shower/muon buffers using simple memory mapped access.
 // This is the only option that works in Linux currently.
  #define PDT
-
-// If DMA & SIMPLE are defined then readout polls for completion of read from 
-// each of the memory blocks before continuing.  This is sufficient to test
-// DMA operatation but it not intended as a model for use.  DMA_INTERRUPT
-// is not implemented in this program for the simple DMA mode.
-//
-// If DMA && SCATTER_GATHER are defined then all of the memory blocks for an
-// event are read in one DMA operation.  If in addition, DMA_INTERRUPT is
-// is defined, the DMA completion invokes an interrupt routine to finish
-// processing the event, otherwise the readout polls for completion of the
-// the DMA operation.
-//#define DMA
-//#define SIMPLE
-//#define SCATTER_GATHER
-//#define DMA_INTERRUPT
 
 
 

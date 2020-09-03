@@ -29,8 +29,9 @@ module sde_trigger_S00_AXI #
     input [`ADC_WIDTH+1:0] FILT_PMT0, // Filtered high gain PMT0
     input [`ADC_WIDTH+1:0] FILT_PMT1, // Filtered high gain PMT0
     input [`ADC_WIDTH+1:0] FILT_PMT2, // Filtered high gain PMT0
-    input wire                CLK120, // 120 MHz ADC clock
-    input wire                TRIG_IN,// External trigger input
+    input wire CLK120, // 120 MHz ADC clock
+    input wire AXI_MEM_CLK, // AXI buffer memory clock
+    input wire TRIG_IN,// External trigger input
     input wire ONE_PPS, // One pulse per second from GPS
     input wire LED_FLG, // External flag that LED pulsed
 
@@ -246,6 +247,8 @@ module sde_trigger_S00_AXI #
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_STATUS;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_START;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_LATENCY;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_LATENCY0;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BUF_LATENCY1;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA0;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA1;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_PEAK_AREA2;
@@ -1081,6 +1084,10 @@ module sde_trigger_S00_AXI #
                  reg_data_out <= SHWR_BUF_START;
 	       `SHWR_BUF_LATENCY_ADDR :
                  reg_data_out <= SHWR_BUF_LATENCY;
+	       `SHWR_BUF_LATENCY0_ADDR :
+                 reg_data_out <= SHWR_BUF_LATENCY0;
+	       `SHWR_BUF_LATENCY1_ADDR :
+                 reg_data_out <= SHWR_BUF_LATENCY1;
 	       `SHWR_PEAK_AREA0_ADDR :
                  reg_data_out <= SHWR_PEAK_AREA0;
 	       `SHWR_PEAK_AREA1_ADDR :

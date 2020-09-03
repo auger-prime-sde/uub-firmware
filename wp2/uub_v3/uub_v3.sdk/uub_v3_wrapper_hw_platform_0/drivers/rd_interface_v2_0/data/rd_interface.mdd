@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER rd_interface
+	OPTION supported_peripherals = (rd_interface);
+	OPTION copyfiles = all;
+	OPTION VERSION = 2.0;
+	OPTION NAME = rd_interface;
+END DRIVER

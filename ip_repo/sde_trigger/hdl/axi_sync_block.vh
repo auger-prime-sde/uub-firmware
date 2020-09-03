@@ -7,6 +7,7 @@
 //                 was getting too large.
 // 07-Apr-2019 DFN Added scalers.
 // 29-Apr-2019 DFN Added scaler resets.
+// 06-Apr-2020 DFN Added latency counters
 
 
    always @( posedge S_AXI_ACLK )
@@ -108,6 +109,12 @@
    synchronizer_32bit shwr_buf_latency_sync
      (.ASYNC_IN(LCL_SHWR_BUF_LATENCY[SHWR_BUF_RNUM]),
       .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_LATENCY));
+   synchronizer_32bit shwr_buf_latency0_sync
+     (.ASYNC_IN(LCL_SHWR_BUF_LATENCY0[SHWR_BUF_RNUM]),
+      .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_LATENCY0));
+   synchronizer_32bit shwr_buf_latency1_sync
+     (.ASYNC_IN(LCL_SHWR_BUF_LATENCY1[SHWR_BUF_RNUM]),
+      .CLK(S_AXI_ACLK),.SYNC_OUT(SHWR_BUF_LATENCY1));
 
 // Peak, area, & baseline
    synchronizer_32bit shwr_peak_area0
