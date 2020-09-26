@@ -85,10 +85,11 @@ void map_rd()
 
   // Now map shared memory buffers
 
-  printf("map_rd: Mapping shower memory\n"); 
   size = SHWR_MEM_DEPTH*SHWR_MEM_NBUF;
   for (imem=0; imem<5; imem++)
     {
+      printf("map_rd: Mapping shower memory %d to %x\n", 
+             imem, shwr_mem_addr[imem]); 
       shwr_mem_ptr[imem] = (u32)mmap(NULL, size,
   					    PROT_READ, MAP_SHARED,
   					    fd,shwr_mem_addr[imem]);
@@ -98,7 +99,7 @@ void map_rd()
       }
     }
 
-  printf("map_rd: Mapping rd memory\n"); 
+  printf("map_rd: Mapping rd memory to %x\n", rd_mem_addr[imem]); 
   size =RD_MEM_DEPTH*RD_MEM_NBUF;
   rd_mem_ptr[0] = (u32)mmap(NULL, size,
                                PROT_WRITE|PROT_READ, MAP_SHARED,

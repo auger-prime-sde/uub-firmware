@@ -1,5 +1,5 @@
 the_ROM_image:
 {
-	[bootloader]/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware-Mar2020test/wp2/uub_v3/uub_v3.sdk/uub-fsbl/Debug/uub-fsbl.elf
-	/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware-Mar2020test/wp2/uub_v3/uub_v3.sdk/u-boot.elf
+	[bootloader]/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3/uub_v3.sdk/uub-fsbl/Debug/uub-fsbl.elf
+	/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3/uub_v3.sdk/u-boot.elf
 }

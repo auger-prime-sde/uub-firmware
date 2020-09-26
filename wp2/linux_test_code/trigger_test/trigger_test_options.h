@@ -14,7 +14,7 @@
 //#define CHECK_MISSING_EVENT
 //#define EXT_IN_PERIOD 0.1
 #define EXT_IN_TOLERANCE 0.01
-#define EVENT_COUNT_INTERVAL 5000
+#define EVENT_COUNT_INTERVAL 100000
 //#define VERBOSE_BUFFERS  // Print more buffer status if set
 
 //#define ADJUST_BASELINE
@@ -51,7 +51,7 @@
 #define SHWR_TRIGGERS
 
 #ifdef SHWR_TRIGGERS 
-  #define COMPAT_SB_TRIGGER
+//  #define COMPAT_SB_TRIGGER
 //    #define COMPAT_SB_TRIG_2BINS
  // #define COMPAT_TOT_TRIGGER
  // #define COMPAT_TOT_TRIG_OCC 10
@@ -81,10 +81,10 @@
   #define COMPAT_MOPS_INT 120
   #define COMPAT_MOPS_OCC 3
   #define COMPAT_MOPS_OFS 3
-//  #define RNDM_TRIGGER
+  #define RNDM_TRIGGER
 // Modes 1=10ms 2=100ms 3=1s, 4=10s, 5=100s, 6=200s, 7=400s, 8=800s
 // 11, 15, 18, 21, 22, 23, 25, 28, 31 pseudo random delays
-//  #define RNDM_MODE 2
+  #define RNDM_MODE 2
 //  #define ROTATE_RNDM // Rotate through 3-8 if defined
 #endif
 //#define MUON_TRIGGERS

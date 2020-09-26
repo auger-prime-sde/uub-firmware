@@ -196,9 +196,26 @@ int main(int argc, char ** argv)
         mem_addr = mem_addr + toread_shwr_buf_num * SHWR_MEM_WORDS;
         memcpy(&shw_mem4[nevents][0],mem_addr,4*SHWR_MEM_WORDS);
 
-         rd_status = read_rd(RD_IFC_STATUS_ADDR);
-        toread_rd_buf_num = RD_BUF_RNUM_MASK & 
-          (rd_status >> RD_BUF_RNUM_SHIFT);
+        // We should be able to reset the shower memory buffers now if we
+        // save the rd buffer number to read beforehand.  Note that the 
+        // toread buf num in the RD status register will cease to be valid
+        // after the shower buffers are reset.
+        toread_rd_buf_num = toread_shwr_buf_num;
+        write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
+
+         // This will be invalid if have already reset shower buffers
+         //        toread_rd_buf_num = RD_BUF_RNUM_MASK & 
+         // (rd_status >> RD_BUF_RNUM_SHIFT);
+
+        // Wait for transfer from RD to FPGA to finish
+        do
+          { 
+            rd_status = read_rd(RD_IFC_STATUS_ADDR);
+            busy_rd_bufs = RD_BUF_BUSY_MASK &
+              (rd_status >> RD_BUF_BUSY_SHIFT);
+          }
+        while ((busy_rd_bufs & (1 << toread_rd_buf_num)) != 0);
+
         cur_rd_buf_num = RD_BUF_WNUM_MASK & 
           (rd_status >> RD_BUF_WNUM_SHIFT);
         full_rd_bufs = RD_BUF_FULL_MASK & 
@@ -251,7 +268,7 @@ int main(int argc, char ** argv)
 
         // Mark buffers as read
         write_rd(RD_IFC_CONTROL_ADDR, toread_rd_buf_num);
-        write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
+        //        write_trig(SHWR_BUF_CONTROL_ADDR, toread_shwr_buf_num);
         nevents++;
       }
   }
