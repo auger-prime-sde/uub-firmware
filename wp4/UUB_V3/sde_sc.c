@@ -645,7 +645,7 @@ void Parse_UART()
                         print_f((float)adc_results[V_EXT1_24V]*LSB_TO_24V,"[mV] ");
                         print_f((float)adc_results[V_EXT2_24V]*LSB_TO_24V,"[mV] ");
 //                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
-                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*41,67,"[mA] "); // 41,67=1/0.024
+                        print_f((float)adc_results[I_V_INPUTS]*LSB_TO_1V0/60.*41.67,"[mA] "); // 41,67=1/0.024
 			if (check (adc_results[V_EXT1_24V], 0xa8d, 5)) uprintf (PF, "<----- ERROR");
                         uprintf( PF, "\rSensors ");
                         uprintf (PF, "\r T = %d *0.1K\r P = %d *0.1 mBar \r",adc_results[T_AIR],adc_results[P_AIR]);

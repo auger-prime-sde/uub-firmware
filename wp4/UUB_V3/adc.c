@@ -6,7 +6,7 @@
 void adc_init()
 {
 P6SEL |= 0xff;                            // Enable A/D channel A0 - A7
-  ADC12CTL0 = ADC12ON+MSC+SHT0_9+REFON; // Turn on and set up ADC12 
+  ADC12CTL0 = ADC12ON+MSC+SHT0_15+REFON; // Turn on and set up ADC12 
 //  ADC12CTL0 = ADC12ON+MSC+SHT0_8; // Turn on and set up ADC12 external reference 
   ADC12CTL1 = SHP +CONSEQ_1;                          // Use sampling timer
   ADC12MCTL0 = INCH_0 + SREF_1;                      // SREF_1: Vr+=Vref+, cha. A0 ; SREF_2: Vr+ = VeREF+ (external)
@@ -89,7 +89,7 @@ void adc_update()
 //                                UART_sprintx(P4IN);
 //        UART_sprint (" \r");
  
-				delay (1);
+				delay (2);
 				adc_start_conversion ();	// Start next conversion
 				} 
 			else 	{
