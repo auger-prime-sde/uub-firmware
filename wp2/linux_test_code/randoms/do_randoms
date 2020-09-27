@@ -1,0 +1,12 @@
+#!/bin/bash
+
+mountusb
+>do_randoms.log
+for (( i = 0; i <= 100; i++ ))
+do
+    I=$( printf '%03d' $i )
+    echo "Writing file /usb/randoms$I.dat" >>do_randoms.log
+# Need to be careful of FAT file size limit! 10000 events exceeds limit.
+    ./randoms 10000 "/usb/randoms$I.dat"
+done
+umountusb

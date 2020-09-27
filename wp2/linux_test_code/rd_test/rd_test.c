@@ -47,6 +47,7 @@ int main(int argc, char ** argv)
   int cur_shwr_buf_num = 0;
   int full_shwr_bufs = 0;
   int toread_shwr_buf_num;
+  int buf_start_addr;
   int cur_muon_buf_num = 0;
   int toread_rd_buf_num;
   int cur_rd_buf_num = 0;
@@ -173,6 +174,7 @@ int main(int argc, char ** argv)
         full_shwr_bufs = SHWR_BUF_FULL_MASK & 
           (shwr_status >> SHWR_BUF_FULL_SHIFT);
         num_full = 0x7 & (shwr_status >> SHWR_BUF_NFULL_SHIFT);
+        buf_start_addr = read_trig(SHWR_BUF_START_ADDR);
 
         // Read Shower buffers
 
@@ -216,10 +218,10 @@ int main(int argc, char ** argv)
           }
         while ((busy_rd_bufs & (1 << toread_rd_buf_num)) != 0);
 
-        cur_rd_buf_num = RD_BUF_WNUM_MASK & 
-          (rd_status >> RD_BUF_WNUM_SHIFT);
         full_rd_bufs = RD_BUF_FULL_MASK & 
           (rd_status >> RD_BUF_FULL_SHIFT);
+        cur_rd_buf_num = RD_BUF_WNUM_MASK & 
+          (rd_status >> RD_BUF_WNUM_SHIFT);
         busy_rd_bufs = RD_BUF_BUSY_MASK &
           (rd_status >> RD_BUF_BUSY_SHIFT);
         parity0 = (1 << toread_rd_buf_num) &
@@ -242,6 +244,10 @@ int main(int argc, char ** argv)
             memcpy(&rd_mem[nevents][0],mem_addr,4*RD_MEM_WORDS);
           }
 
+        // Fix rd_status to show toread_shwr_buf_num
+        rd_status = (rd_status & ~(SHWR_BUF_RNUM_MASK << SHWR_BUF_RNUM_SHIFT))
+          | (toread_shwr_buf_num << SHWR_BUF_RNUM_SHIFT);
+
         // Get latency
         latency = read_trig(SHWR_BUF_LATENCY_ADDR);
 
@@ -260,7 +266,7 @@ int main(int argc, char ** argv)
         prev_time = time;
 
         // Save the information for this event
-        buf_start_offset[nevents] = read_trig(SHWR_BUF_START_ADDR);
+        buf_start_offset[nevents] = buf_start_addr;
         buf_num[nevents] = toread_shwr_buf_num;
         buf_latency[nevents] = latency;
         buf_dt[nevents] = dt;

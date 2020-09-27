@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-December 9, 2019
+September 27, 2020
 \end_layout
 
 \begin_layout Author
@@ -287,6 +287,11 @@ convolved (ToTd) trigger.
 
  time after transfer of RD data before a new trigger can be sent to the
  RD; add flag if RD transfer times out.
+\end_layout
+
+\begin_layout Description
+27-Sep-2020 Updated RD module documentation to clarify readout; updated
+ buffer memories addresses.
 \end_layout
 
 \begin_layout Section
@@ -883,11 +888,13 @@ The compatibility mode triggers operate on a signal that has been filtered
 \end_layout
 
 \begin_layout Verbatim
+
 int fir[21] = {5,0,12,22,0,-61,-96,0,256,551,681,551,256,0,-96,-61,0,22,12,0,5};
  
 \end_layout
 
 \begin_layout Verbatim
+
 int filt[2048], unfilt[2048];
 \end_layout
 
@@ -896,26 +903,32 @@ int filt[2048], unfilt[2048];
 \end_layout
 
 \begin_layout Verbatim
+
 for (i=21; i<2048; i++) 
 \end_layout
 
 \begin_layout Verbatim
+
 { 
 \end_layout
 
 \begin_layout Verbatim
+
   filt[i] = 0;
 \end_layout
 
 \begin_layout Verbatim
+
   for (j=0; j<21; j++)
 \end_layout
 
 \begin_layout Verbatim
+
     filt[i] = filt[i] + unfilt[i-21+j]*fir[j]; 
 \end_layout
 
 \begin_layout Verbatim
+
 }
 \end_layout
 
@@ -929,6 +942,7 @@ The code snippet below indicates how to use the bit masks and shifts defined
 \end_layout
 
 \begin_layout Verbatim
+
 int wrt_word, rd_word, value1, value2;
 \end_layout
 
@@ -937,10 +951,12 @@ int wrt_word, rd_word, value1, value2;
 \end_layout
 
 \begin_layout Verbatim
+
 // Prepare information to load multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
@@ -949,14 +965,17 @@ wrt_word = (value1 & VALUE1_MASK) << VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 // Extract information from word read from multi-field register
 \end_layout
 
 \begin_layout Verbatim
+
 value1 = (rd_word & VALUE1_MASK) >> VALUE1_SHIFT;
 \end_layout
 
 \begin_layout Verbatim
+
 value2 = (rd_word & VALUE2_MASK) >> VALUE2_SHIFT;
 \end_layout
 
@@ -10502,7 +10521,7 @@ TRIGGER_MEMORY_SHWR0
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4400 0000
+0x8000 8000
 \end_layout
 
 \end_inset
@@ -10522,7 +10541,7 @@ TRIGGER_MEMORY_SHWR1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4600 0000
+0x8001 0000
 \end_layout
 
 \end_inset
@@ -10542,7 +10561,7 @@ TRIGGER_MEMORY_SHWR2
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4800 0000
+0x8001 8000
 \end_layout
 
 \end_inset
@@ -10562,7 +10581,7 @@ TRIGGER_MEMORY_SHWR3
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4a00 0000
+0x8002 0000
 \end_layout
 
 \end_inset
@@ -10582,7 +10601,7 @@ TRIGGER_MEMORY_SHWR4
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4c00 0000
+0x8002 8000
 \end_layout
 
 \end_inset
@@ -11131,7 +11150,7 @@ TRIGGER_MEMORY_MUON0
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4000 0000
+0x8004 0000
 \end_layout
 
 \end_inset
@@ -11151,7 +11170,7 @@ TRIGGER_MEMORY_MUON1
 \begin_inset Text
 
 \begin_layout Plain Layout
-0x4200 0000
+0x8006 0000
 \end_layout
 
 \end_inset
@@ -12418,10 +12437,6 @@ The ID register contains the date of last tagged changes to the module in
  The RD interface may be reset by writing a 1 to the RD_RESET register.
 \end_layout
 
-\begin_layout Standard
-The RD interface module operates as follows:
-\end_layout
-
 \begin_layout Enumerate
 
 \color black
@@ -12429,77 +12444,70 @@ Receive trigger from trigger module
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
-If not in middle of transfer
+If not in middle of transfer from the RD
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
 Save current write buffer number
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
 Pass trigger on to RD
 \end_layout
 
-\end_deeper
-\begin_layout Itemize
-
-\color black
-Otherwise, go back to step 1) to wait for next trigger
-\end_layout
-
-\end_deeper
 \begin_layout Enumerate
-
-\color black
-Get ENABLE_XFR from RD
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
 
 \color black
 Mark buffer as busy
 \end_layout
 
-\begin_layout Itemize
-
-\color black
-Transfer serial data from RD to UUB FPGA memory (data continuously checked
- for correct parity)
-\end_layout
-
-\end_deeper
 \begin_layout Enumerate
 
 \color black
-Get end of ENABLE_XFR
+Upon receipt of 60 Mhz clock from the RD, transfer serial data from RD to
+ UUB FPGA memory (data continuously checked for correct parity).
+ 
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
+Wait 5 
+\begin_inset Formula $\mu s$
+\end_inset
+
+ after end of clock from the RD for RD buffers to flush
+\end_layout
+
+\begin_layout Enumerate
 
 \color black
 Mark buffer as full and not busy
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
 Go back to step 1) wait for next trigger
 \end_layout
 
 \end_deeper
+\begin_layout Enumerate
+
+\color black
+Otherwise, go back to step 1) to wait for next trigger
+\end_layout
+
+\end_deeper
 \begin_layout Standard
-After an event trigger is seen by the processor, the following steps need
- to be taken by the DAQ code:
+After an event trigger is seen by the processor, the following steps are
+ be taken by the DAQ code:
 \end_layout
 
 \begin_layout Enumerate
@@ -12511,37 +12519,62 @@ Transfer WCD & SSD data buffer to processor
 \begin_layout Enumerate
 
 \color black
+Reset corresponding WCD/SSD buffer full status after latching RD read buffer
+ number.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+
+\color black
+This allows the WCD to accept new WCD and SSD traces
+\end_layout
+
+\begin_layout Enumerate
+Note that this will invalidate RD_BUF_RNUM (which is just a copy of SHWR_BUF_RNU
+M), so this must be saved before performing the reset above.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\color black
 Check if same buffer number is full for RD
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
-If full, go to step 3
+If full, go to step 4
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
-If not full
+If not full then
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
 If busy, wait a short while & check again
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
-If still busy after ~1ms, note time-out and skip to step 4
+\begin_layout Enumerate
+The RD interface incorporates a watchdog timer that will time-out in 
+\begin_inset Formula $\sim550\ \mu s$
+\end_inset
+
+ if the readout does not complete for some reason.
+ If so, skip to step 4.
 \end_layout
 
 \end_deeper
-\begin_layout Itemize
-If not busy, mark RD buffer as empty and skip to step 4
+\begin_layout Enumerate
+If not busy, mark RD buffer as empty and skip to step 5
 \end_layout
 
 \end_deeper
@@ -12553,7 +12586,7 @@ Transfer RD data to processor
 \end_layout
 
 \begin_deeper
-\begin_layout Itemize
+\begin_layout Enumerate
 
 \color black
 Note if parity errors flagged in transfer
@@ -12566,20 +12599,6 @@ Note if parity errors flagged in transfer
 Reset corresponding RD buffer full status 
 \end_layout
 
-\begin_layout Enumerate
-
-\color black
-Reset corresponding WCD/SSD buffer full status
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-
-\color black
-This allows buffers to accept new traces
-\end_layout
-
-\end_deeper
 \begin_layout Standard
 The base address of the RD interface module is RD_BASE = 0x43c6
 \begin_inset space \space{}
@@ -12787,7 +12806,7 @@ Unused
 \end_layout
 
 \begin_layout Standard
-The RD event memory is starts at RD_EVENT_BASE=0x5200 0000.
+The RD event memory is starts at RD_EVENT_BASE=0x8000 0000.
  The RD event memory can be read via 
 \begin_inset Note Comment
 status open
