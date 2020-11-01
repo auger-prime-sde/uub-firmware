@@ -5,6 +5,8 @@
 // 17-Aug-2018 DFN Add integral constraint
 // 22-Sep-2018 DFN Remove unnecessary resets; add requirement that not
 //                 triggered on previous clock cycle
+// 14-Oct-2018 DFn Add missing UPx registers
+// 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
 
 `include "sde_trigger_defs.vh"
 
@@ -25,28 +27,35 @@ module totd_40mhz(
 		  input [`ADC_WIDTH-1:0] THRES0,
 		  input [`ADC_WIDTH-1:0] THRES1,
 		  input [`ADC_WIDTH-1:0] THRES2,
+		  input [`ADC_WIDTH-1:0] UP0,
+		  input [`ADC_WIDTH-1:0] UP1,
+		  input [`ADC_WIDTH-1:0] UP2,
 		  input [2:0] TRIG_ENABLE,
 		  input [1:0] MULTIPLICITY,
                   input [`TOTD_WIDTH_SIZE-1:0] OCCUPANCY,
                   input [`COMPATIBILITY_TOTD_FD_BITS-1:0] FD,
                   input [`COMPATIBILITY_TOTD_FN_BITS-1:0] FN,
                   input [`COMPATIBILITY_INTEGRAL_BITS-1:0] INT,
-		  output reg TRIG,
-                  output reg [59:0] DEBUG
+		  output reg TRIG
+`ifdef COMPAT_TOTD_DEBUG
+                  ,output reg [59:0] DEBUG
+`endif
 		  );
 
-   reg                              SB_TRIG[2:0];
-   reg [`WIDTH-1:0]                 WINDOW[2:0];
-   reg [`TOTD_WIDTH_SIZE-1:0]       OCC_COUNTER[2:0];
-   reg [2:0]                        PMT_TRIG;
-   reg [1:0]                        SUM_PMT_TRIGS;
-   reg [`ADC_WIDTH-1:0]             THRES[2:0];
-   reg                              TRIG_NOW;
-   reg                              TRIG_PREV;
-   reg [`ADC_WIDTH-1:0]             ADCD[2:0];
-   wire [`ADC_WIDTH-1:0]            ADCD0;
-   wire [`ADC_WIDTH-1:0]            ADCD1;
-   wire [`ADC_WIDTH-1:0]            ADCD2;
+   reg                       SB_TRIG[2:0];
+   reg [`WIDTH-1:0]          WINDOW[2:0];
+   reg [`TOTD_WIDTH_SIZE-1:0] OCC_COUNTER[2:0];
+   reg [2:0]                  PMT_TRIG;
+   reg [1:0]                  SUM_PMT_TRIGS;
+   reg [`ADC_WIDTH-1:0]       THRES[2:0];
+   reg [`ADC_WIDTH-1:0]       UP[2:0];
+   reg                        TRIG_NOW;
+   reg                        TRIG_PREV;
+   reg [`ADC_WIDTH-1:0]       ADCD[2:0];
+   reg [1:0]                  LCL_ENABLE40;
+   wire [`ADC_WIDTH-1:0]      ADCD0;
+   wire [`ADC_WIDTH-1:0]      ADCD1;
+   wire [`ADC_WIDTH-1:0]      ADCD2;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL0;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL1;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL2;
@@ -68,7 +77,7 @@ module totd_40mhz(
    // Deconvolute each filtered FADC trace
    deconvolve_40mhz deconv0(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC0),
                             .BASELINE(BASELINE0),
                             .FD(FD),
@@ -80,32 +89,32 @@ module totd_40mhz(
                             );
    deconvolve_40mhz deconv1(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC1),
                             .BASELINE(BASELINE1),
                             .FD(FD),
                             .FN(FN),
                             .ADC_OUT(ADCD1)
 `ifdef COMPAT_TOTD_DECONV_DEBUG
-                            ,.DEBUG(DECONV_DEBUG0)
+                            ,.DEBUG(DECONV_DEBUG1)
 `endif
                             );
    deconvolve_40mhz deconv2(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC2),
                             .BASELINE(BASELINE2),
                             .FD(FD),
                             .FN(FN),
                             .ADC_OUT(ADCD2)
 `ifdef COMPAT_TOTD_DECONV_DEBUG
-                            ,.DEBUG(DECONV_DEBUG0)
+                            ,.DEBUG(DECONV_DEBUG2)
 `endif
                             );
 
    integral_40mhz integral0(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC0),
                             .INTEGRAL(INTEGRAL0)
 `ifdef COMPAT_TOTD_INTGRL_DEBUG
@@ -114,7 +123,7 @@ module totd_40mhz(
                             );
    integral_40mhz integral1(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC1),
                             .INTEGRAL(INTEGRAL1)
 `ifdef COMPAT_TOTD_INTGRL_DEBUG
@@ -123,7 +132,7 @@ module totd_40mhz(
                             );
    integral_40mhz integral2(
                             .CLK(CLK120),
-                            .ENABLE40(ENABLE40),
+                            .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC2),
                             .INTEGRAL(INTEGRAL2)
 `ifdef COMPAT_TOTD_INTGRL_DEBUG
@@ -132,15 +141,20 @@ module totd_40mhz(
                             );
    
    always @(posedge CLK120) begin
-      if (ENABLE40 == 0) begin
+      LCL_ENABLE40 <= ENABLE40;
+      
+      if (LCL_ENABLE40 == 0) begin
          
          // First do a simple single bin trigger on each bin
          for (INDEX=0; INDEX<3; INDEX=INDEX+1) begin
-	    if ((THRES[INDEX] < ADCD[INDEX]) && (TRIG_ENABLE[INDEX] == 1)) 
+	    if ((THRES[INDEX] < ADCD[INDEX]) 
+                && (UP[INDEX] >= ADCD[INDEX])
+                && (TRIG_ENABLE[INDEX] == 1)) 
 	      PMT_TRIG[INDEX] <= 1;
 	    else 
 	      PMT_TRIG[INDEX] <= 0;
-            WINDOW[INDEX] <= {WINDOW[INDEX][`WIDTH-2:0],PMT_TRIG[INDEX]};
+            WINDOW[INDEX][`WIDTH-1:0]
+              <= {WINDOW[INDEX][`WIDTH-2:0],PMT_TRIG[INDEX]};
             if (WINDOW[INDEX][`WIDTH-1] && !PMT_TRIG[INDEX])
               OCC_COUNTER[INDEX] <= OCC_COUNTER[INDEX]-1;
             else if (!WINDOW[INDEX][`WIDTH-1] && PMT_TRIG[INDEX])
@@ -154,6 +168,9 @@ module totd_40mhz(
       THRES[0] <= THRES0;
       THRES[1] <= THRES1;
       THRES[2] <= THRES2;
+      UP[0] <= UP0;
+      UP[1] <= UP1;
+      UP[2] <= UP2;
       ADCD[0] <= ADCD0;
       ADCD[1] <= ADCD1;
       ADCD[2] <= ADCD2;
@@ -183,7 +200,7 @@ module totd_40mhz(
         DEBUG <= DECONV_DEBUG0;
 `endif
 `ifdef COMPAT_TOTD_INTGRL_DEBUG
-      DEBUG[11:0] <= ADC0[11:0];
+      DEBUG[11:0] <= INTEGRAL_DEBUG0[11:0];
       DEBUG[23:12] <= INTEGRAL_DEBUG0[23:12];
       DEBUG[35:24] <= INTEGRAL_DEBUG0[35:24];
       DEBUG[47:36] <= INTEGRAL_DEBUG0[47:36];
@@ -194,20 +211,18 @@ module totd_40mhz(
 
 `endif //  `ifdef COMPAT_TOTD_INTGRL_DEBUG
 `ifdef COMPAT_TOTD_TRIG_DEBUG
-      DEBUG[11:0] <= ADC0[11:0];
-      DEBUG[23:12] <= ADCD0[11:0];
-      DEBUG[30:24] <= OCC_COUNTER[0];
-      DEBUG[31] <= SB_TRIG[0];
-      DEBUG[32] <= SB_TRIG[1];
-      DEBUG[33] <= SB_TRIG[2];
-      DEBUG[34] <= TRIG;
-      DEBUG[35] <= 0;
-      DEBUG[36] <= TRIG;
-      DEBUG[47:37] <= 0;
-      if (INTEGRAL0 < 4095)
-        DEBUG[59:48] <= INTEGRAL0[11:0];
-      else 
-        DEBUG[59:48] <= 0;
+      DEBUG[11:0] <= ADCD0[11:0];
+      DEBUG[23:12] <= ADCD1[11:0];
+      DEBUG[35:24] <= ADCD2[11:0];
+      DEBUG[47:36] <= (OCC_COUNTER[0][3:0]) |
+                      (OCC_COUNTER[1][3:0] << 4) |
+                      (OCC_COUNTER[2][3:0] << 8);
+      DEBUG[48] <= SB_TRIG[0];
+      DEBUG[49] <= SB_TRIG[1];
+      DEBUG[50] <= SB_TRIG[2];
+      DEBUG[51] <= TRIG_NOW;
+      DEBUG[53:52] <= SUM_PMT_TRIGS;
+      DEBUG[59:54] <= 0;
 `endif
       
    end

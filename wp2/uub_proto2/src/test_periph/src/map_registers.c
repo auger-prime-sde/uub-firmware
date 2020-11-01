@@ -80,7 +80,7 @@ void map_registers()
  }
 
  printf("trig_regs=%x ttag_regs=%x ifc_regs=%x tstctl_regs=%x\n", 
-	trig_regs, ttag_regs, ifc_regs, tstctl_regs);
+	(int) trig_regs, (int) ttag_regs, (int) ifc_regs, (int) tstctl_regs);
    
    printf("Finished mapping registers\n");
 

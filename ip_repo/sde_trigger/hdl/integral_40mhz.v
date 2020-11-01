@@ -15,11 +15,8 @@ module integral_40mhz(
                       `ifdef COMPAT_TOTD_INTGRL_DEBUG
                       ,output reg[47:0] DEBUG
                       `endif		      );
-   
-//   (* dont_touch = "true" *) reg [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] INTEGRALA;
-//   (* dont_touch = "true" *) reg [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] DECAY;
-//   (* dont_touch = "true" *) reg [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] DELTA;
-      (* dont_touch = "true" *) reg signed [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] INTEGRALA;
+
+   (* dont_touch = "true" *) reg signed [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] INTEGRALA;
    (* dont_touch = "true" *) reg signed [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] DECAY;
    (* dont_touch = "true" *) reg signed [`COMPATIBILITY_INTEGRAL_BITS-1+`COMPATIBILITY_FRAC_BITS:0] DELTA;
    reg [`ADC_WIDTH-1:0] BASELINE_DELAY[0:`COMPATIBILITY_BASELINE_DELAY];

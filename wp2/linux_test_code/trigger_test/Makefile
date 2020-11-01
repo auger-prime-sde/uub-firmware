@@ -1,6 +1,6 @@
    CCARM=arm-xilinx-linux-gnueabi-gcc
 
-cflags=-I. -g -O0
+cflags=-I. -g -O0 -Wall
 HEADERS = sde_trigger.h xil_assert.h xstatus.h \
 	fe_lib.h sde_trigger_options.h xil_types.h read_evt.h \
 	shwr_evt_defs.h xparameters.h sde_trigger_defs.h time_tagging_defs.h \

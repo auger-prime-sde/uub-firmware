@@ -17,6 +17,9 @@
 // 25-Jun-2018 DFN Add exponential decay options to MODE
 // 09-Jul-2018 DFN Add signal size options to MODE
 // 28-Aug-2018 DFN Add read of test event from memory
+// 03-Oct-2020 DFN Modify test event to loop end to beginning.  Idle period
+//                 previously implemented introduces serious artifacts.
+// 30-Oct-2020 DFN Add more buffering of ADC_OUT signals
 //
 
 `define CLOCK_FREQ 120        // Clock frequency in Mhz
@@ -82,8 +85,12 @@ module fake_signal
    reg                   EXP_DECAY;
    reg [11:0]            MAX_SIGNAL;
    reg [11:0]            SIGNAL_BINS;
-   
-   
+   reg [12:0]            LCL_EVENT_ADR;
+   reg [23:0]            LCL_ADC0_OUT;
+   reg [23:0]            LCL_ADC1_OUT;
+   reg [23:0]            LCL_ADC2_OUT;
+   reg [23:0]            LCL_ADC3_OUT;
+   reg [23:0]            LCL_ADC4_OUT;
    reg [`RANDOM_BITS-1:0] RANDOM_DONE;  // Generated random number
    reg [`RANDOM_BITS-1:0] RANDOM;
    reg [4:0]              COUNT;  // Big enough to count to RANDOM_BITS
@@ -129,6 +136,7 @@ module fake_signal
              RANDOM <= 13'hf;
              RANDOM_DONE <= 13'hf;
              COUNT <= 0;
+             LCL_EVENT_ADR <= 0;
              EVENT_ADR <= 0;
           end
           1:  RANDOM_DONE <= `CLOCK_FREQ *10;      // 10us period
@@ -136,7 +144,7 @@ module fake_signal
           3:  RANDOM_DONE <= `CLOCK_FREQ *10000;   // 10ms period
           4:  RANDOM_DONE <= `CLOCK_FREQ *100000;  // 100ms period
           5:  RANDOM_DONE <= `CLOCK_FREQ *1000000; // 1s period
-          7:  RANDOM_DONE <= `CLOCK_FREQ *2000000; // 2s period
+          7:  RANDOM_DONE <= `CLOCK_FREQ *100;     // 100us period (from memory)
           default: RANDOM_DONE <= `CLOCK_FREQ *5000000;  // 5s period
         endcase
 
@@ -224,21 +232,25 @@ module fake_signal
 	// If USE_FAKE is set, replace signal from ADCs with a fake.
 	if (USE_FAKE_SHWR || USE_FAKE_MUON) begin
            if (MODE[4:0] == 7) begin
-// Hm..., commented out code does not seem to work.  Why not?
-              if (SHWR_PULSE_DELAY > FAKE_DELAY) // Period set above
-                EVENT_ADR <= EVENT_ADR+4;
-              else
-                EVENT_ADR <= 0;
-//              EVENT_ADR <= EVENT_ADR+4;
+              // 03-Oct-2020 DFN Change to loop fake shower from end right
+              // back to beginning.  Idle portion as prevously implemented
+              // causes serious artifacts in some traces.
+              LCL_EVENT_ADR <= (LCL_EVENT_ADR+4);
+              EVENT_ADR[12:0] <= LCL_EVENT_ADR[12:0];
 
-              ADC0_OUT[11:0] <= (EVENT_IN0[11:0] >>5) +`PEDESTAL;
-              ADC0_OUT[23:12] <= EVENT_IN0[11:0];
-              ADC1_OUT[11:0] <= (EVENT_IN0[27:16] >>5) +`PEDESTAL;
-              ADC1_OUT[23:12] <= EVENT_IN0[27:16];
-              ADC2_OUT[11:0] <= (EVENT_IN1[11:0] >>5) +`PEDESTAL;
-              ADC2_OUT[23:12] <= EVENT_IN1[11:0];
-              ADC4_OUT[11:0] <= (EVENT_IN1[27:16] >>7) +`PEDESTAL;
-              ADC4_OUT[23:12] <= EVENT_IN1[27:16];
+              LCL_ADC0_OUT[11:0] <= (EVENT_IN0[11:0] >>5) +`PEDESTAL;
+              LCL_ADC0_OUT[23:12] <= EVENT_IN0[11:0];
+              LCL_ADC1_OUT[11:0] <= (EVENT_IN0[27:16] >>5) +`PEDESTAL;
+              LCL_ADC1_OUT[23:12] <= EVENT_IN0[27:16];
+              LCL_ADC2_OUT[11:0] <= (EVENT_IN1[11:0] >>5) +`PEDESTAL;
+              LCL_ADC2_OUT[23:12] <= EVENT_IN1[11:0];
+              LCL_ADC4_OUT[11:0] <= (EVENT_IN1[27:16] >>7) +`PEDESTAL;
+              LCL_ADC4_OUT[23:12] <= EVENT_IN1[27:16];
+              ADC0_OUT <= LCL_ADC0_OUT;
+              ADC1_OUT <= LCL_ADC1_OUT;
+              ADC2_OUT <= LCL_ADC2_OUT;
+              ADC3_OUT <= 0;
+              ADC4_OUT <= LCL_ADC4_OUT;
            end
            else begin
               FAKE_SIGNAL_DLYD1 <= FAKE_SIGNAL;
