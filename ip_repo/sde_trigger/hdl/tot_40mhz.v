@@ -4,11 +4,12 @@
 // 22-Sep-2018 DFN Add requirement of not triggered previous clock cycle;
 //                 remove unnecessary resets
 // 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
+// 04-nOV-2020 DFN Change WIDTH from 122 to 121 & rename to TOT_WIDTH
 
 `include "sde_trigger_defs.vh"
 
 `define TRG_DLY 4
-`define WIDTH 122
+`define TOT_WIDTH 121
 `define WIDTH_SIZE 7
 
 module tot_40mhz(
@@ -29,7 +30,7 @@ module tot_40mhz(
 		 );
 
    reg                      SB_TRIG;
-   reg [`WIDTH-1:0]         WINDOW;
+   reg [`TOT_WIDTH-1:0]         WINDOW;
    reg [`WIDTH_SIZE-1:0]    OCC_COUNTER;
    reg [2:0]                PMT_TRIG;
    reg [1:0]                SUM_PMT_TRIGS;
@@ -70,10 +71,10 @@ module tot_40mhz(
 	       SB_TRIG <= 0;
 
              // Then keep track of occupancy
-             WINDOW <= {WINDOW[`WIDTH-2:0],SB_TRIG};
-             if (WINDOW[`WIDTH-1] && !SB_TRIG)
+             WINDOW <= {WINDOW[`TOT_WIDTH-2:0],SB_TRIG};
+             if (WINDOW[`TOT_WIDTH-1] && !SB_TRIG)
                OCC_COUNTER <= OCC_COUNTER-1;
-             else if (!WINDOW[`WIDTH-1] && SB_TRIG)
+             else if (!WINDOW[`TOT_WIDTH-1] && SB_TRIG)
                OCC_COUNTER <= OCC_COUNTER+1;
           end  // Downsampled loop
 

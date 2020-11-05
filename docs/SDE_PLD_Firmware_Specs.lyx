@@ -2763,15 +2763,15 @@ y of traces, and the integrated signal exceeds a specified value in those
 \color black
 The signal integration operates by keeping a running sum of the pulse height
  in the current ADC time bin minus that in the bin 
-\begin_inset Formula $\text{6\ensuremath{\mu s}}$
+\begin_inset Formula $\text{\ensuremath{\approx}6\ensuremath{\mu s}}$
 \end_inset
 
- earlier.
+ (250 25 ns bins) earlier.
  In addition, the integral is decayed to 0 with a 
 \begin_inset Formula $\approx50\mu\mathrm{s}$
 \end_inset
 
- time constant to ensure recovery from any overflow.
+ time constant (2048 25 ns bins) to ensure recovery from any overflow.
  Note that in any case, the integral depends upon the history of signals
  not only in the trace, but before the trace, so an exact offline reconstruction
  of the trigger is not possible.

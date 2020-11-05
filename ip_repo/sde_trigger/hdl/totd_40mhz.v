@@ -7,11 +7,12 @@
 //                 triggered on previous clock cycle
 // 14-Oct-2018 DFn Add missing UPx registers
 // 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
+// 04-nOV-2020 DFN Change WIDTH from 122 to 121 & rename to TOTD_WIDTH
 
 `include "sde_trigger_defs.vh"
 
 `define TRG_DLY 4
-`define WIDTH 122
+`define TOTD_WIDTH 121
 `define TOTD_WIDTH_SIZE (`WIDTH_BITS-2)
 
 module totd_40mhz(
@@ -43,7 +44,7 @@ module totd_40mhz(
 		  );
 
    reg                       SB_TRIG[2:0];
-   reg [`WIDTH-1:0]          WINDOW[2:0];
+   reg [`TOTD_WIDTH-1:0]          WINDOW[2:0];
    reg [`TOTD_WIDTH_SIZE-1:0] OCC_COUNTER[2:0];
    reg [2:0]                  PMT_TRIG;
    reg [1:0]                  SUM_PMT_TRIGS;
@@ -153,11 +154,11 @@ module totd_40mhz(
 	      PMT_TRIG[INDEX] <= 1;
 	    else 
 	      PMT_TRIG[INDEX] <= 0;
-            WINDOW[INDEX][`WIDTH-1:0]
-              <= {WINDOW[INDEX][`WIDTH-2:0],PMT_TRIG[INDEX]};
-            if (WINDOW[INDEX][`WIDTH-1] && !PMT_TRIG[INDEX])
+            WINDOW[INDEX][`TOTD_WIDTH-1:0]
+              <= {WINDOW[INDEX][`TOTD_WIDTH-2:0],PMT_TRIG[INDEX]};
+            if (WINDOW[INDEX][`TOTD_WIDTH-1] && !PMT_TRIG[INDEX])
               OCC_COUNTER[INDEX] <= OCC_COUNTER[INDEX]-1;
-            else if (!WINDOW[INDEX][`WIDTH-1] && PMT_TRIG[INDEX])
+            else if (!WINDOW[INDEX][`TOTD_WIDTH-1] && PMT_TRIG[INDEX])
               OCC_COUNTER[INDEX] <= OCC_COUNTER[INDEX]+1;
             if ((OCC_COUNTER[INDEX] > OCCUPANCY) &&
                 (INTEGRAL[INDEX] > INT)) SB_TRIG[INDEX] <= 1;
