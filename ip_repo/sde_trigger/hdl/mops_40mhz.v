@@ -5,19 +5,19 @@
 // 19-Oct-2020 DFN Major rewrite of Fabio's version
 // 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
 // 02-Nov-2020 DFN Move veto computation to 2nd and 3rd clock phases to reduce pipeline delay.
-// 04-nOV-2020 DFN Change WIDTH from 122 to 121 & rename to MOPS_WIDTH
+// 04-Nov-2020 DFN Change WIDTH from 122 to 121 & rename to MOPS_WIDTH
+// 16-Nov-2020 DFN Change MOPS_WIDTH to 120
 
 `include "sde_trigger_defs.vh"
 
 `define COMPATIBILITY_MOPS_OFS_BITS 4
 `define TRG_DLY 4
-`define MOPS_WIDTH 121
+`define MOPS_WIDTH 120
 `define MOPS_OCC_WIDTH (`WIDTH_BITS-2)
 
 module mops_40mhz(
 		  input [1:0] ENABLE40,
 		  input CLK120,
-                  input RESET,
          	  input [`ADC_WIDTH-1:0] ADC0,
 		  input [`ADC_WIDTH-1:0] ADC1,
 		  input [`ADC_WIDTH-1:0] ADC2,

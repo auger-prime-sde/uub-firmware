@@ -34,7 +34,12 @@ module sde_trigger_S00_AXI #
     input wire TRIG_IN,// External trigger input
     input wire ONE_PPS, // One pulse per second from GPS
     input wire LED_FLG, // External flag that LED pulsed
-
+    input wire DBG_IN1, // Debug from external block
+    input wire DBG_IN2, // Debug from external block
+    input wire DBG_IN3, // Debug from external block
+    input wire DBG_IN4, // Debug from external block
+    input wire DBG_IN5, // Debug from external block
+    
     output reg [`SHWR_MEM_WIDTH-1:0] SHWR_DATA0,     // Shower data to be stored
     output reg [`SHWR_MEM_WIDTH-1:0] SHWR_DATA1,     // Shower data to be stored
     output reg [`SHWR_MEM_WIDTH-1:0] SHWR_DATA2,     // Shower data to be stored

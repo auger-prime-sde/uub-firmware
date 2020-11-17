@@ -89,7 +89,7 @@ SDE Upgrade PLD Firmware Specifications
 \end_layout
 
 \begin_layout Date
-October 30, 2020
+Noember 12, 2020
 \end_layout
 
 \begin_layout Author
@@ -297,6 +297,18 @@ convolved (ToTd) trigger.
 \begin_layout Description
 30-Oct-2020 Added documentation of where the down sampling phase is stored
  and how to use it.
+\end_layout
+
+\begin_layout Description
+12-Nov-2020 Add more documentation of 
+\begin_inset Quotes eld
+\end_inset
+
+extra
+\begin_inset Quotes erd
+\end_inset
+
+ bits in the data.
 \end_layout
 
 \begin_layout Section
@@ -10495,7 +10507,7 @@ ENABLE40 = Down sampling clock phase
 \begin_inset Text
 
 \begin_layout Plain Layout
-Spare
+Dead time flag
 \end_layout
 
 \end_inset
@@ -10671,6 +10683,29 @@ When trying to reproduce the filtering and down sampling, one should select
  the 2-ENABLE40'th bin, the 3+2-ENABLE40'th bin, the 6+2-ENABLE40'th bin,
  etc.
  of the filtered trace.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+Dead time flag
+\begin_inset Quotes erd
+\end_inset
+
+ indicates when the FPGA is not able to accept another trigger.
+ This can be useful to know when checking traces since a signal that would
+ normally trigger a trace may occur during the period when the trigger is
+ not active (eg.
+ during dead time).
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+Triggered bin flag
+\begin_inset Quotes erd
+\end_inset
+
+ indicates when the trigger occurred in the trace (modulo a fixed pipeline
+ offset).
 \end_layout
 
 \begin_layout Subsection
@@ -12659,6 +12694,12 @@ Reset corresponding RD buffer full status
 \end_layout
 
 \begin_layout Standard
+Note that the WCD trigger will not be passed to the RD if either the RD_BUF_BUSY
+ flag or the RD_BUF_FULL flag is set is for the currently being written
+ WCD buffer.
+\end_layout
+
+\begin_layout Standard
 The base address of the RD interface module is RD_BASE = 0x43c6
 \begin_inset space \space{}
 \end_inset
@@ -12688,7 +12729,7 @@ The organization of the data in the RD memory was chosen to simplify unpacking.
  The format of each data word in RD_EVENT memory is shown below.
 
 \color inherit
- The RD ADC data is (Modified May, 2019 for RD field tests).
+ The RD ADC data is (Modified May, 2019 for RD field tests and left in place).
 \begin_inset Separator latexpar
 \end_inset
 

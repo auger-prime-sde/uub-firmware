@@ -14,8 +14,8 @@ void plot_traces(const char *filename)
   int adc[5], rd, ix, i;
   int latency, rd_status, shwr_buf_num;
   double dt, x;
-  int lobin = 400;
-  int hibin = 1200;
+  int lobin = 0;
+  int hibin = 2047;
   int nbins = hibin - lobin;
   int toread_rd_buf_num;
   int cur_rd_buf_num;
@@ -45,6 +45,16 @@ void plot_traces(const char *filename)
   TH1D *hADC3 = new TH1D("hADC3","Spare AD ;Bin;ADC value",nbins,lobin,hibin);
   TH1D *hRD0 = new TH1D("hRD0","RD0;Bin;ADC value",nbins,lobin,hibin);
   TH1D *hRD1 = new TH1D("hRD1","RD1;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hDBG1 = new TH1D("hDBG1","DBG1;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hDBG2 = new TH1D("hDBG2","DBG2;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hDBG3 = new TH1D("hDBG3","DBG3;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hDBG4 = new TH1D("hDBG4","DBG4;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hDBG5 = new TH1D("hDBG5","DBG5;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hSDBG1 = new TH1D("hSDBG1","DBG1;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hSDBG2 = new TH1D("hSDBG2","DBG2;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hSDBG3 = new TH1D("hSDBG3","DBG3;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hSDBG4 = new TH1D("hSDBG4","DBG4;Bin;ADC value",nbins,lobin,hibin);
+  TH1D *hSDBG5 = new TH1D("hSDBG5","DBG5;Bin;ADC value",nbins,lobin,hibin);
   TH1D *hDT = new TH1D("hDT","Interval;Time (s);#",100,0.,0.5);
   TH1D *hLatency = new TH1D("Latency","Latency;Time (us);#",100,0.,3000.);
   TH1D *hErrors = new TH1D("Errors","Errors;Event #,Error Code", 100,0.,100.);
@@ -81,16 +91,48 @@ void plot_traces(const char *filename)
 	in_event = 1;
         ix = 0;
 	hADC3->Reset();
-        hADC3->SetLineWidth(3);
+        hADC3->SetLineWidth(2);
 	hADC3->SetLineColor(kBlack);
 
 	hRD0->Reset();
-        hRD0->SetLineWidth(3);
+        hRD0->SetLineWidth(2);
 	hRD0->SetLineColor(kBlack);
 
 	hRD1->Reset();
-        hRD1->SetLineWidth(3);
+        hRD1->SetLineWidth(2);
 	hRD1->SetLineColor(kBlack);
+
+	hDBG1->Reset();
+        hDBG1->SetLineWidth(2);
+	hDBG1->SetLineColor(kBlack);
+	hDBG2->Reset();
+        hDBG2->SetLineWidth(2);
+	hDBG2->SetLineColor(kRed);
+	hDBG3->Reset();
+        hDBG3->SetLineWidth(2);
+	hDBG3->SetLineColor(kBlue);
+	hDBG4->Reset();
+        hDBG4->SetLineWidth(2);
+	hDBG4->SetLineColor(kGreen);
+	hDBG5->Reset();
+        hDBG5->SetLineWidth(2);
+	hDBG5->SetLineColor(kMagenta);
+
+	hSDBG1->Reset();
+        hSDBG1->SetLineWidth(2);
+	hSDBG1->SetLineColor(kBlack);
+	hSDBG2->Reset();
+        hSDBG2->SetLineWidth(2);
+	hSDBG2->SetLineColor(kRed);
+	hSDBG3->Reset();
+        hSDBG3->SetLineWidth(2);
+	hSDBG3->SetLineColor(kBlue);
+	hSDBG4->Reset();
+        hSDBG4->SetLineWidth(2);
+	hSDBG4->SetLineColor(kGreen);
+	hSDBG5->Reset();
+        hSDBG5->SetLineWidth(2);
+	hSDBG5->SetLineColor(kMagenta);
       }
     else if (strncmp(line,">>>>>>>> END OF EVENT >>>>>>>>",29) == 0)
       {
@@ -109,18 +151,28 @@ void plot_traces(const char *filename)
 	hRD1->Draw();
 
 	pad3->cd();
-	hDT->Draw();
+        //	hDT->Draw();
+        hDBG1->Draw();
+        hDBG2->Draw("same");
+        hDBG3->Draw("same");
+        hDBG4->Draw("same");
+        hDBG5->Draw("same");
 
 	pad4->cd();
-	hLatency->Draw();
+        //	hLatency->Draw();
+        hSDBG1->Draw();
+        hSDBG2->Draw("same");
+        hSDBG3->Draw("same");
+        hSDBG4->Draw("same");
+        hSDBG5->Draw("same");
 
 	pad5->cd();
 	hErrors->Draw();
 
         rd_canv->Modified();
 	rd_canv->Update();
-	sprintf(line,"event%4.4d.eps\000",event_num);
-	rd_canv->SaveAs(line);
+        //	sprintf(line,"event%4.4d.eps\000",event_num);
+	//rd_canv->SaveAs(line);
         if (timed)
           sleep(1);
         else
@@ -181,8 +233,18 @@ void plot_traces(const char *filename)
 	x = ix+.5;
         ix++;
 	hADC3->Fill(x,double((adc[3] >> 16) & 0xfff));
+	hSDBG1->Fill(x,double((adc[3] >> 0) & 0x1));
+	hSDBG2->Fill(x,double((adc[3] >> 1) & 0x1)+.05);
+	hSDBG3->Fill(x,double((adc[3] >> 2) & 0x1)+.1);
+	hSDBG4->Fill(x,double((adc[3] >> 3) & 0x1)+.15);
+	hSDBG5->Fill(x,double((adc[3] >> 4) & 0x1)+.2);
 	hRD0->Fill(x,double((rd >> 1) & 0xfff));
 	hRD1->Fill(x,double((rd >> 17) & 0xfff));
+        hDBG1->Fill(x,double((rd >> 13) & 0x1));
+        hDBG2->Fill(x,double((rd >> 14) & 0x1)+.05);
+        hDBG3->Fill(x,double((rd >> 15) & 0x1)+.1);
+        hDBG4->Fill(x,double((rd >> 29) & 0x1)+.15);
+        hDBG5->Fill(x,double((rd >> 30) & 0x1)+.2);
       }
   }
 

@@ -7,24 +7,22 @@
 //                 triggered on previous clock cycle
 // 14-Oct-2018 DFn Add missing UPx registers
 // 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
-// 04-nOV-2020 DFN Change WIDTH from 122 to 121 & rename to TOTD_WIDTH
+// 04-Nov-2020 DFN Change WIDTH from 122 to 121 & rename to TOTD_WIDTH
+// 09-Nov-2020 DFN Remove Baseline arguments
+// 16-Nov-2020 DFN Change TOTD_WIDTH to 120
 
 `include "sde_trigger_defs.vh"
 
 `define TRG_DLY 4
-`define TOTD_WIDTH 121
+`define TOTD_WIDTH 120
 `define TOTD_WIDTH_SIZE (`WIDTH_BITS-2)
 
 module totd_40mhz(
 		  input [1:0] ENABLE40,
 		  input CLK120,
-                  input RESET,
 		  input [`ADC_WIDTH-1:0] ADC0,
 		  input [`ADC_WIDTH-1:0] ADC1,
 		  input [`ADC_WIDTH-1:0] ADC2,
-                  input [`ADC_WIDTH+`SHWR_BASELINE_EXTRA_BITS-1:0] BASELINE0,
-                  input [`ADC_WIDTH+`SHWR_BASELINE_EXTRA_BITS-1:0] BASELINE1,
-                  input [`ADC_WIDTH+`SHWR_BASELINE_EXTRA_BITS-1:0] BASELINE2,
 		  input [`ADC_WIDTH-1:0] THRES0,
 		  input [`ADC_WIDTH-1:0] THRES1,
 		  input [`ADC_WIDTH-1:0] THRES2,
@@ -80,7 +78,6 @@ module totd_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC0),
-                            .BASELINE(BASELINE0),
                             .FD(FD),
                             .FN(FN),
                             .ADC_OUT(ADCD0)
@@ -92,7 +89,6 @@ module totd_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC1),
-                            .BASELINE(BASELINE1),
                             .FD(FD),
                             .FN(FN),
                             .ADC_OUT(ADCD1)
@@ -104,7 +100,6 @@ module totd_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC_IN(ADC2),
-                            .BASELINE(BASELINE2),
                             .FD(FD),
                             .FN(FN),
                             .ADC_OUT(ADCD2)
@@ -164,7 +159,7 @@ module totd_40mhz(
                 (INTEGRAL[INDEX] > INT)) SB_TRIG[INDEX] <= 1;
             else SB_TRIG[INDEX] <= 0;
          end // for (INDEX=0; INDEX<3; INDEX=INDEX+1)
-      end  // Downsampled loop
+//      end  // Downsampled loop
       
       THRES[0] <= THRES0;
       THRES[1] <= THRES1;
@@ -225,7 +220,8 @@ module totd_40mhz(
       DEBUG[53:52] <= SUM_PMT_TRIGS;
       DEBUG[59:54] <= 0;
 `endif
-      
+        end  // Downsampled loop
+    
    end
    
 endmodule

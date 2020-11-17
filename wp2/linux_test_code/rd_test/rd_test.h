@@ -31,8 +31,9 @@ void map_registers();
 #define RD_MEM_WORDS 2048
 #define RD_MEM_NBUF 4
 
-#define MAX_EVENTS 1000 
-//#define MAX_EVENTS 100 
+//#define MAX_EVENTS 1000 
+#define MAX_EVENTS 100 
+#define EXTRA_EVENTS 10
 #define USE_FAKE_GPS
 #define USE_TRIG_OUT_PATTERN
 
@@ -68,15 +69,15 @@ extern u32 shwr_mem_addr[5];
 extern volatile u32 rd_mem_ptr[1];
 extern u32 rd_mem_addr[1];
 
-extern u32 shw_mem0[MAX_EVENTS][SHWR_MEM_WORDS];
-extern u32 shw_mem1[MAX_EVENTS][SHWR_MEM_WORDS];
-extern u32 shw_mem2[MAX_EVENTS][SHWR_MEM_WORDS];
-extern u32 shw_mem3[MAX_EVENTS][SHWR_MEM_WORDS];
-extern u32 shw_mem4[MAX_EVENTS][SHWR_MEM_WORDS];
-extern u32 rd_mem[MAX_EVENTS][RD_MEM_WORDS];
+extern u32 shw_mem0[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+extern u32 shw_mem1[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+extern u32 shw_mem2[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+extern u32 shw_mem3[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+extern u32 shw_mem4[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+extern u32 rd_mem[MAX_EVENTS+EXTRA_EVENTS][RD_MEM_WORDS];
 
-extern int buf_start_offset[MAX_EVENTS];
-extern int buf_num[MAX_EVENTS];
-extern int buf_latency[MAX_EVENTS];
-extern double buf_dt[MAX_EVENTS];
-extern u32 buf_rd_status[MAX_EVENTS];
+extern int buf_start_offset[MAX_EVENTS+EXTRA_EVENTS];
+extern int buf_num[MAX_EVENTS+EXTRA_EVENTS];
+extern int buf_latency[MAX_EVENTS+EXTRA_EVENTS];
+extern double buf_dt[MAX_EVENTS+EXTRA_EVENTS];
+extern u32 buf_rd_status[MAX_EVENTS+EXTRA_EVENTS];

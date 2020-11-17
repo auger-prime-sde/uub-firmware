@@ -29,6 +29,7 @@
 //                 however.
 // 23-Mar-2020 DFN Watchdog not working if not XFR clock. Change countdown
 //                 enable from RD_BUSY120 to ENABLE_XFR120
+// 09-Nov-2020 DFN Add inhibit of writing to buffer is flagged as full
 
 `include "rd_interface_defs.vh"
 
@@ -85,7 +86,7 @@ module rd_interface
    reg        ENABLE_XFR120;
    reg        PREV_ENABLE_XFR120;
    reg [15:0] WATCHDOG_COUNTER;
-   
+   reg        PREV_CONTROL_WRITTEN;
 
    rd_sync_1bit control_wrtsync(.ASYNC_IN(AXI_CONTROL_WRITTEN),
                                 .CLK(CLK120),
@@ -139,10 +140,6 @@ module rd_interface
 
    always @(posedge CLK120)
      begin
-
-        DBG4 <= ENABLE_XFR120;
-        DBG5 <= WATCHDOG_COUNTER[12];
-
         if (RST || (LCL_RESET && LCL_RESET_WRITTEN))
           begin
              STATUS <= 0;
@@ -155,13 +152,16 @@ module rd_interface
              PREV_ENABLE_XFR120 <= ENABLE_XFR120;
              STATUS[`RD_BUF_RNUM_SHIFT+1:`RD_BUF_RNUM_SHIFT] <= BUF_RNUM;
              
-             if (LCL_CONTROL_WRITTEN)
-               begin
-                  STATUS[`RD_BUF_FULL_SHIFT
-                         +LCL_CONTROL[`RD_BUF_RNUM_SHIFT+1:
-                                      `RD_BUF_RNUM_SHIFT]] <= 0;
-               end
-             
+             PREV_CONTROL_WRITTEN <= LCL_CONTROL_WRITTEN;
+             // Note that this is active on the trailing edge of write when
+             // all data are stable.
+	     if (PREV_CONTROL_WRITTEN && !LCL_CONTROL_WRITTEN)
+	       begin
+                   STATUS[`RD_BUF_FULL_SHIFT+1:`RD_BUF_FULL_SHIFT]
+                    <= STATUS[`RD_BUF_FULL_SHIFT+1:`RD_BUF_FULL_SHIFT]
+                    & ~(1 << LCL_CONTROL);
+	       end 
+
              // We need to save buffer number we are writing this trigger to.
              // But we also have to handle the case where another trigger
              // occurs before we have finished reading out the buffer from
@@ -169,9 +169,16 @@ module rd_interface
              // accept a new trigger. So we need to also worry about 
              // interlocks.  
              
+             DBG1 <= RD_BUSY120_STRETCH;
+             DBG2 <= RD_BUSY120;
+             DBG3 <= STATUS[`RD_BUF_FULL_SHIFT+BUF_WNUM];
+             DBG4 <= !(RD_BUSY120_STRETCH || RD_BUSY120 || 
+                        STATUS[`RD_BUF_FULL_SHIFT+BUF_WNUM]);
+             DBG5 <= TRIG_IN;
+             
              PREV_RD_BUSY120 <= RD_BUSY120_STRETCH;
-
-             if (!(RD_BUSY120_STRETCH | RD_BUSY120))
+             if (!(RD_BUSY120_STRETCH || RD_BUSY120 || 
+                   STATUS[`RD_BUF_FULL_SHIFT+BUF_WNUM]))
                begin
                   if (TRIG_IN)  // Not busy and trigger
                     begin
@@ -188,7 +195,6 @@ module rd_interface
                        STATUS[`RD_PARITY0_SHIFT+BUF_WNUM] <= 0;
                        STATUS[`RD_PARITY1_SHIFT+BUF_WNUM] <= 0;
                        STATUS[`RD_BUF_TIMEOUT_SHIFT+BUF_WNUM] <= 0;
-                       DBG1 <= 0;
                    end // if (TRIG_IN)
 
                   // We assume here that trigger is shorter than delay
@@ -219,7 +225,6 @@ module rd_interface
                     begin
                        ENABLE_XFR120 <= 0;
                        STATUS[`RD_BUF_TIMEOUT_SHIFT+LCL_BUF_NUM] <= 1;
-                       DBG1 <= 1;
                     end
                   else
                     begin
@@ -237,9 +242,6 @@ module rd_interface
 
    always @(posedge SERIAL_CLK_IN)
      begin
-        DBG2 <= SERIAL_DATA0_IN; 
-        DBG3 <= SERIAL_DATA1_IN;
-
         if (!ENABLE_XFR)
           begin
              RD_BUSY <= 0;
@@ -294,6 +296,12 @@ module rd_interface
                   //DATA_TO_MEM[16] <= PARITY1;
                   DATA_TO_MEM[0] <= SERIAL_DATA0_IN;
                   DATA_TO_MEM[16] <= SERIAL_DATA1_IN;
+                  DATA_TO_MEM[13] <= DBG1;
+                  DATA_TO_MEM[14] <= DBG2;
+                  DATA_TO_MEM[15] <= DBG3;
+                  DATA_TO_MEM[29] <= DBG4;
+                  DATA_TO_MEM[30] <= DBG5;
+                  DATA_TO_MEM[31] <= 0;
                   ENABLE_MEM_WRT <= 1;
                   DATA_ADDR[12:0] <= NEXT_DATA_ADDR;
                   DATA_ADDR[14:13] <= LCL_BUF_NUM;

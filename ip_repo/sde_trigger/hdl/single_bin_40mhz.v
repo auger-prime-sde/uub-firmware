@@ -36,10 +36,10 @@ module single_bin_40mhz(
    reg [`ADC_WIDTH-1:0] 	   THRES[2:0];
    reg [`ADC_WIDTH-1:0] 	   ADC[2:0];
    reg [1:0]                       LCL_ENABLE40;
-   reg [`SB_TRG_DLY:0] 		   TRIG_DLY;
+//   reg [`SB_TRG_DLY:0] 		   TRIG_DLY;
    
    integer                         INDEX;
-   integer                         INDEX2;
+//   integer                         INDEX2;
    
    always @(posedge CLK120) begin
       LCL_ENABLE40 <= ENABLE40;

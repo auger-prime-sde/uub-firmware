@@ -13,11 +13,12 @@
  #define DISABLE_TRIG_OUT_BIT 5
  #define GENERATE_TRIG_OUT_BIT 6
  #define TRIG_OUT_PATTERN_BIT 7
- #define PATTERN_LEN 181
+ #define PATTERN_LEN 241
  #define PATTERN_0 0
  #define PATTERN_1 60
  #define PATTERN_2 120
  #define PATTERN_3 180
- #define NUM_PATTERNS 4
+ #define PATTERN_4 240
+ #define NUM_PATTERNS 5
 
  #define FAKE_MODE_ADDR 1

@@ -12,6 +12,7 @@
 // 28-Apr-18 DFN Split shower & muon interrupt modules
 // 05-Nov-19 DFN Change test point outputs to DBG1 to DBG5
 // 06-Apr-20 DFN Add AXI_MEM clock input
+// 16-Nov-20 DFN Add DBG_IN1 to DBG_IN5
 
 `timescale 1 ns / 1 ps
 
@@ -54,7 +55,12 @@ module sde_trigger #
     input wire AXI_MEM_CLK, // AXI clock for memory buffers
     input wire ONE_PPS, // One pulse per second from GPS
     input wire LED_FLG, // Flag that LED pulsed
-
+    input wire DBG_IN1, // Debug input from other modules
+    input wire DBG_IN2, // Debug input from other modules
+    input wire DBG_IN3, // Debug input from other modules
+    input wire DBG_IN4, // Debug input from other modules
+    input wire DBG_IN5, // Debug input from other modules
+    
     output wire [`SHWR_MEM_WIDTH-1:0] SHWR_DATA0,  // Shower data to be stored
     output wire [`SHWR_MEM_WIDTH-1:0] SHWR_DATA1,  // Shower data to be stored
     output wire [`SHWR_MEM_WIDTH-1:0] SHWR_DATA2,  // Shower data to be stored
@@ -234,6 +240,11 @@ module sde_trigger #
 			     .DBG3(DBG3),
 			     .DBG4(DBG4),
 			     .DBG5(DBG5),
+			     .DBG_IN1(DBG_IN1),
+			     .DBG_IN2(DBG_IN2),
+			     .DBG_IN3(DBG_IN3),
+			     .DBG_IN4(DBG_IN4),
+			     .DBG_IN5(DBG_IN5),
                              .LED(LED)
 	                     );
 

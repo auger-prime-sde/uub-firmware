@@ -404,7 +404,7 @@ module test_control_v1_0_S00_AXI #
    reg DISAB_TRGOUT;
    reg GEN_TRGOUT;
    reg TRIG_PATTERN;
-   reg[1:0] PATTERN_COUNT;
+   reg[2:0] PATTERN_COUNT;
    reg      PREV_TRIG;
    reg      TRG_DLY[`PATTERN_LEN:0];
    integer  DLY_IDX;
@@ -434,6 +434,7 @@ module test_control_v1_0_S00_AXI #
              TRG_DLY[`PATTERN_1] <= TRIGGER;
              TRG_DLY[`PATTERN_2] <= TRIGGER;
              TRG_DLY[`PATTERN_3] <= TRIGGER;
+             TRG_DLY[`PATTERN_4] <= TRIGGER;
              for (DLY_IDX=1; DLY_IDX<`PATTERN_LEN; DLY_IDX=DLY_IDX+1)
                 TRG_DLY[DLY_IDX] <= TRG_DLY[DLY_IDX-1];
              if (TRIGGER & !PREV_TRIG)
@@ -452,6 +453,10 @@ module test_control_v1_0_S00_AXI #
              if (PATTERN_COUNT == 3) 
               TRIG_OUT <= TRG_DLY[`PATTERN_0] || TRG_DLY[`PATTERN_1] 
                  || TRG_DLY[`PATTERN_2] || TRG_DLY[`PATTERN_3];
+             if (PATTERN_COUNT == 4) 
+              TRIG_OUT <= TRG_DLY[`PATTERN_0] || TRG_DLY[`PATTERN_1] 
+                || TRG_DLY[`PATTERN_2] || TRG_DLY[`PATTERN_3]
+                || TRG_DLY[`PATTERN_4];
            end
         else TRIG_OUT <= TRIGGER;
      end

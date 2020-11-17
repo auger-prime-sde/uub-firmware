@@ -4,12 +4,14 @@
 // 22-Sep-2018 DFN Add requirement of not triggered previous clock cycle;
 //                 remove unnecessary resets
 // 30-Oct-2020 DFN Add LCL_ENABLE40 to reduce load on ENABLE40
-// 04-nOV-2020 DFN Change WIDTH from 122 to 121 & rename to TOT_WIDTH
+// 04-Nov-2020 DFN Change WIDTH from 122 to 121 & rename to TOT_WIDTH
+// 12-Nov-2020 DFN Move everything incide downsampled loop
+// 16-Nov-2020 DFN Change width to 120 from 121.
 
 `include "sde_trigger_defs.vh"
 
 `define TRG_DLY 4
-`define TOT_WIDTH 121
+`define TOT_WIDTH 120
 `define WIDTH_SIZE 7
 
 module tot_40mhz(
@@ -25,8 +27,10 @@ module tot_40mhz(
 		 input [2:0] TRIG_ENABLE,
 		 input [1:0] MULTIPLICITY,
                  input [`WIDTH_SIZE-1:0] OCCUPANCY,
-		 output reg TRIG,
-                 output reg DEBUG
+		 output reg TRIG
+`ifdef COMPAT_TOT_DEBUG
+                  ,output reg [11:0] DEBUG
+`endif
 		 );
 
    reg                      SB_TRIG;
@@ -76,21 +80,28 @@ module tot_40mhz(
                OCC_COUNTER <= OCC_COUNTER-1;
              else if (!WINDOW[`TOT_WIDTH-1] && SB_TRIG)
                OCC_COUNTER <= OCC_COUNTER+1;
+
+             if (OCC_COUNTER > OCCUPANCY) 
+               begin
+                  TRIG_NOW <= 1;
+                  OCC_COUNTER <= 0;
+                  WINDOW <= 0;
+               end
+             else
+               TRIG_NOW <= 0;
+
+             // Trigger only if not triggered previous clock cycle
+             TRIG <= TRIG_NOW && !TRIG_PREV;
+             TRIG_PREV <= TRIG_NOW;
+
+ `ifdef COMPAT_TOT_DEBUG
+             DEBUG[6:0] <= (OCC_COUNTER[6:0]);
+             DEBUG[9] <= TRIG_NOW;
+             DEBUG[8:7] <= SUM_PMT_TRIGS;
+             DEBUG[11:10] <= 0;
+`endif            
+
           end  // Downsampled loop
-
-        DEBUG <= SB_TRIG;  // Debug code to look like single bin
-        if (OCC_COUNTER > OCCUPANCY) 
-          begin
-             TRIG_NOW <= 1;
-             OCC_COUNTER <= 0;
-             WINDOW <= 0;
-          end
-        else
-          TRIG_NOW <= 0;
-
-        // Trigger only if not triggered previous clock cycle
-        TRIG <= TRIG_NOW && !TRIG_PREV;
-        TRIG_PREV <= TRIG_NOW;
      end
    
 endmodule

@@ -9,21 +9,21 @@
 // Mmemory buffers
 #ifdef SPACER
 u32 spacer[1] __attribute__((aligned(128)));
-u32 rd_mem[MAX_EVENTS][RD_MEM_WORDS];
+u32 rd_mem[MAX_EVENTS+EXTRA_EVENTS][RD_MEM_WORDS];
 #else
-u32 rd_mem[MAX_EVENTS][RD_MEM_WORDS] __attribute__((aligned(128)));
+u32 rd_mem[MAX_EVENTS+EXTRA_EVENTS][RD_MEM_WORDS] __attribute__((aligned(128)));
 #endif
-u32 shw_mem0[MAX_EVENTS][SHWR_MEM_WORDS];
-u32 shw_mem1[MAX_EVENTS][SHWR_MEM_WORDS];
-u32 shw_mem2[MAX_EVENTS][SHWR_MEM_WORDS];
-u32 shw_mem3[MAX_EVENTS][SHWR_MEM_WORDS];
-u32 shw_mem4[MAX_EVENTS][SHWR_MEM_WORDS];
+u32 shw_mem0[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+u32 shw_mem1[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+u32 shw_mem2[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+u32 shw_mem3[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
+u32 shw_mem4[MAX_EVENTS+EXTRA_EVENTS][SHWR_MEM_WORDS];
 
-int buf_start_offset[MAX_EVENTS];
-int buf_num[MAX_EVENTS];
-int buf_latency[MAX_EVENTS];
-double buf_dt[MAX_EVENTS];
-u32 buf_rd_status[MAX_EVENTS];
+int buf_start_offset[MAX_EVENTS+EXTRA_EVENTS];
+int buf_num[MAX_EVENTS+EXTRA_EVENTS];
+int buf_latency[MAX_EVENTS+EXTRA_EVENTS];
+double buf_dt[MAX_EVENTS+EXTRA_EVENTS];
+u32 buf_rd_status[MAX_EVENTS+EXTRA_EVENTS];
 
 void print_events()
 {
