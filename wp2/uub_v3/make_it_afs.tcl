@@ -14,7 +14,7 @@ upgrade_ip -vlnv auger.org:user:sde_trigger:3.0 [get_ips  uub_v3_sde_trigger_0_0
 report_ip_status -name ip_status
 
 reset_target all [get_files  /afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3/uub_v3.srcs/sources_1/bd/uub_v3/uub_v3.bd]
-archive_project -force -exclude_run_results /afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3/uub_v3.zip
+archive_project -force -exclude_run_results /afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3.zip
 reset_run synth_1
 launch_runs synth_1 -jobs 4
 wait_on_run synth_1
