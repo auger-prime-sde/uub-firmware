@@ -40,14 +40,14 @@
 
 // Debug definitions -- may have a problem with defines nested very deeply
 // so don't nest the DEBUG defines.
-//`define ANY_DEBUG 1  // Enable if any of the following is set.
+`define ANY_DEBUG 1  // Enable if any of the following is set.
 // `define HIGAIN_INTEGRAL_DEBUG 1  // Only enable one of LO/HI GAIN_DEBUG
 // `define LOGAIN_INTEGRAL_DEBUG 1
 // `define MXDGAIN_INTEGRAL_DEBUG 1
 // `define COMPAT_TOTD_DECONV_DEBUG 1
 // `define COMPAT_TOTD_INTGRL_DEBUG 1
-// `define COMPAT_TOTD_TRIG_DEBUG 1
-// `define COMPAT_TOTD_DEBUG 1
+ `define COMPAT_TOTD_TRIG_DEBUG 1
+ `define COMPAT_TOTD_DEBUG 1
 // `define COMPAT_TOT_DEBUG 1
 // `define COMPAT_MOPS_DEBUG 1
 // `define EXTERN_DEBUG 1

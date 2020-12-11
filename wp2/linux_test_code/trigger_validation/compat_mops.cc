@@ -75,9 +75,11 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
       for (p=0; p<3; p++)
         {
           if (enable[p])
+            {
               integral[p] = integral[p] + trace[p][i] - trace[p][l]; 
               integral[p] = integral[p] * IDECAY;
-              if (integral[p] < 0) integral[p] = 0.;         
+              if (integral[p] < 0) integral[p] = 0.;
+            }         
         }
     }
 

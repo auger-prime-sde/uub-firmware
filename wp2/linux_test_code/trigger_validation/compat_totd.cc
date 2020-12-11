@@ -5,7 +5,6 @@
 //
 // Arguments:
 //  trace:       traces for the 3 WCD PMT, length is UB compatible
-//  baseline:    baselines for the PMTs
 //  lowthres:    lower threshold for the PMTs
 //  hithresh:    high threshold for the PMTs
 //  enable:      enable flags for which PMTs to include in trigger
@@ -26,6 +25,8 @@
 //                  FPGA; added description of arguments
 //  06-Nov-2020 DFN Add baseline input & apply same restriction as in FPGA
 //                  (don't allow ADC value below baseline)
+//  07-Dec-2020 DFN Remove baseline input -- not needed.
+//  11-Dec-2020 DFN Add computaton of initial occupancy values.
 
 #ifndef __cplusplus
   #include <stdbool.h>
@@ -36,7 +37,7 @@
 #define IWINDOW 251       // Length of integration window
 #define IDECAY 0.9995     // Exponential integral decay per 25 ns bin
 
-bool compat_totd(int trace[3][768], double baseline[3], int lothres[3],
+bool compat_totd(int trace[3][768], int lothres[3],
                  int hithres[3], bool enable[3], int minPMT, int minOcc,
                  int fd, int fn, int minIntegral, int maxADC,
                  int dtraces[3][768], int occs[3][768], int integrals[3][768])
@@ -73,19 +74,25 @@ bool compat_totd(int trace[3][768], double baseline[3], int lothres[3],
     }
  
  // Compute initial integral value -- important for fake data loaded into
-  // the UUB.  Should not be detrimental for other traces.
-  for (i=0; i<UUB_FILT_LEN; i++)
+ // the UUB.  Also need to computer initial occupancy value.
+ // Should not be detrimental for other traces.
+  for (i=UUB_FILT_LEN-IWINDOW; i<UUB_FILT_LEN; i++)
     {
-      l = i - IWINDOW;
-      if (l < 0) l = l + UUB_FILT_LEN;
       for (p=0; p<3; p++)
         {
-          if (enable[p])
-              integral[p] = integral[p] + trace[p][i] - trace[p][l]; 
-              integral[p] = integral[p] * IDECAY;
-              if (integral[p] < 0) integral[p] = 0.;         
+          integral[p] = integral[p] + trace[p][i];
+          integral[p] = integral[p] * IDECAY;
         }
     }
+  for (i=UUB_FILT_LEN-NWINDOW; i<UUB_FILT_LEN; i++)
+    {
+      for (p=0; p<3; p++)
+        {
+          if ((dtrace[p][i] > lothres[p]) && (dtrace[p][i] <= hithres[p]))
+            occ[p]++;
+        }
+    }
+
   // Scan trace.  Note that we have a issue starting at bin 0 since we need
   // the previous 120 bins for the baseline reference.  To work around this
   // feature, we wrap from near the end of the trace, careful to not use
