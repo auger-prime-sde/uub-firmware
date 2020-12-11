@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Product Version: Vivado v2015.2 (64-bit)              -->
+<!--                                                         -->
+<!-- Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.   -->
+
+<Project Version="7" Minor="5" Path="/afs/auger.mtu.edu/common/scratch/dfnitz/git_clones/uub-firmware/wp2/uub_v3/uub_v3.xpr">
+  <DefaultLaunch Dir="$PRUNDIR"/>
+  <Configuration>
+    <Option Name="Id" Val="3006c114d49148d3b1ea82b2dc237c43"/>
+    <Option Name="Part" Val="xc7z020clg484-1"/>
+    <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
+    <Option Name="BoardPart" Val=""/>
+    <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
+    <Option Name="ActiveSimSet" Val="sim_1"/>
+    <Option Name="DefaultLib" Val="xil_defaultlib"/>
+    <Option Name="IPRepoPath" Val="$PPRDIR/../../ip_repo"/>
+    <Option Name="EnableCoreContainer" Val="FALSE"/>
+    <Option Name="EnableCoreContainerForIPI" Val="FALSE"/>
+  </Configuration>
+  <FileSets Version="1" Minor="31">
+    <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
+      <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/uub_v3.bd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/uub_v3.bd"/>
+          <Attr Name="ImportTime" Val="1572721999"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_1_0/uub_v3_xlconstant_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_amiga_trigger_0_0/uub_v3_amiga_trigger_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_fake_signal_0_0/uub_v3_fake_signal_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_test_control_0_0/uub_v3_test_control_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_interface_uub_dfn3_0_0/uub_v3_interface_uub_dfn3_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_time_tagging_0_0/uub_v3_time_tagging_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_0_0/uub_v3_util_ds_buf_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_clock_1pps_0_0/uub_v3_clock_1pps_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_uartlite_0_0/uub_v3_axi_uartlite_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_iic_0_0/uub_v3_axi_iic_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xbar_1/uub_v3_xbar_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_proc_sys_reset_0_1/uub_v3_proc_sys_reset_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_interconnect_0_1/uub_v3_axi_interconnect_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_5_2/uub_v3_xlconstant_5_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_1_3/uub_v3_blk_mem_gen_1_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_1_2/uub_v3_xlconstant_1_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_0_0/uub_v3_xlconstant_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_digital_interface_0_1/uub_v3_digital_interface_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_rd_interface_0_2/uub_v3_rd_interface_0_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_clk_wiz_0_1/uub_v3_clk_wiz_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_fake_rd_0_0/uub_v3_fake_rd_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_0_4/uub_v3_xlconstant_0_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_6_0/uub_v3_xlconstant_6_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_1_2/uub_v3_blk_mem_gen_1_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_1_2/uub_v3_axi_bram_ctrl_1_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_5_1/uub_v3_xlconstant_5_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_4_1/uub_v3_xlconstant_4_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_0_3/uub_v3_axi_bram_ctrl_0_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_4_0/uub_v3_xlconstant_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_1_1/uub_v3_blk_mem_gen_1_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_0_1/uub_v3_blk_mem_gen_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_0_2/uub_v3_axi_bram_ctrl_0_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xbar_0/uub_v3_xbar_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_processing_system7_0_0/uub_v3_processing_system7_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_interconnect_0_0/uub_v3_axi_interconnect_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_0_1/uub_v3_xlconcat_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_proc_sys_reset_0_0/uub_v3_proc_sys_reset_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_4_0/uub_v3_ddr_synchronizer_24bit_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_3_0/uub_v3_ddr_synchronizer_24bit_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_2_0/uub_v3_ddr_synchronizer_24bit_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_1_0/uub_v3_ddr_synchronizer_24bit_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_0_0/uub_v3_ddr_synchronizer_24bit_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_3_0/uub_v3_util_ds_buf_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_1_0/uub_v3_util_ds_buf_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_4_0/uub_v3_util_ds_buf_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_2_0/uub_v3_util_ds_buf_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_10_0/uub_v3_util_ds_buf_10_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_6_0/uub_v3_util_ds_buf_6_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_8_0/uub_v3_util_ds_buf_8_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_11_0/uub_v3_util_ds_buf_11_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_7_0/uub_v3_util_ds_buf_7_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_5_0/uub_v3_util_ds_buf_5_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_0_2/uub_v3_xlconstant_0_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_6_0/uub_v3_blk_mem_gen_6_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_0_0/uub_v3_blk_mem_gen_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_1_1/uub_v3_axi_bram_ctrl_1_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_0_1/uub_v3_axi_bram_ctrl_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_4_0/uub_v3_blk_mem_gen_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_3_0/uub_v3_blk_mem_gen_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_2_0/uub_v3_blk_mem_gen_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_1_0/uub_v3_blk_mem_gen_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_4_0/uub_v3_axi_bram_ctrl_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_3_0/uub_v3_axi_bram_ctrl_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_0_1/uub_v3_xlconstant_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_2_0/uub_v3_axi_bram_ctrl_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_1_0/uub_v3_axi_bram_ctrl_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_bram_ctrl_0_0/uub_v3_axi_bram_ctrl_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_blk_mem_gen_5_0/uub_v3_blk_mem_gen_5_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_sde_trigger_0_0/uub_v3_sde_trigger_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_7_0/uub_v3_xlslice_7_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_6_0/uub_v3_xlslice_6_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_5_0/uub_v3_xlconstant_5_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_2_0/uub_v3_xlconcat_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_fir_compiler_2_0/uub_v3_fir_compiler_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_5_0/uub_v3_xlslice_5_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_4_0/uub_v3_xlslice_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_3_0/uub_v3_xlconstant_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_1_0/uub_v3_xlconcat_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_fir_compiler_1_0/uub_v3_fir_compiler_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_3_0/uub_v3_xlslice_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlslice_2_0/uub_v3_xlslice_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_1_1/uub_v3_xlconstant_1_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_0_0/uub_v3_xlconcat_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_fir_compiler_0_0/uub_v3_fir_compiler_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconstant_2_0/uub_v3_xlconstant_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_uartlite_1_0/uub_v3_axi_uartlite_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_0/uub_v3_auto_pc_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_2/uub_v3_auto_pc_2.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_1/uub_v3_auto_pc_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_10/uub_v3_auto_pc_10.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_9/uub_v3_auto_pc_9.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_12/uub_v3_auto_pc_12.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_6/uub_v3_auto_pc_6.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_7/uub_v3_auto_pc_7.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_8/uub_v3_auto_pc_8.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_3/uub_v3_auto_pc_3.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_4/uub_v3_auto_pc_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_5/uub_v3_auto_pc_5.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_11/uub_v3_auto_pc_11.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.hwdef"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3_bd.tcl"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="uub_v3_ooc.xdc"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="uub_v3.bmm"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3.hwh"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_13/uub_v3_auto_pc_13.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.v"/>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_sde_trigger_0_0/uub_v3_sde_trigger_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_sde_trigger_0_0/uub_v3_sde_trigger_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1572721995"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_amiga_trigger_0_0/uub_v3_amiga_trigger_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_amiga_trigger_0_0/uub_v3_amiga_trigger_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301536"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_fake_signal_0_0/uub_v3_fake_signal_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_fake_signal_0_0/uub_v3_fake_signal_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301538"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_test_control_0_0/uub_v3_test_control_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_test_control_0_0/uub_v3_test_control_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1566842253"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_fake_rd_0_0/uub_v3_fake_rd_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_fake_rd_0_0/uub_v3_fake_rd_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1567437188"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_clock_1pps_0_0/uub_v3_clock_1pps_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_clock_1pps_0_0/uub_v3_clock_1pps_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301536"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_0_0/uub_v3_ddr_synchronizer_24bit_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_0_0/uub_v3_ddr_synchronizer_24bit_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301537"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_1_0/uub_v3_ddr_synchronizer_24bit_1_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_1_0/uub_v3_ddr_synchronizer_24bit_1_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301537"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_2_0/uub_v3_ddr_synchronizer_24bit_2_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_2_0/uub_v3_ddr_synchronizer_24bit_2_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301537"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_3_0/uub_v3_ddr_synchronizer_24bit_3_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_3_0/uub_v3_ddr_synchronizer_24bit_3_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301537"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_4_0/uub_v3_ddr_synchronizer_24bit_4_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_ddr_synchronizer_24bit_4_0/uub_v3_ddr_synchronizer_24bit_4_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301537"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_interface_uub_dfn3_0_0/uub_v3_interface_uub_dfn3_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_interface_uub_dfn3_0_0/uub_v3_interface_uub_dfn3_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1563301538"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_time_tagging_0_0/uub_v3_time_tagging_0_0.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_time_tagging_0_0/uub_v3_time_tagging_0_0.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1567193668"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/hdl/uub_v3_wrapper.v">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/hdl/uub_v3_wrapper.v"/>
+          <Attr Name="ImportTime" Val="1553892220"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_rd_interface_0_2/uub_v3_rd_interface_0_2.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_rd_interface_0_2/uub_v3_rd_interface_0_2.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1566321715"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_digital_interface_0_1/uub_v3_digital_interface_0_1.upgrade_log">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_digital_interface_0_1/uub_v3_digital_interface_0_1.upgrade_log"/>
+          <Attr Name="ImportTime" Val="1567536824"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/uub_v3/archive_project_summary.txt">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../uub-firmware-Mar2020test/wp2/uub_v3/archive_project_summary.txt"/>
+          <Attr Name="ImportTime" Val="1585012144"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/archive_project_summary.txt"/>
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopModule" Val="uub_v3_wrapper"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+      <Filter Type="Constrs"/>
+      <File Path="$PSRCDIR/constrs_1/imports/constraints/vivado_uub.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../uub_proto2/constraints/vivado_uub.xdc"/>
+          <Attr Name="ImportTime" Val="1551451919"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/constrs_1/imports/constraints/Timing_contraints_uub.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../uub_proto2/constraints/Timing_contraints_uub.xdc"/>
+          <Attr Name="ImportTime" Val="1550018116"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/constrs_1/imports/constraints/uub_wrapper.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/constrs_1/imports/constraints/uub_wrapper.xdc"/>
+          <Attr Name="ImportTime" Val="1551130926"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TargetConstrsFile" Val="$PSRCDIR/constrs_1/imports/constraints/Timing_contraints_uub.xdc"/>
+        <Option Name="ConstrsType" Val="XDC"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
+      <Filter Type="Srcs"/>
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopModule" Val="uub_v3_wrapper"/>
+        <Option Name="SrcSet" Val="sources_1"/>
+      </Config>
+    </FileSet>
+  </FileSets>
+  <Simulators>
+    <Simulator Name="XSim">
+      <Option Name="Description" Val="Vivado Simulator"/>
+      <Option Name="CompiledLib" Val="0"/>
+    </Simulator>
+    <Simulator Name="ModelSim">
+      <Option Name="Description" Val="ModelSim Simulator"/>
+    </Simulator>
+    <Simulator Name="Questa">
+      <Option Name="Description" Val="Questa Advanced Simulator"/>
+    </Simulator>
+    <Simulator Name="IES">
+      <Option Name="Description" Val="Incisive Enterprise Simulator (IES)"/>
+    </Simulator>
+    <Simulator Name="VCS">
+      <Option Name="Description" Val="Verilog Compiler Simulator (VCS)"/>
+    </Simulator>
+    <Simulator Name="Riviera">
+      <Option Name="Description" Val="Riviera-PRO Simulator"/>
+    </Simulator>
+  </Simulators>
+  <Runs Version="1" Minor="9">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7z020clg484-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" State="current" Dir="$PRUNDIR/synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2015"/>
+        <Step Id="synth_design">
+          <Option Id="GatedClockConversion">2</Option>
+          <Option Id="FlattenHierarchy">0</Option>
+        </Step>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7z020clg484-1" ConstrsSet="constrs_1" Description="Vivado Implementation Defaults" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2015"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design">
+          <Option Id="Directive">4</Option>
+        </Step>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design" EnableStepBool="1"/>
+        <Step Id="route_design">
+          <Option Id="Directive">2</Option>
+        </Step>
+        <Step Id="post_route_phys_opt_design" EnableStepBool="1"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+    </Run>
+  </Runs>
+</Project>
