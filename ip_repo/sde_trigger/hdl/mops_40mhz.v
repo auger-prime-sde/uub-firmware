@@ -253,9 +253,9 @@ module mops_40mhz(
 //           DEBUG[39:36] <= VETO_COUNTER[0][3:0];
 //           DEBUG[43:40] <= VETO_COUNTER[1][3:0];
 //           DEBUG[47:44] <= VETO_COUNTER[2][3:0];
-           DEBUG[59:48] <= INTEGRAL0[14:3];
-           DEBUG[71:60] <= INTEGRAL1[14:3];
-           DEBUG[83:72] <= INTEGRAL2[14:3];
+           DEBUG[59:48] <= INTEGRAL0[11:0];
+           DEBUG[71:60] <= INTEGRAL1[11:0];
+           DEBUG[83:72] <= INTEGRAL2[11:0];
         end
 `endif      
       

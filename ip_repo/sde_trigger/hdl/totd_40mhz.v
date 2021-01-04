@@ -42,19 +42,19 @@ module totd_40mhz(
 		  );
 
    reg                       SB_TRIG[2:0];
-   reg [`TOTD_WIDTH-1:0]          WINDOW[2:0];
-   reg [`TOTD_WIDTH_SIZE-1:0] OCC_COUNTER[2:0];
-   reg [2:0]                  PMT_TRIG;
-   reg [1:0]                  SUM_PMT_TRIGS;
-   reg [`ADC_WIDTH-1:0]       THRES[2:0];
-   reg [`ADC_WIDTH-1:0]       UP[2:0];
-   reg                        TRIG_NOW;
-   reg                        TRIG_PREV;
-   reg [`ADC_WIDTH-1:0]       ADCD[2:0];
-   reg [1:0]                  LCL_ENABLE40;
-   wire [`ADC_WIDTH-1:0]      ADCD0;
-   wire [`ADC_WIDTH-1:0]      ADCD1;
-   wire [`ADC_WIDTH-1:0]      ADCD2;
+   reg [`TOTD_WIDTH-1:0]     WINDOW[2:0];
+   reg [`TOTD_WIDTH_SIZE:0]  OCC_COUNTER[2:0];
+   reg [2:0] 		     PMT_TRIG;
+   reg [1:0] 		     SUM_PMT_TRIGS;
+   reg [`ADC_WIDTH-1:0]      THRES[2:0];
+   reg [`ADC_WIDTH-1:0]      UP[2:0];
+   reg 			     TRIG_NOW;
+   reg 			     TRIG_PREV;
+   reg [`ADC_WIDTH-1:0]      ADCD[2:0];
+   reg [1:0] 		     LCL_ENABLE40;
+   wire [`ADC_WIDTH-1:0]     ADCD0;
+   wire [`ADC_WIDTH-1:0]     ADCD1;
+   wire [`ADC_WIDTH-1:0]     ADCD2;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL0;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL1;
    wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL2;
@@ -177,12 +177,6 @@ module totd_40mhz(
       SUM_PMT_TRIGS <= SB_TRIG[0] + SB_TRIG[1] + SB_TRIG[2];
       if ((SUM_PMT_TRIGS >= MULTIPLICITY) && (MULTIPLICITY != 0)) begin
 	 TRIG_NOW <= 1;
-         WINDOW[0] <= 0;
-         OCC_COUNTER[0] <= 0;
-         WINDOW[1] <= 0;
-         OCC_COUNTER[1] <= 0;
-         WINDOW[2] <= 0;
-         OCC_COUNTER[2] <= 0;
       end
       else
 	TRIG_NOW <= 0;
@@ -210,6 +204,9 @@ module totd_40mhz(
       DEBUG[11:0] <= ADCD0[11:0];
       DEBUG[23:12] <= ADCD1[11:0];
       DEBUG[35:24] <= ADCD2[11:0];
+//      DEBUG[11:0] <= INTEGRAL0[11:0];
+//      DEBUG[23:12] <= INTEGRAL1[11:0];
+//      DEBUG[35:24] <= INTEGRAL2[11:0];
       DEBUG[47:36] <= (OCC_COUNTER[0][3:0]) |
                       (OCC_COUNTER[1][3:0] << 4) |
                       (OCC_COUNTER[2][3:0] << 8);
@@ -221,7 +218,19 @@ module totd_40mhz(
       DEBUG[59:54] <= 0;
 `endif
         end  // Downsampled loop
-    
+
+      // Need to do reset of OCC & WINDOW on different clock cycle than
+      // above code to avoid possibly trying to increment and reset registers
+      // on the same clock cycle.
+      if (LCL_ENABLE40 == 1)
+	begin
+	   OCC_COUNTER[0] <= 0;
+	   OCC_COUNTER[1] <= 0;
+	   OCC_COUNTER[2] <= 0;
+	   WINDOW[0] <= 0;
+	   WINDOW[1] <= 0;
+	   WINDOW[2] <= 0;
+	end
    end
    
 endmodule

@@ -13,8 +13,11 @@
 //  29-Sep-2020 DFN Initial encapsulated version
 //  03-Oct-2020 DFN Modify to wrap end of trace to beginning for filter
 //  31-Oct-2020 DFN Added description of arguments
+//  23-Dec-2020 DFN Adjust delay to agree with with filtered data from FPGA
 
 #include <stdio.h>
+
+#define FDELAY 1
 
 int filter(int input[3][2048], int output[3][768], int offset)
 {
@@ -42,7 +45,8 @@ int filter(int input[3][2048], int output[3][768], int offset)
         }
       for (i=0; i<768; i++)
         {
-          k = 3*i + offset;
+          k = 3*(i-FDELAY) + offset;
+          if (k < 0) k = k+2048;
           if (k > 2047) k = k-2048;
           output[p][i] = filtered[p][k];
         }

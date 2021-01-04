@@ -15,16 +15,23 @@
 //  06-Oct-2020 DFN Use trace wrap to improve speed.
 //  29-Oct-2020 DFN Expanded arguments to include all values setable in the
 //                  FPGA; added description of arguments
+//
+//  Note that unlike the ToTD and MoPS triggers which combine different
+//  calculations, the ToT only uses thresholds to compute triggers, so
+//  relative timing of the calculations is not important.
 
 #ifndef __cplusplus
   #include <stdbool.h>
 #endif
 
+#define NWINDOW 120      // Size of window in 25ns bins
+#define UUB_FILT_LEN 682  // Length of UUB trace after downsampling
+
+
 bool compat_tot(int trace[3][768], int thresh[3], bool enable[3],
                 int minPMT, int minOcc, int occs[768])
 {
   int i, j, p;
-  int NWindow = 120;   // Size of window in 25ns bins
 
   int occ = 0;
   int nToT;
@@ -40,8 +47,8 @@ bool compat_tot(int trace[3][768], int thresh[3], bool enable[3],
   // not to include bins beyond the end of a UUB trace.
   for (i=0; i<768; i++)
     {
-      j = i - NWindow;
-      if (j < 0) j = j + 562;
+      j = i - NWINDOW;
+      if (j < 0) j = j + UUB_FILT_LEN;
       nToT = 0;
       lToT = 0;
       for (p = 0; p < 3; p++) // Loop  over all the PMTs
