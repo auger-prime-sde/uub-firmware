@@ -8,6 +8,7 @@
 //
 //   21-Jun-2018 DFN Initial version (ported from deconvolute.tdf)
 //   08-Nov-2020 DFN Remove constraint signal above baseline.
+//   26-Jan-2021 DFN Add pipeline registers for multiplications
 
 `include "sde_trigger_defs.vh"
 
@@ -24,12 +25,16 @@ module deconvolve_40mhz(
                         );
    
    // Pipeline registers
-   (* dont_touch = "true" *) reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_A;
-   (* dont_touch = "true" *) reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH:0] INT_B;
-   (* dont_touch = "true" *) reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_C;
-   (* dont_touch = "true" *) reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS-1:0] INT_D;
-   (* dont_touch = "true" *) reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS:0] INT_E;
-   (* dont_touch = "true" *) reg [`ADC_WIDTH-1:0] ADC_LIMITED; // ADC constrained to be > pedestal
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_A0;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_A1;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_A;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH:0] INT_B;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0] INT_C;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS-1:0] INT_D0;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS-1:0] INT_D1;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS-1:0] INT_D;
+   reg [`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_BITS:0] INT_E;
+   reg [`ADC_WIDTH-1:0] ADC_LIMITED;
 
    
    always @(posedge CLK) begin
@@ -38,7 +43,7 @@ module deconvolve_40mhz(
 
          // Multiply previous ADC value by decay factor.  
          // Result will have 6 fractional binary digits.
-         INT_A <= ADC_LIMITED * FD;
+         INT_A0 <= ADC_LIMITED * FD;
          
          // Subtract result of previous stage from current limited ADC value.
          // Note that the clock delays in the previous operation means this
@@ -55,33 +60,34 @@ module deconvolve_40mhz(
            INT_C <= INT_B[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:0];
          
          // Multiply what we have so far by the nomalizer
-         INT_D <= INT_C * FN;
+         INT_D0 <= INT_C * FN;
 
          // Add 1/2 to force rounding rather than truncation
          INT_E <= INT_D + (1 << `COMPATIBILITY_TOTD_FN_FRAC_BITS+`COMPATIBILITY_TOTD_FD_BITS-1);
          
          // Load output value, limiting maximum value to 4095.
-         if ( INT_E[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_FRAC_BITS])
+         if (INT_E[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH+`COMPATIBILITY_TOTD_FN_FRAC_BITS])
            ADC_OUT <= 4095;
          else
            ADC_OUT <= INT_E[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1+
                             `COMPATIBILITY_TOTD_FN_FRAC_BITS:
                             `COMPATIBILITY_TOTD_FD_BITS+`COMPATIBILITY_TOTD_FN_FRAC_BITS];
       end
-      else begin
-         ADC_LIMITED <= ADC_LIMITED;
-         INT_A <= INT_A;
-         INT_B <= INT_B;
-         INT_C <= INT_C;
-         INT_D <= INT_D;
-         INT_E <= INT_E;
-         ADC_OUT <= ADC_OUT;
+
+      // Pipeline registers for multiply
+      if (ENABLE40 == 1) begin
+	 INT_A1 <= INT_A0;
+	 INT_D1 <= INT_D0;
       end
-      
+      if (ENABLE40 == 2) begin
+	 INT_A <= INT_A1;
+	 INT_D <= INT_D1;
+      end
+
  `ifdef COMPAT_TOTD_DECONV_DEBUG
       DEBUG[11:0]  <= ADC_LIMITED;
-      DEBUG[23:12] <= INT_A[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:`COMPATIBILITY_TOTD_FD_BITS];
-      DEBUG[35:24] <= INT_C[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1:`COMPATIBILITY_TOTD_FD_BITS];
+      DEBUG[23:12] <= INT_A[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-5:`COMPATIBILITY_TOTD_FD_BITS-4];
+      DEBUG[35:24] <= INT_C[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-6:`COMPATIBILITY_TOTD_FD_BITS-5];
       DEBUG[47:36] <= INT_E[`COMPATIBILITY_TOTD_FD_BITS+`ADC_WIDTH-1+`COMPATIBILITY_TOTD_FN_FRAC_BITS:
                             `COMPATIBILITY_TOTD_FD_BITS+`COMPATIBILITY_TOTD_FN_FRAC_BITS];
       DEBUG[59:48] <= ADC_OUT;

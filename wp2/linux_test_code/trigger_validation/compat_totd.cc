@@ -1,3 +1,4 @@
+
 // compat_totd
 //
 // Perform compatibility ToTd trigger.  This code can be used for UB traces
@@ -31,52 +32,95 @@
 //  23-Dec-2020 DFN Add delay to occupancy to better agree with FPGA.
 //  27-Dec-2020 DFN Add delay to deconvolution to better agree with FPGA.
 //  30-Dec-2020 DFN Modify integral calculation to be fixed point as in FPGA
-
+//  06-Jan-2021 DFN There is a small problem to use data use data from end of
+//                  as pseudo before trace in that filter phase will be
+//                  different as 2048 is not evenly divisable by 3.  So modify
+//                  Code to only require that occupancy and integral be valid
+//                  by the trigger point.
+//  29-Jan-2021 DFN Final tuning of delays (IDELAY, ODELEY, BASE_LOOKAHEAD) to
+//                  match FPGA timing.
 #include <stdio.h>
 
 #ifndef __cplusplus
-  #include <stdbool.h>
+#include <stdbool.h>
 #endif
 
-#define UUB_FILT_LEN 682  // Length of UUB trace after downsampling
+// Note that th integral and occupancy coincidence are in different
+// time bins of the display. The display of the integral is adjusted to match
+// the debug output of the FPGA.  The integral delay here is to get the
+// correct coincidence bin. 
+
+#define UUB_FILT_LEN 683  // Length of UUB trace after downsampling
 #define NWINDOW 120       // Length of 3us window for ToTD occupancy
-#define IWINDOW 251       // Length of integration window
-#define IDELAY 3          // Relative lag in integral re FPGA
-#define ODELAY 3          // Relative lag in occupancy re FPGA
-#define DDELAY 7          // Relative lag in deconvolution re FPGA
-#define FRAC_BITS 11      // Value from sde_trigger_defs.h
-#define DECAY_BITS 11     // Value from sde_trigger_defs.h
-#define TRIG_POINT 228    // Bin at which OCC is reset to 0 if trigger
+#define IWINDOW 122       // Length of integration window (overlaps occ window)
+#define IDELAY 2          // Integral lag wrt deconvolution in FPGA
+#define ODELAY 2          // Occupancy lag wrt deconvolution in FPGA
+#define DDELAY 7          // Deconvolution lag wrt ADC in FPGA.
+#define FRAC_BITS 6       // Value from sde_trigger_defs.h
+#define BASE_BITS 6       // Value from sde_trigger_defs.h
+#define BASE_LOOKAHEAD -1 // # bins to look into future to match FPGA delays.
+#define ONE_HALF (1 << (BASE_BITS-1))
+#define ONE (1 << (BASE_BITS))
+#define DECAY (1 << (FRAC_BITS-1))
 
 bool compat_totd(int trace[3][768], int lothres[3],
                  int hithres[3], bool enable[3], int minPMT, int minOcc,
                  int fd, int fn, int minIntegral, int maxADC,
-                 int dtraces[3][768], int occs[3][768], int integrals[3][768])
+                 int dtraces[3][768], int occs[3][768], int integrals[3][768],
+		 int bases[3][768], int deltas[3][768])
 {
-  int i, j, k, l, m, p; 
+  int i, j, k, l, m, n, p; 
+  int dtr;
   int integral[3];
   int occ[3];
   int pmtTrig[3];
   int dtrace[3][768];
+  long long base[3];
   int adci, adcj;
   long long integrala[3];
   long long decay[3];
+  int delta[3];
+  int prev_integral[3][768];
+  bool trig;
 
   for (p=0; p<3; p++)
     {
       integrala[p] = 0;
       integral[p] = 0;
+      decay[p] = 0;
+      delta[p] = 0;
       occ[p]= 0;
       pmtTrig[p] = 0;
+      base[p] = 0;
     }
-  
+  trig = false;
   
   // Zero out debug occupancy array
   for (i=0; i<768; i++)
     for (p=0; p<3; p++)
-        if (&occs[0][0] != 0) occs[p][i] = 0;
+	prev_integral[p][i] = 0;
+
+  // Get initial baseline
+  for (p=0; p<3; p++)
+    {
+      for (i=0; i<768; i++)
+	{
+	  base[p] = base[p] + (trace[p][i] << FRAC_BITS);
+	}
+      base[p] = base[p]/768;
+      for (i=0; i<768; i++)
+	{
+	  if ((trace[p][i] << FRAC_BITS) > base[p])
+	    base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
+	  else if ((trace[p][i] << FRAC_BITS) < base[p])
+	    base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
+	}
+      // Try to ensure we start a bit below the real baseline.
+      base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
+    }
 
   // Generate deconvoluted traces
+  // Edge bins may not be fully valid
   for (i=0; i<768; i++)
     {
       j = i-1;
@@ -87,97 +131,100 @@ bool compat_totd(int trace[3][768], int lothres[3],
         {
           adci = trace[p][i];
           adcj = trace[p][j];
-          dtrace[p][k] = ((adci*64-adcj*fd)*fn+512)>>10;
+          dtr = adci*64-adcj*fd;
+	  if (dtr < 0) dtr = 0;
+          dtrace[p][k] = (dtr*fn + (1<<9)) >> 10;
           if (dtrace[p][k] > maxADC) dtrace[p][k] = maxADC;
           if (dtrace[p][k] < 0) dtrace[p][k] = 0;
+
 	  if (&dtraces[0][0] != 0) dtraces[p][i] = dtrace[p][i];
-	  if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
+	  if (&integrals[0][0] != 0) integrals[p][i] = 0;
+	  if (&bases[0][0] != 0) bases[p][i] = 0;
+	  if (&deltas[0][0] != 0) deltas[p][i] = 0;
         }
     }
- 
- // Compute initial integral value -- important for fake data loaded into
- // the UUB.
-  for (i=0; i<UUB_FILT_LEN; i++)
-    {
-      k = i - IDELAY;
-      if (k < 0) k = k + UUB_FILT_LEN;
-      l = k - IWINDOW;
-      if (l < 0) l = l + UUB_FILT_LEN;
-      for (p=0; p<3; p++)
-	{
-	  decay[p] = integrala[p] >> DECAY_BITS;
-	  integrala[p] = integrala[p] + (trace[p][k] << FRAC_BITS);
-	  integrala[p] = integrala[p] - (trace[p][l] << FRAC_BITS);
-	  integrala[p] = integrala[p] - decay[p];
-	  if (integrala[p] < 0) integrala[p] = 0;
-	  integral[p] = integrala[p] >> FRAC_BITS;
 
-	  if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
-	}
-    }
-
-  // Also compute initial occupancy value.  Here we start with an empty
-  // window to get initial occupancy count
-  for (i=UUB_FILT_LEN-NWINDOW; i<UUB_FILT_LEN; i++)
-    {
-      j = i - ODELAY;
-      if (j < 0) j = j + UUB_FILT_LEN;
-      m = j - NWINDOW;
-      if (m < 0) m = m + UUB_FILT_LEN;
-      for (p=0; p<3; p++)
-	{
-	  if ((dtrace[p][j] > lothres[p]) && (dtrace[p][j] <= hithres[p]))
-	    occ[p]++;
-	  //	  if ((dtrace[p][m] > lothres[p]) && (dtrace[p][m] <= hithres[p]))
-	  //  occ[p]--;
-	  //  if (occ[p] < 0) occ[p] = 0;
-	  //  if (i == TRIG_POINT) occ[p] = 0;
-	  if (&occs[0][0] != 0) occs[p][i] = occ[p];
-	}
-    }
-  
-  // Scan trace.  Note that we have a issue starting at bin 0 since we need
-  // the previous 120 bins for the baseline reference.  To work around this
-  // feature, we wrap from near the end of the trace, careful to not use
-  // bins which would be beyond the end of a UUB trace.
+  // Scan through trace
   for (i=0; i<768; i++)
     {
       j = i - ODELAY;
       if (j < 0) j = j + UUB_FILT_LEN;
       m = j - NWINDOW;
-      if (m < 0) m = m + UUB_FILT_LEN;
+      // if (m < 0) m = m + UUB_FILT_LEN;
 
-      k = i - IDELAY;
+      k = i - IDELAY - DDELAY;
       if (k < 0) k = k + UUB_FILT_LEN;
       l = k - IWINDOW;
-      if (l < 0) l = l + UUB_FILT_LEN;
+      if (l < 0) l = 0;
+      
+      //      n = k + BASE_LOOKAHEAD + DDELAY;
+      n = k + BASE_LOOKAHEAD;
+      if (n > UUB_FILT_LEN) n = n - UUB_FILT_LEN;
+      if (n < 0) n = n + UUB_FILT_LEN;
 
+      // New algorithm for integrals.  Here we compare to
+      // computed running baseline. 
       for (p=0; p<3; p++)
         {
           if (enable[p])
             {
-	      decay[p] = integrala[p] >> DECAY_BITS;
-	      integrala[p] = integrala[p] + (trace[p][k] << FRAC_BITS);
-	      integrala[p] = integrala[p] - (trace[p][l] << FRAC_BITS);
+	      decay[p] = DECAY;
+	      delta[p] = (trace[p][k] << FRAC_BITS) - base[p];
+
+	      // Keep track of baseline
+	      if ((trace[p][n] << FRAC_BITS) > base[p] + ONE)
+		base[p] = base[p] + (4 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) > base[p] + ONE_HALF)
+		base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) > base[p])
+		base[p] = base[p] + (1 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE)
+		base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE_HALF)
+		base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p])
+		base[p] = base[p] - (1 << (FRAC_BITS - BASE_BITS));
+		
+	      integrala[p] = integrala[p] + delta[p];
 	      integrala[p] = integrala[p] - decay[p];
-	      if (integrala[p] < 0) integrala[p] = 0;
+
+	      // Need to be careful here if integrala is negative.
+	      if (integrala[p] < 0)
+		integrala[p] = 0;
+
+	      // Cap integral a maximum allowed value
+	      if (integrala[p] > ((2*minIntegral) <<  FRAC_BITS))
+		integrala[p] = (2*minIntegral) << FRAC_BITS;
+
+	      // Reset after integration period if integral enough for trig
+	      if (prev_integral[p][l] > minIntegral)
+		integrala[p] = 0;
+
+	      // Extract integer portion of integral & save in history
 	      integral[p] = integrala[p] >> FRAC_BITS;
-	  
+	      prev_integral[p][k] = integral[p];	      
+
+	      // Compute occupancies
               if ((dtrace[p][j] > lothres[p]) && (dtrace[p][j] <= hithres[p]))
                 occ[p]++;
-              if ((dtrace[p][m] > lothres[p]) && (dtrace[p][m] <= hithres[p]))
-                occ[p]--;
+	      if (m >= 0)
+		if ((dtrace[p][m] > lothres[p]) && (dtrace[p][m] <= hithres[p]))
+		  occ[p]--;
               if (occ[p] < 0 ) occ[p] = 0;
+
+	      // (pre-)trigger for this PMT?
               if ((occ[p] > minOcc) && (integral[p] > minIntegral))
                 pmtTrig[p] = 1;
               else pmtTrig[p] = 0;
 
+	      // Return debugging information
               if (&occs[0][0] != 0) occs[p][i] = occ[p];
-              if (&dtraces[0][0] != 0) dtraces[p][i] = dtrace[p][i];
               if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
+              if (&bases[0][0] != 0) bases[p][i] = base[p];
+              if (&deltas[0][0] != 0) deltas[p][i] = delta[p] >> 4;
             }
         }
-      if ((pmtTrig[0]+pmtTrig[1]+pmtTrig[2]) >= minPMT) return true;
+      if ((pmtTrig[0]+pmtTrig[1]+pmtTrig[2]) >= minPMT) trig = true;
     }
-  return false;
+  return trig;
 }

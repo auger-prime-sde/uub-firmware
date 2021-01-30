@@ -43,24 +43,27 @@
 
 // Debug definitions -- may have a problem with defines nested very deeply
 // so don't nest the DEBUG defines.
-#define ANY_DEBUG 1  // Enable if any of the following is set.
+// #define ANY_DEBUG 1  // Enable if any of the following is set.
 // #define HIGAIN_INTEGRAL_DEBUG 1  // Only enable one of LO/HI GAIN_DEBUG
 // #define LOGAIN_INTEGRAL_DEBUG 1
 // #define MXDGAIN_INTEGRAL_DEBUG 1
 // #define COMPAT_TOTD_DECONV_DEBUG 1
 // #define COMPAT_TOTD_INTGRL_DEBUG 1
- #define COMPAT_TOTD_TRIG_DEBUG 1
- #define COMPAT_TOTD_DEBUG 1
+// #define COMPAT_TOTD_TRIG_DEBUG 1
+// #define COMPAT_TOTD_DEBUG 1
 // #define COMPAT_TOT_DEBUG 1
 // #define COMPAT_MOPS_DEBUG 1
 // #define EXTERN_DEBUG 1
 // End of debug enable definitions
 
+// Added delay of triggers for validation tests in units of 8.3ns bins.
+// Should be set to 0 for normal operaion!
+ #define TRIGGER_VALIDATION_DELAY 0
+
  #define CLK_FREQ 120 // Clock frequency in MHz
  #define ADC_WIDTH 12 // Number of bits per ADC
  #define NUM_ADCS 10  // Number of ADCs
  #define ENABLE_FILT_DELAY 1 // Add delay to non-filtered data if enabled
-// #define ADC_FILT_DELAY 22 // ADC filter delay
  #define ADC_FILT_DELAY 27 // ADC filter delay
  #define WIDTH_BITS 9 // Number of bits in ToT occupancy register
 
@@ -75,10 +78,11 @@
  #define SHWR_BUF_NUM_WIDTH 2   // Width of buffer number register (for ttag)
  #define SHWR_MEM_NBUF (1<<SHWR_BUF_NUM_WIDTH) // Num. shower memory buffers
  #define SHWR_EVT_CTR_WIDTH 4   // Width of shower event counter (for ttag)
-                                // Delay from trigger to end of buffer
- #define SHWR_TRIG_DLY ((SHWR_MEM_WORDS*2)/3)
-                                // Dead length till next possible trigger,
-                                // not counting logic delays
+
+// Delay from trigger to end of buffer.  For trigger validation tests
+// we can move trigger later.
+ #define SHWR_TRIG_DLY (((SHWR_MEM_WORDS*2)/3)-TRIGGER_VALIDATION_DELAY)
+ 
  #define SHWR_DEAD_DLY (SHWR_MEM_WORDS) // Not counting logic delays
  #define MUON_MEM_WIDTH 32      // Width of each muon memory
  #define MUON_MEM_ADDR_WIDTH 32 // Vivado seems to require 32 bit bus
@@ -178,10 +182,14 @@
  #define COMPATIBILITY_TOTD_FN_BITS 6
  #define COMPATIBILITY_TOTD_FN_FRAC_BITS 4
  #define COMPATIBILITY_TOTD_FD_BITS 6
- #define COMPATIBILITY_DECAY_BITS 11
- #define COMPATIBILITY_FRAC_BITS 11
- #define COMPATIBILITY_INTEGRAL_BITS 24
- #define COMPATIBILITY_BASELINE_DELAY 248
+ #define COMPAT_FRAC_BITS 6
+ #define COMPAT_BASE_BITS 6
+ #define COMPAT_BASE_HALF (1 << (COMPAT_BASE_BITS-1))
+ #define COMPAT_BASE_ONE (1 << (COMPAT_BASE_BITS))
+
+ #define COMPAT_INTEGRAL_BITS 14
+ #define COMPAT_INTEGRAL_WIDTH 119  // == 3us (extends just beyond occ window)
+ #define COMPAT_INTEGRAL_DECAY (1 << (COMPAT_FRAC_BITS-1))
 
 #define COMPATIBILITY_SCALER_A_THR0_ADDR 80
 #define COMPATIBILITY_SCALER_A_THR1_ADDR 81
@@ -270,7 +278,7 @@
  #define SHWR_BUF_LATENCY_ADDR 133
 // The following 2 are useful for debugging to check clock frequencies
 // in case there is doubt about what is set in the FSBL
- #define SHWR_BUF_LATENCY0_ADDR 134  // Same, but using AXI clock=fclk_clk
+ #define SHWR_BUF_LATENCY0_ADDR 134   // Same, but using AXI clock=fclk_clk
  #define SHWR_BUF_LATENCY1_ADDR 135   // Same, but using AXI_MEM clock=fclk_clk1
 
 #define MUON_TRIG1_THR0_ADDR 140
@@ -284,18 +292,6 @@
 #define MUON_TRIG2_THR2_ADDR 147
 #define MUON_TRIG2_SSD_ADDR 148
 #define MUON_TRIG2_ENAB_ADDR 149
-
-// #define MUON_TRIG3_THR0_ADDR 150
-// #define MUON_TRIG3_THR1_ADDR 151
-// #define MUON_TRIG3_THR2_ADDR 152
-// #define MUON_TRIG3_SSD_ADDR 153
-// #define MUON_TRIG3_ENAB_ADDR 154
-
-// #define MUON_TRIG4_THR0_ADDR 155
-// #define MUON_TRIG4_THR1_ADDR 156
-// #define MUON_TRIG4_THR2_ADDR 157
-// #define MUON_TRIG4_SSD_ADDR 158
-// #define MUON_TRIG4_ENAB_ADDR 159
 
  #define MUON_TRIG_ENAB_SHIFT 0
  #define MUON_TRIG_ENAB_WIDTH 4
@@ -330,14 +326,10 @@
 #define MUON_BUF_TRIG_MASK_ADDR 162
   #define MUON_BUF_TRIG_SB1_SHIFT 0
   #define MUON_BUF_TRIG_SB2_SHIFT 1
-  // #define MUON_BUF_TRIG_SB3_SHIFT 2
-  // #define MUON_BUF_TRIG_SB4_SHIFT 3
   #define MUON_BUF_TRIG_EXT_SHIFT 4
   #define MUON_BUF_SIPM_CAL_SHIFT 5
   #define MUON_BUF_TRIG_SB1 (1 << MUON_BUF_TRIG_SB1_SHIFT)
   #define MUON_BUF_TRIG_SB2 (1 << MUON_BUF_TRIG_SB2_SHIFT)
-  // #define MUON_BUF_TRIG_SB3 (1 << MUON_BUF_TRIG_SB3_SHIFT)
-  // #define MUON_BUF_TRIG_SB4 (1 << MUON_BUF_TRIG_SB4_SHIFT)
   #define MUON_BUF_TRIG_EXT (1 << MUON_BUF_TRIG_EXT_SHIFT)
   #define MUON_BUF_SIPM_CAL (1 << MUON_BUF_SIPM_CAL_SHIFT)
   #define MUON_NUM_TRIGS 5  // Don't include SIPM_CAL

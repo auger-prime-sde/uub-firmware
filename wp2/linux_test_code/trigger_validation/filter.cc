@@ -39,7 +39,7 @@ int filter(int input[3][2048], int output[3][768], int offset)
               if (l > 2047) l = l-2048;
               filtered[p][k] = filtered[p][k] + input[p][l]*fir[j+10];
             }
-          filtered[p][k] = (filtered[p][k] >> 11);
+	  filtered[p][k] = (filtered[p][k] >> 11);
           if (filtered[p][k] > 4095) filtered[p][k] = 4095;
           if (filtered[p][k] < 0) filtered[p][k] = 0;
         }

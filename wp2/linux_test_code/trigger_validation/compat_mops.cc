@@ -25,7 +25,11 @@
 //  27-Dec-2020 DFN Add delay to steps, integral, and occupancy to agree
 //                  with FPGA.
 //  30-Dec-2020 DFN Modify integral calculation to be fixed point as in FPGA
-//
+//  27-Jan-2021 DFN Modify integral calculation to reference running baseline
+//                  and use linear decay to avoid having to look back (much)
+//                  before the beginning of the trace.
+//  29-Jan-2021 DFN Tweak delays (SDELAY, IDELAY, BASE_LOOKAHEAD) to better
+//                  match FPGA timing.
 
 #ifndef __cplusplus
 #include <stdbool.h>
@@ -36,29 +40,38 @@
 
 #define UUB_FILT_LEN 682  // Length of UUB trace after downsampling
 #define NWINDOW 120       // Length of 3us window for MoPS occupancy
-#define IWINDOW 250       // Length of integration window
-#define IDELAY 2          // Relative lag in integral re FPGA
-#define SDELAY 3          // Relative lag in steps re FPGA
-#define FRAC_BITS 11      // Value from sde_trigger_defs.h
-#define DECAY_BITS 11     // Value from sde_trigger_defs.h
+#define IWINDOW 122       // Length of integration window (overlaps occ window)
+#define SDELAY 3          // Relative lag in step re FPGA
+#define IDELAY 3          // Relative lag in integral re FPGA
+#define FRAC_BITS 6       // Value from sde_trigger_defs.h
+#define BASE_BITS 6       // Value from sde_trigger_defs.h
+#define BASE_LOOKAHEAD -1 // # bins to look into future to match FPGA.
+#define ONE_HALF (1 << (BASE_BITS-1))
+#define ONE (1 << (BASE_BITS))
+#define DECAY (1 << (FRAC_BITS-1))
 
 bool compat_mops(int trace[3][768], int lothres[3], int hithres[3], 
                  bool enable[3],  int minPMT, int minIntegral, int minOcc,
                  int ofs, int steps[3][768], int totalsteps[3][768],
-                 int occs[3][768], int vetos[3][768], int integrals[3][768])
+                 int occs[3][768], int vetos[3][768], int integrals[3][768],
+		 int bases[3][768])
 {
-  int i, j, k, l, m, n, p;
+  int i, j, k, l, m, n, o, p;
   int integral[3];
   int occ[3];
   int pocc[3];
   int pmtTrig[3];
   int veto[3];
-  bool history[3][768];
   int step[3];
   int totalstep[3];
+  long long base[3];
   long long integrala[3];
   long long decay[3];
-  
+  int delta[3];
+  int prev_integral[3][768];
+  bool history[3][768];
+  bool trig;
+ 
   for (p=0; p<3; p++)
     {
       integrala[p] = 0;
@@ -68,93 +81,46 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
       veto[p] = 0;
       step[p] = 0;
       totalstep[p] = 0;
+      base[p] = 0;
+    }
+  trig = false;
+
+  // Zero out debug occupancy array
+  for (i=0; i<768; i++)
+    for (p=0; p<3; p++)
+	prev_integral[p][i] = 0;
+
+  // Get initial baseline
+  for (p=0; p<3; p++)
+    {
+      for (i=0; i<768; i++)
+	{
+	  base[p] = base[p] + (trace[p][i] << FRAC_BITS);
+	}
+      base[p] = base[p]/768;
+      for (i=0; i<768; i++)
+	{
+	  if ((trace[p][i] << FRAC_BITS) > base[p])
+	    base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
+	  else if ((trace[p][i] << FRAC_BITS) < base[p])
+	    base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
+	}
+      // Try to ensure we start a bit below the real baseline.
+      base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
     }
   
-  // Scan trace.  Note that we have a issue starting at bin 0 since we need
-  // the previous 250 bins for the integral reference and previous 120
-  // bins for the occupancy.  To work around this
-  // feature, we wrap from the end of the trace, but being careful to not
-  // pick bins beyond the end of the original trace.
-  // First make sure history is reset.
+  // Scan trace. First make sure history is reset.
   for (i=0; i<768; i++)
     for (p=0; p<3; p++)
       {
-        history[p][i] = true;
+        history[p][i] = false;
         if (&occs[0][0] != 0) occs[p][i] = 0;
         if (&vetos[0][0] != 0) vetos[p][i] = 0;
         if (&steps[0][0] != 0) steps[p][i] = 0;
         if (&totalsteps[0][0] != 0) totalsteps[p][i] = 0;
 	if (&integrals[0][0] != 0) integrals[p][i] = 0;
+	if (&bases[0][0] != 0) bases[p][i] = 0;
       }
-
-  // Compute initial integral value -- important for fake data loaded into
-  // the UUB.  Should not be detrimental for other traces.
-  for (i=0; i<UUB_FILT_LEN; i++)
-    {
-      k = i - IDELAY;
-      if (k < 0) k = k + UUB_FILT_LEN;
-      l = k - IWINDOW;
-      if (l < 0) l = l + UUB_FILT_LEN;
-      for (p=0; p<3; p++)
-        {
-	  decay[p] = integrala[p] >> DECAY_BITS;
-	  integrala[p] = integrala[p] + (trace[p][k] << FRAC_BITS);
-	  integrala[p] = integrala[p] - (trace[p][l] << FRAC_BITS);
-	  integrala[p] = integrala[p] - decay[p];
-	  if (integrala[p] <0 ) integrala[p] = 0;
-	  integral[p] = integrala[p] >> FRAC_BITS;
-
-	  if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
-	}
-    }
-
-  //    Compute initial occupancies
-  for (i=0; i<UUB_FILT_LEN; i++)
-    {
-      for (p=0; p<3; p++)
-	{
-	  j = i - SDELAY;
-	  if (j < 0) j = j + UUB_FILT_LEN;
-	  m = j - NWINDOW;
-	  if (m < 0) m = j + UUB_FILT_LEN;
-	  n = j - 1;
-	  if (n < 0) n = n + UUB_FILT_LEN;
-	    
-	  history[p][j] = false;
-	  step[p] = trace[p][j] - trace[p][n];
-	  occ[p] = pocc[p];
-	  if (veto[p] <= 0)
-	    {
-
-	      // Accumulate total step
-	      if (step[p] >= 0) totalstep[p] = step[p] + totalstep[p];
-	  
-	      // Finished positive step  
-	      if (step[p] < 0)
-		{
-		  if ((totalstep[p] > lothres[p]) 
-		      && (totalstep[p] <= hithres[p]))
-		    {
-		      history[p][j] = true;
-		      pocc[p]++;
-		    }
-	      
-		  // One bin behind here so use -2 instead of -1
-		  if( totalstep[p] > 0)
-		    veto[p] = (int) log2((double) totalstep[p]) -2 -ofs;
-		}
-	    }
-	  if (history[p][m]) pocc[p]--;
-	  if (pocc[p] < 0) pocc[p] = 0;
-	  if (step[p] < 0) totalstep[p] = 0;
-	  if (veto[p] > 0) veto[p]--;
-
-	  if (&occs[0][0] != 0) occs[p][i] = occ[p];
-	  if (&vetos[0][0] != 0) vetos[p][i] = veto[p];
-	  if (&steps[0][0] != 0) steps[p][i] = step[p];
-	  if (&totalsteps[0][0] != 0) totalsteps[p][i] = totalstep[p];
-	}
-    }
 	    
   // Now scan the trace for triggers
   for (i=0; i<768; i++)
@@ -162,27 +128,64 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
       j = i - SDELAY;
       if (j < 0) j = j + UUB_FILT_LEN;
       m = j - NWINDOW;
-      if (m < 0) m = j + UUB_FILT_LEN;
-      n = j - 1;
-      if (n < 0) n = n + UUB_FILT_LEN;
-      k = i-IDELAY;
+      if (m < 0) m = m + UUB_FILT_LEN;
+      o = j - 1;
+      if (o < 0) o = o + UUB_FILT_LEN;
+      
+      k = i - IDELAY;
       if (k < 0) k = k + UUB_FILT_LEN;
       l = k - IWINDOW;
-      if (l < 0) l = l + UUB_FILT_LEN;
+      if (l < 0) l = 0;
 
+      n = k + BASE_LOOKAHEAD;
+      if (n > UUB_FILT_LEN) n = n - UUB_FILT_LEN;
+      if (n < 0) n = n + UUB_FILT_LEN;
+
+      // New algorithm for integrals.  Here we compare to
+      // computed running baseline. 
       for (p=0; p<3; p++)
         {
           if (enable[p])
             {
-	      decay[p] = integrala[p] >> DECAY_BITS;
-	      integrala[p] = integrala[p] + (trace[p][k] << FRAC_BITS);
-	      integrala[p] = integrala[p] - (trace[p][l] << FRAC_BITS);
-	      integrala[p] = integrala[p] - decay[p];
-	      if (integrala[p] <0 ) integrala[p] = 0;
-	      integral[p] = integrala[p] >> FRAC_BITS;
+	      decay[p] = DECAY;
+	      delta[p] = (trace[p][k] << FRAC_BITS) - base[p];
 
-              history[p][j] = false;
-              step[p] = trace[p][j] - trace[p][n];
+	      // Keep track of baseline
+	      if ((trace[p][n] << FRAC_BITS) > base[p] + ONE)
+		base[p] = base[p] + (4 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) > base[p] + ONE_HALF)
+		base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) > base[p])
+		base[p] = base[p] + (1 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE)
+		base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE_HALF)
+		base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
+	      else if ((trace[p][n] << FRAC_BITS) < base[p])
+		base[p] = base[p] - (1 << (FRAC_BITS - BASE_BITS));
+		
+	      integrala[p] = integrala[p] + delta[p];
+	      integrala[p] = integrala[p] - decay[p];
+
+	      // Need to be careful here if integrala is negative.
+	      if (integrala[p] < 0)
+		integrala[p] = 0;
+
+	      // Cap integral a maximum allowed value
+	      if (integrala[p] > ((2*minIntegral) <<  FRAC_BITS))
+		integrala[p] = (2*minIntegral) << FRAC_BITS;
+
+	      // Reset after integration period if integral enough for trig
+	      if (prev_integral[p][l] > minIntegral)
+		integrala[p] = 0;
+
+	      // Extract integer portion of integral & save in history
+	      integral[p] = integrala[p] >> FRAC_BITS;
+	      prev_integral[p][k] = integral[p];
+
+	      // Process steps
+	      history[p][j] = false;
+              step[p] = trace[p][j] - trace[p][o];
   	      occ[p] = pocc[p];
               if (veto[p] <= 0)
                 {
@@ -209,18 +212,19 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
               if (step[p] < 0) totalstep[p] = 0;
               if (veto[p] > 0) veto[p]--;
 
-              if (&occs[0][0] != 0) occs[p][i] = occ[p];
+	      if (&occs[0][0] != 0) occs[p][i] = occ[p];
               if (&vetos[0][0] != 0) vetos[p][i] = veto[p];
               if (&steps[0][0] != 0) steps[p][i] = step[p];
-              if (&totalsteps[0][0] != 0) totalsteps[p][i] = totalstep[p];
-              if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
+              if (&totalsteps[0][0] != 0) totalsteps[p][i] = totalstep[p];              
+	      if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
+	      if (&bases[0][0] != 0) bases[p][i] = base[p];
 
               if ((occ[p] > minOcc) && (integral[p] > minIntegral))
                 pmtTrig[p] = 1;
               else pmtTrig[p] = 0;
             }
         }
-      if ((pmtTrig[0]+pmtTrig[1]+pmtTrig[2]) >= minPMT) return true;
+      if ((pmtTrig[0]+pmtTrig[1]+pmtTrig[2]) >= minPMT) trig = true;
     }
-  return false;
+  return trig;
 }

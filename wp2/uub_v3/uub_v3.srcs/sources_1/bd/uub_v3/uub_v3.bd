@@ -3331,8 +3331,8 @@
           <spirit:configurableElementValue spirit:referenceId="Data_Sign">Unsigned</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Width">12</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Fractional_Bits">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Convergent_Rounding_to_Even</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Width">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Full_Precision</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Width">25</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Filter_Architecture">Systolic_Multiply_Accumulate</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ColumnConfig">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DATA_Has_TLAST">Not_Required</spirit:configurableElementValue>
@@ -3382,9 +3382,9 @@
         <spirit:configurableElementValues>
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_v3_xlslice_3_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_TO">10</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">23</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
       <spirit:componentInstance>
@@ -3407,8 +3407,8 @@
           <spirit:configurableElementValue spirit:referenceId="Data_Sign">Unsigned</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Width">12</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Fractional_Bits">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Convergent_Rounding_to_Even</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Width">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Full_Precision</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Width">25</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Filter_Architecture">Systolic_Multiply_Accumulate</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ColumnConfig">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DATA_Has_TLAST">Not_Required</spirit:configurableElementValue>
@@ -3451,9 +3451,9 @@
         <spirit:configurableElementValues>
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_v3_xlslice_5_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_TO">10</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">23</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
       <spirit:componentInstance>
@@ -3476,8 +3476,8 @@
           <spirit:configurableElementValue spirit:referenceId="Data_Sign">Unsigned</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Width">12</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Data_Fractional_Bits">0</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Convergent_Rounding_to_Even</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="Output_Width">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Rounding_Mode">Full_Precision</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="Output_Width">25</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="Filter_Architecture">Systolic_Multiply_Accumulate</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="ColumnConfig">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DATA_Has_TLAST">Not_Required</spirit:configurableElementValue>
@@ -3520,9 +3520,9 @@
         <spirit:configurableElementValues>
           <spirit:configurableElementValue spirit:referenceId="bd:xciName">uub_v3_xlslice_7_0</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_TO">10</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">23</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
     </spirit:componentInstances>

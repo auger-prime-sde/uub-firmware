@@ -10,7 +10,7 @@
 
 `include "sde_trigger_defs.vh"
 
-`define COMPATIBILITY_MOPS_OFS_BITS 4
+`define COMPAT_MOPS_OFS_BITS 4
 `define TRG_DLY 4
 `define MOPS_WIDTH 120
 `define MOPS_OCC_WIDTH (`WIDTH_BITS-2)
@@ -32,8 +32,8 @@ module mops_40mhz(
 
 		  input [2:0] TRIG_ENABLE,
 	          input [`MOPS_OCC_WIDTH-1:0] OCCUPANCY,
-                  input [`COMPATIBILITY_INTEGRAL_BITS-1:0] INT,
-                  input [`COMPATIBILITY_MOPS_OFS_BITS-1:0] OFS,
+                  input [`COMPAT_INTEGRAL_BITS-3:0] INT,
+                  input [`COMPAT_MOPS_OFS_BITS-1:0] OFS,
 		  input [1:0] MULTIPLICITY,
    		  output reg TRIG
 `ifdef COMPAT_MOPS_DEBUG
@@ -45,7 +45,7 @@ module mops_40mhz(
    reg [`ADC_WIDTH-1:0]      ADC[2:0];
    reg                       SB_TRIG[2:0];
    reg [1:0]                 LCL_ENABLE40;
-   reg [`MOPS_WIDTH-1:0]          WINDOW[2:0];
+   reg [`MOPS_WIDTH-1:0]     WINDOW[2:0];
    reg [`MOPS_OCC_WIDTH-1:0] OCC_COUNTER[2:0];
    reg [2:0]                 PMT_TRIG;
    reg [1:0]                 SUM_PMT_TRIGS;
@@ -57,11 +57,11 @@ module mops_40mhz(
    reg [`ADC_WIDTH-1:0]      MAX[2:0];
    reg [`ADC_WIDTH-1:0]      MIN[2:0];
    reg signed [`ADC_WIDTH:0] VETO_COUNTER[2:0];
-   wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL0;
-   wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL1;
-   wire [`COMPATIBILITY_INTEGRAL_BITS-1:0] INTEGRAL2;
-   reg [`COMPATIBILITY_INTEGRAL_BITS-1:0]  INTEGRAL[2:0];
-   reg [11:0]                              LOG2[2:0];
+   wire [`COMPAT_INTEGRAL_BITS-1:0] INTEGRAL0;
+   wire [`COMPAT_INTEGRAL_BITS-1:0] INTEGRAL1;
+   wire [`COMPAT_INTEGRAL_BITS-1:0] INTEGRAL2;
+   reg [`COMPAT_INTEGRAL_BITS-1:0]  INTEGRAL[2:0];
+   reg [11:0] 			    LOG2[2:0];
    
    integer                                 IPMT, JPMT, KPMT;
 
@@ -70,7 +70,8 @@ module mops_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC0),
-                            .INTEGRAL(INTEGRAL0)
+                            .THRESHOLD(INT),
+			    .INTEGRAL(INTEGRAL0)
 `ifdef COMPAT_MOPS_INTGRL_DEBUG
                             ,.DEBUG(INTEGRAL_DEBUG0)
 `endif
@@ -79,6 +80,7 @@ module mops_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC1),
+                            .THRESHOLD(INT),
                             .INTEGRAL(INTEGRAL1)
 `ifdef COMPAT_MOPS_INTGRL_DEBUG
                             ,.DEBUG(INTEGRAL_DEBUG1)
@@ -88,6 +90,7 @@ module mops_40mhz(
                             .CLK(CLK120),
                             .ENABLE40(LCL_ENABLE40),
                             .ADC(ADC2),
+                            .THRESHOLD(INT),
                             .INTEGRAL(INTEGRAL2)
 `ifdef COMPAT_MOPS_INTGRL_DEBUG
                             ,.DEBUG(INTEGRAL_DEBUG2)
@@ -213,29 +216,29 @@ module mops_40mhz(
                    // than the published equation because we're already behind
                    // due to the pipelineing (eg do -3 - OFS instead of -1 - OFS)
                    if (LOG2[KPMT][0:0]) VETO_COUNTER[KPMT]
-                                         <= 0 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                         <= 0 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][1:1]) VETO_COUNTER[KPMT]
-                                              <= 1 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 1 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][2:2]) VETO_COUNTER[KPMT]
-                                              <= 2 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 2 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][3:3]) VETO_COUNTER[KPMT]
-                                              <= 3 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 3 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][4:4]) VETO_COUNTER[KPMT]
-                                              <= 4 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 4 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][5:5]) VETO_COUNTER[KPMT]
-                                              <= 5 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 5 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][6:6]) VETO_COUNTER[KPMT]
-                                              <= 6 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 6 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][7:7]) VETO_COUNTER[KPMT]
-                                              <= 7 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 7 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][8:8]) VETO_COUNTER[KPMT]
-                                              <= 8 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 8 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][9:9]) VETO_COUNTER[KPMT]
-                                              <= 8 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                              <= 8 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][10:10]) VETO_COUNTER[KPMT]
-                                                <= 10 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                                <= 10 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    else if (LOG2[KPMT][11:11]) VETO_COUNTER[KPMT]
-                                                <= 11 -3 - OFS[`COMPATIBILITY_MOPS_OFS_BITS-1:0];
+                                                <= 11 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
                    LOG2[KPMT] <= 0;
                 end // if (THIS_STEP[KPMT] < 0)
            end
