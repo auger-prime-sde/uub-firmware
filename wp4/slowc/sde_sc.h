@@ -33,7 +33,7 @@ K.H. Becker
 #define SP_CURR   34
 #define SP_VOLT   42
 #define BAT_OUT   50
-#define WAT_LVL   58
+#define WAT_TEMP  58
 
 #define ADC7      3  //chan 3
 #define ADC6      11
@@ -83,7 +83,7 @@ K.H. Becker
 #define P_AIR	  64	//Air pressure
 #define T_AIR     65    //Air temperature
 #define H_AIR     66    //SCU temperature
-#define T_WAT     67    //Water temperatur (0xffff if not present)
+//#define unused     67
 #define MAX_VARS 68
 uint8_t act_mask;
 #define UPD_PRESS 0x01

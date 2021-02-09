@@ -352,7 +352,7 @@ float cnv_LOADCURR;
 			 (float) adc_buffer[T_AIR]/10.,
 			 (float) adc_buffer[P_AIR]/10.,
 			 (float) adc_buffer[H_AIR]/10.);
-	 printf (" T_WAT %.1f K",adc_buffer[WAT_LVL]*cnv_TM);
+	 printf (" T_WAT %.1f K",adc_buffer[WAT_TEMP]*cnv_TM);
 
 
 	 printf ("\n");
