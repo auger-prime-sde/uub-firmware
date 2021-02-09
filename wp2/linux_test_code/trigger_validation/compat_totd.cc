@@ -39,6 +39,10 @@
 //                  by the trigger point.
 //  29-Jan-2021 DFN Final tuning of delays (IDELAY, ODELEY, BASE_LOOKAHEAD) to
 //                  match FPGA timing.
+//  01-Feb-2021 DFN Adjust integral decay to work with UB also.
+//  02-Feb-2021 DFN Initial baseline estimate fails for big pulses;
+//                  add loop until it converges.
+
 #include <stdio.h>
 
 #ifndef __cplusplus
@@ -65,7 +69,7 @@
 
 bool compat_totd(int trace[3][768], int lothres[3],
                  int hithres[3], bool enable[3], int minPMT, int minOcc,
-                 int fd, int fn, int minIntegral, int maxADC,
+                 int fd, int fn, int minIntegral, bool isUUB,
                  int dtraces[3][768], int occs[3][768], int integrals[3][768],
 		 int bases[3][768], int deltas[3][768])
 {
@@ -75,14 +79,32 @@ bool compat_totd(int trace[3][768], int lothres[3],
   int occ[3];
   int pmtTrig[3];
   int dtrace[3][768];
-  long long base[3];
   int adci, adcj;
-  long long integrala[3];
-  long long decay[3];
+  //  long long base[3];
+  //long long integrala[3];
+  //long long decay[3];
+  int base[3];
+  int old_base[3];
+  int integrala[3];
+  int decay[3];
   int delta[3];
   int prev_integral[3][768];
   bool trig;
-
+  int frac_bits;
+  int base_bits;
+  int maxADC;
+  
+  // Adjust frac_bits if using UB
+  frac_bits = FRAC_BITS;
+  base_bits = BASE_BITS;
+  maxADC = 4095;
+  if (!isUUB)
+    {
+    frac_bits = frac_bits + 2;
+    base_bits = base_bits + 2;
+    maxADC = 1023;
+    }
+  
   for (p=0; p<3; p++)
     {
       integrala[p] = 0;
@@ -105,20 +127,25 @@ bool compat_totd(int trace[3][768], int lothres[3],
     {
       for (i=0; i<768; i++)
 	{
-	  base[p] = base[p] + (trace[p][i] << FRAC_BITS);
+	  base[p] = base[p] + (trace[p][i] << frac_bits);
 	}
       base[p] = base[p]/768;
-      for (i=0; i<768; i++)
+      old_base[p] = 9999 << frac_bits;
+      while ((old_base[p] - base[p]) >  (2 << (frac_bits - base_bits)))
 	{
-	  if ((trace[p][i] << FRAC_BITS) > base[p])
-	    base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
-	  else if ((trace[p][i] << FRAC_BITS) < base[p])
-	    base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
+	  for (i=0; i<768; i++)
+	    {
+	      if ((trace[p][i] << frac_bits) > base[p])
+		base[p] = base[p] + (2 << (frac_bits - base_bits));
+	      else if ((trace[p][i] << frac_bits) < base[p])
+		base[p] = base[p] - (2 << (frac_bits - base_bits));
+	    }
+	  old_base[p] = base[p];
 	}
       // Try to ensure we start a bit below the real baseline.
-      base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
+      base[p] = base[p] - (4 << (frac_bits - base_bits));
     }
-
+      
   // Generate deconvoluted traces
   // Edge bins may not be fully valid
   for (i=0; i<768; i++)
@@ -169,21 +196,21 @@ bool compat_totd(int trace[3][768], int lothres[3],
           if (enable[p])
             {
 	      decay[p] = DECAY;
-	      delta[p] = (trace[p][k] << FRAC_BITS) - base[p];
+	      delta[p] = (trace[p][k] << frac_bits) - base[p];
 
 	      // Keep track of baseline
-	      if ((trace[p][n] << FRAC_BITS) > base[p] + ONE)
-		base[p] = base[p] + (4 << (FRAC_BITS - BASE_BITS));
-	      else if ((trace[p][n] << FRAC_BITS) > base[p] + ONE_HALF)
-		base[p] = base[p] + (2 << (FRAC_BITS - BASE_BITS));
-	      else if ((trace[p][n] << FRAC_BITS) > base[p])
-		base[p] = base[p] + (1 << (FRAC_BITS - BASE_BITS));
-	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE)
-		base[p] = base[p] - (4 << (FRAC_BITS - BASE_BITS));
-	      else if ((trace[p][n] << FRAC_BITS) < base[p] - ONE_HALF)
-		base[p] = base[p] - (2 << (FRAC_BITS - BASE_BITS));
-	      else if ((trace[p][n] << FRAC_BITS) < base[p])
-		base[p] = base[p] - (1 << (FRAC_BITS - BASE_BITS));
+	      if ((trace[p][n] << frac_bits) > base[p] + ONE)
+		base[p] = base[p] + (4 << (frac_bits - base_bits));
+	      else if ((trace[p][n] << frac_bits) > base[p] + ONE_HALF)
+		base[p] = base[p] + (2 << (frac_bits - base_bits));
+	      else if ((trace[p][n] << frac_bits) > base[p])
+		base[p] = base[p] + (1 << (frac_bits - base_bits));
+	      else if ((trace[p][n] << frac_bits) < base[p] - ONE)
+		base[p] = base[p] - (4 << (frac_bits - base_bits));
+	      else if ((trace[p][n] << frac_bits) < base[p] - ONE_HALF)
+		base[p] = base[p] - (2 << (frac_bits - base_bits));
+	      else if ((trace[p][n] << frac_bits) < base[p])
+		base[p] = base[p] - (1 << (frac_bits - base_bits));
 		
 	      integrala[p] = integrala[p] + delta[p];
 	      integrala[p] = integrala[p] - decay[p];
@@ -193,15 +220,15 @@ bool compat_totd(int trace[3][768], int lothres[3],
 		integrala[p] = 0;
 
 	      // Cap integral a maximum allowed value
-	      if (integrala[p] > ((2*minIntegral) <<  FRAC_BITS))
-		integrala[p] = (2*minIntegral) << FRAC_BITS;
+	      if (integrala[p] > ((2*minIntegral) <<  frac_bits))
+		integrala[p] = (2*minIntegral) << frac_bits;
 
 	      // Reset after integration period if integral enough for trig
 	      if (prev_integral[p][l] > minIntegral)
 		integrala[p] = 0;
 
 	      // Extract integer portion of integral & save in history
-	      integral[p] = integrala[p] >> FRAC_BITS;
+	      integral[p] = integrala[p] >> frac_bits;
 	      prev_integral[p][k] = integral[p];	      
 
 	      // Compute occupancies
@@ -220,7 +247,7 @@ bool compat_totd(int trace[3][768], int lothres[3],
 	      // Return debugging information
               if (&occs[0][0] != 0) occs[p][i] = occ[p];
               if (&integrals[0][0] != 0) integrals[p][i] = integral[p];
-              if (&bases[0][0] != 0) bases[p][i] = base[p];
+              if (&bases[0][0] != 0) bases[p][i] = base[p] >> (frac_bits - 6);
               if (&deltas[0][0] != 0) deltas[p][i] = delta[p] >> 4;
             }
         }
