@@ -33,6 +33,9 @@
 //  01-Feb-2021 DFN Adjust integral decay to work with UB also.
 //  02-Feb-2021 DFN Initial baseline estimate fails for big pulses;
 //                  add loop until it converges.
+//  16-Feb-2021 DFN Update veto calculation for UB; Fix error in baseline
+//                  convergence check.
+//  19-Feb-2021 DFN Tweak veto calculation for UUB to be consistent with UB
 
 #ifndef __cplusplus
 #include <stdbool.h>
@@ -67,10 +70,6 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
   int veto[3];
   int step[3];
   int totalstep[3];
-  //  long long base[3];
-  //long long old_base[p];
-  //long long integrala[3];
-  //long long decay[3];
   int base[3];
   int old_base[3];
   int integrala[3];
@@ -81,7 +80,8 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
   bool trig;
   int frac_bits;
   int base_bits;
-
+  double eps = 1.e-4;
+  
   // Adjust frac_bits if using UB
   frac_bits = FRAC_BITS;
   base_bits = BASE_BITS;
@@ -121,6 +121,7 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
       old_base[p] = 9999 << frac_bits;
       while ((old_base[p] - base[p]) >  (2 << (frac_bits - base_bits)))
 	{
+	  old_base[p] = base[p];
 	  for (i=0; i<768; i++)
 	    {
 	      if ((trace[p][i] << frac_bits) > base[p])
@@ -128,7 +129,6 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
 	      else if ((trace[p][i] << frac_bits) < base[p])
 		base[p] = base[p] - (2 << (frac_bits - base_bits));
 	    }
-	  old_base[p] = base[p];
 	}
       // Try to ensure we start a bit below the real baseline.
       base[p] = base[p] - (4 << (frac_bits - base_bits));
@@ -227,10 +227,23 @@ bool compat_mops(int trace[3][768], int lothres[3], int hithres[3],
                           pocc[p]++;
                         }
 
-                      // One bin behind here so use -2 instead of -1
-                      if( totalstep[p] > 0)
-                        veto[p] = (int) log2((double) totalstep[p]) -2 -ofs;
-                    }
+                       if( totalstep[p] > 0)
+			{
+			  // -1 should work with THIS_OFS == OFS+3, but it does not. -2 seems
+			  // to be required for OFS+3, and works far better than any other comb.
+			  // if (isUUB) veto[p] = (int) (log2((double) totalstep[p]) +eps -1 -ofs);
+			  if (isUUB) veto[p] = (int) (log2((double) totalstep[p]) +eps -2 -ofs);
+
+			  // This works with THIS_OFS == OFS+2, at least for small sample of events
+			  // It is a bit worriome that constant is not different by 2 from the UB
+			  // case but that could be explained by a timing difference.  However,
+			  // this combination is not nearly as good as the one above.
+			  // if (isUUB) veto[p] = (int) (log2((double) totalstep[p]) +eps -0 -ofs);
+
+			  // For UB need to account for different ADC range
+			  if (!isUUB) veto[p] = (int) (log2((double) totalstep[p]) +eps +1 -ofs);
+			}
+		    }
                 }
               if (history[p][m]) pocc[p]--;
   	      if (pocc[p] < 0) pocc[p] = 0;

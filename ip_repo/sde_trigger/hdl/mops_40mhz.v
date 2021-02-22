@@ -62,6 +62,8 @@ module mops_40mhz(
    wire [`COMPAT_INTEGRAL_BITS-1:0] INTEGRAL2;
    reg [`COMPAT_INTEGRAL_BITS-1:0]  INTEGRAL[2:0];
    reg [11:0] 			    LOG2[2:0];
+   reg [`COMPAT_MOPS_OFS_BITS:0]    THIS_OFS;
+   
    
    integer                                 IPMT, JPMT, KPMT;
 
@@ -114,7 +116,19 @@ module mops_40mhz(
          INTEGRAL[0] <= INTEGRAL0;
          INTEGRAL[1] <= INTEGRAL1;
          INTEGRAL[2] <= INTEGRAL2;
-         
+
+	 // This works with -0-OFS compat_mops.c
+	 // THIS_OFS <= OFS + 2;
+
+	 // This should work with -1-OFS in compat_mops.c
+	 // but it does not seem to for some reason.
+	 // -2-OFS seems to be preferred in the ref. code.
+	 // Perhaps the distribution of signals in the randoms data
+	 // has some strange properties.  In any case OFS+3 with
+	 // -2-OFS in compat_mops.c works much better than any of
+	 // the other options.
+	  THIS_OFS <= OFS + 3;
+	 
          for (IPMT=0; IPMT<3; IPMT=IPMT+1) 
            begin
 	      PREV_ADC[IPMT] <= ADC[IPMT];
@@ -212,33 +226,19 @@ module mops_40mhz(
            begin
               if (THIS_STEP[KPMT] < 0)
                 begin
-                   // Apply veto count to this step.  Note we need to subtract more
-                   // than the published equation because we're already behind
-                   // due to the pipelineing (eg do -3 - OFS instead of -1 - OFS)
-                   if (LOG2[KPMT][0:0]) VETO_COUNTER[KPMT]
-                                         <= 0 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][1:1]) VETO_COUNTER[KPMT]
-                                              <= 1 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][2:2]) VETO_COUNTER[KPMT]
-                                              <= 2 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][3:3]) VETO_COUNTER[KPMT]
-                                              <= 3 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][4:4]) VETO_COUNTER[KPMT]
-                                              <= 4 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][5:5]) VETO_COUNTER[KPMT]
-                                              <= 5 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][6:6]) VETO_COUNTER[KPMT]
-                                              <= 6 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][7:7]) VETO_COUNTER[KPMT]
-                                              <= 7 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][8:8]) VETO_COUNTER[KPMT]
-                                              <= 8 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][9:9]) VETO_COUNTER[KPMT]
-                                              <= 8 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][10:10]) VETO_COUNTER[KPMT]
-                                                <= 10 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
-                   else if (LOG2[KPMT][11:11]) VETO_COUNTER[KPMT]
-                                                <= 11 -3 - OFS[`COMPAT_MOPS_OFS_BITS-1:0];
+                   // Apply veto count to this step. 
+                   if (LOG2[KPMT][0:0]) VETO_COUNTER[KPMT] <= 0 - THIS_OFS;
+                   else if (LOG2[KPMT][1:1]) VETO_COUNTER[KPMT] <= 1 - THIS_OFS;
+                   else if (LOG2[KPMT][2:2]) VETO_COUNTER[KPMT] <= 2 - THIS_OFS;
+                   else if (LOG2[KPMT][3:3]) VETO_COUNTER[KPMT] <= 3 - THIS_OFS;
+                   else if (LOG2[KPMT][4:4]) VETO_COUNTER[KPMT] <= 4 - THIS_OFS;
+                   else if (LOG2[KPMT][5:5]) VETO_COUNTER[KPMT] <= 5 - THIS_OFS;
+                   else if (LOG2[KPMT][6:6]) VETO_COUNTER[KPMT] <= 6 - THIS_OFS;
+                   else if (LOG2[KPMT][7:7]) VETO_COUNTER[KPMT] <= 7 - THIS_OFS;
+                   else if (LOG2[KPMT][8:8]) VETO_COUNTER[KPMT] <= 8 - THIS_OFS;
+                   else if (LOG2[KPMT][9:9]) VETO_COUNTER[KPMT] <= 9 - THIS_OFS;
+                   else if (LOG2[KPMT][10:10]) VETO_COUNTER[KPMT] <= 10 - THIS_OFS;
+                   else if (LOG2[KPMT][11:11]) VETO_COUNTER[KPMT] <= 11 - THIS_OFS;
                    LOG2[KPMT] <= 0;
                 end // if (THIS_STEP[KPMT] < 0)
            end

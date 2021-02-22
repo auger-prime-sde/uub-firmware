@@ -3384,7 +3384,7 @@
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">32</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
       <spirit:componentInstance>
@@ -3453,7 +3453,7 @@
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">32</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
       <spirit:componentInstance>
@@ -3522,7 +3522,7 @@
           <spirit:configurableElementValue spirit:referenceId="DOUT_WIDTH">14</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_TO">11</spirit:configurableElementValue>
           <spirit:configurableElementValue spirit:referenceId="DIN_FROM">24</spirit:configurableElementValue>
-          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">25</spirit:configurableElementValue>
+          <spirit:configurableElementValue spirit:referenceId="DIN_WIDTH">32</spirit:configurableElementValue>
         </spirit:configurableElementValues>
       </spirit:componentInstance>
     </spirit:componentInstances>

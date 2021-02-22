@@ -42,6 +42,7 @@
 //  01-Feb-2021 DFN Adjust integral decay to work with UB also.
 //  02-Feb-2021 DFN Initial baseline estimate fails for big pulses;
 //                  add loop until it converges.
+//  16-Feb-2021 DFN Fix error in baseline convergence check.
 
 #include <stdio.h>
 
@@ -80,9 +81,6 @@ bool compat_totd(int trace[3][768], int lothres[3],
   int pmtTrig[3];
   int dtrace[3][768];
   int adci, adcj;
-  //  long long base[3];
-  //long long integrala[3];
-  //long long decay[3];
   int base[3];
   int old_base[3];
   int integrala[3];
@@ -133,6 +131,7 @@ bool compat_totd(int trace[3][768], int lothres[3],
       old_base[p] = 9999 << frac_bits;
       while ((old_base[p] - base[p]) >  (2 << (frac_bits - base_bits)))
 	{
+	  old_base[p] = base[p];
 	  for (i=0; i<768; i++)
 	    {
 	      if ((trace[p][i] << frac_bits) > base[p])
@@ -140,7 +139,6 @@ bool compat_totd(int trace[3][768], int lothres[3],
 	      else if ((trace[p][i] << frac_bits) < base[p])
 		base[p] = base[p] - (2 << (frac_bits - base_bits));
 	    }
-	  old_base[p] = base[p];
 	}
       // Try to ensure we start a bit below the real baseline.
       base[p] = base[p] - (4 << (frac_bits - base_bits));
