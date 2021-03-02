@@ -83,7 +83,7 @@ K.H. Becker
 #define P_AIR	  64	//Air pressure
 #define T_AIR     65    //Air temperature
 #define H_AIR     66    //SCU temperature
-//#define unused     67
+//#define T_WAT     67    unused
 #define MAX_VARS 68
 uint8_t act_mask;
 #define UPD_PRESS 0x01

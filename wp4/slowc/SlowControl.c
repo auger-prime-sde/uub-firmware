@@ -252,7 +252,7 @@ float cnv_LOADCURR;
 	else
 	{
 		cnv_HV = 1.25; // to be checked
-		cnv_HV_SSD = 1875./1500.; // 3.75V/2., Iseg base has 10k impedance
+		cnv_HV_SSD = 1500./1875.; // 3.75V/2., Iseg base has 10k impedance
 		cnv_CM_SSD = 0.1;			//100uV/uA to be checked
 		cnv_CM = 1.;
 		cnv_TM = LSB_TO_1V0/2.; // mV/2kOhm in Kelvin
@@ -305,7 +305,7 @@ float cnv_LOADCURR;
 	 printf("\t %.1f %s",(float)adc_buffer[I_1V8]*LSB_TO_1V0/60.*30.3,"[mA] "); // 30.3 =1/0.033
 	 printf("\n3V3\t");
 	 printf("\t %.1f %s",(float)adc_buffer[V_3V3]*LSB_TO_3V3,"[mV] ");
-	 printf("\t %.1f %s",(float)adc_buffer[I_3V3]*LSB_TO_3V3/60.*16.13,"[mA] "); // 16.13 = 1/0.062
+	 printf("\t %.1f %s",(float)adc_buffer[I_3V3]*LSB_TO_1V0/60.*16.13,"[mA] "); // 16.13 = 1/0.062
 	 printf("\t %.1f %s",(float)adc_buffer[I_3V3_SC]*LSB_TO_1V0/60.*1.22,"[mA SC] "); // 1.22 = 1/0.82
 	 printf("\nP3V3\t");
 	 printf("\t %.1f %s",(float)adc_buffer[V_AN_P5V]*LSB_TO_3V3,"[mV] ");
@@ -326,10 +326,11 @@ float cnv_LOADCURR;
 	 printf("\n24V EXT1/2");
 	 printf("\t %.1f %s",(float)adc_buffer[V_EXT1_24V]*LSB_TO_24V,"[mV] ");
 	 printf("\t %.1f %s",(float)adc_buffer[V_EXT2_24V]*LSB_TO_24V,"[mV] ");
-
 // printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*21.28,"[mA] "); // 21.28=1/0.047
 // New conversion factor for R65= 24mOhm
 	 printf("\t %.1f %s",(float)adc_buffer[I_V_INPUTS]*LSB_TO_1V0/60.*41.67,"[mA] "); // 41,67=1/0.024
+	 printf("\n24V LED");
+	 printf("\t %.1f %s",(float)adc_buffer[I_24V_LED]*LSB_TO_1V0/60./0.82,"[mA] ");
 	 printf("\nTPCB \n");
 	 printf("BAT1/2/EXT_TEMP \t%.2f %.2f %.2f\n",
 			 adc_buffer[BAT1_TEMP]*cnv_TM,
