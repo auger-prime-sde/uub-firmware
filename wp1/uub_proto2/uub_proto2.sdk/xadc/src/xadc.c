@@ -14,6 +14,5 @@ int main()
 
 	printf("{");	//json format
     printf("\"Zynq\": %.1f", zynq_temp);
-
     printf("}");
 }

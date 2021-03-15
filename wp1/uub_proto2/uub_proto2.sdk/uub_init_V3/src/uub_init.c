@@ -210,6 +210,10 @@ int main() {
 	char filename[20];
 
 
+	// enable of front-end prova effettuata il 5 luglio
+/*	system ("slowc -d 1");	// enable on
+	printf("Front end power... OK\n\r");
+	sleep(2);*/
 
 // JITTER CLEANER INITIALIZATION
 
@@ -226,7 +230,7 @@ int main() {
 	}
 
 	write(file, set, sizeof(set)); // Hard reset generated
-	usleep (500); 
+	usleep (500); //RITARDO DA SOSTITUIRE CON LETTURA DEVICE READY
 
 // register initialization for accessing to the Page 0x0 to make hard RESET
 	for ( k = 0; k < nb_initData_SI5347; k=k+3)
@@ -245,21 +249,22 @@ int main() {
 //********************************************
 //*    Is Jitter Cleaner Ready ?
 //********************************************
+
 	usleep (200000);
-	// ADC POWER DOWN PIN
-	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
-	printf("Initialization of ADCs PWD... OK\n\r");
+
 
 //********************************************
 //		ADC power up
 //********************************************
 	system ("slowc -L 3");
-	usleep (200000);
+	usleep (100000);
 	system ("slowc -L 1");
 	printf("Initialization of ADCs power supply... OK\n\r");
-//	usleep (500000);
+	usleep (500000);
 
-
+	// ADC POWER DOWN PIN
+	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
+	printf("Initialization of ADCs PWD... OK\n\r");
 
 //////////////////////// SPI CONFIGURATION ///////////////////////////////////////
 	int i, fd;
@@ -341,45 +346,27 @@ int main() {
 
 	printf("OK\n\r");
 
-
-//********************************************
-//		FRONT-END power up
-//********************************************
-system ("slowc -d 1");
-printf("Initialization of Front-end power supply... OK\n\r");
-usleep (200000);
-
 system ("stty -F /dev/ttyUL1 9600");
 system ("stty -F /dev/ttyUL2 115200");
 system ("stty -F /dev/ttyPS0 38400");
 printf("Initialization of UARTs: ttyUL1, ttyPS0, ttyUL2... OK\n\r");
 
 // Userspace I/O settings - november 2016
-//system ("modprobe uio");
-//system ("modprobe uio_pdrv_genirq");
-//printf("Initialization of UIO... OK\n\r");
+system ("modprobe uio");
+system ("modprobe uio_pdrv_genirq");
+printf("Initialization of UIO... OK\n\r");
 
 // Clock setting - DAC7551 init - (removed on UUB_V3)
 //system ("dac7551");
 
 // WATCHDOG - february 2018 - NEW WATCHDOG SYSTEM UUB V2
-system ("slowc -w 0 > /dev/null &");	// get ready watchdog by slowc
-system ("watchd > /dev/null &");		//  watchdog process running
+system ("slowc -w 0 > /dev/null &");	// attivo il watchdog sullo slowc
+system ("watchd > /dev/null &");		// lancio processo di gestione watchdog
 printf("Initialization of Watchdog... OK\n\r");
 
 
-system ("checkweb > /dev/null &");		// control browser connected and daq on/off
-printf("Initialization of CheckWeb... OK\n\r");
-
-system ("uio");			// Creation UIO symlink in /dev/UIO
-
-system ("check-boot");		// control if system started from recovery to run auto fixing of main boot volume
-
-
-system ("adc-check 150 300 0.01 5 > /dev/null &");
-printf("Check ADCs status.....\n\r");
+system ("check-boot");		// control if started from recovery to run auto fixing
 
 }
-
 
 
