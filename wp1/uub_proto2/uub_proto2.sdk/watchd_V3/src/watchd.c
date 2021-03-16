@@ -2,6 +2,8 @@
 // written by Roberto Assiro june 2019
 // this process controls watchdog logic on uub and slow-control
 // if slowc doesn't reply after 5 times (every 5 seconds) zynq will write the message in log file and not updates the watchdog - uub will killed
+// on present version is not present the log file into the /flash partition used for debugging
+// 17/01/2020 added K.H. modification for lifetime request
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,15 +61,10 @@ int main()
 
 	while(1)	// infinite LOOP for watchdog
 	{
-
-
-
-
 		if( access( i2c_file, F_OK ) != -1 ) {
 			printf("WathcDog: file exist... I wait!\n");
 			frequency = 2000000;
 		} else {
-
 
 			//  printf("Opening device... ");
 					snprintf(filename, 19, "/dev/i2c-0");
@@ -80,28 +77,19 @@ int main()
 							exit (1);
 					}
 
-
-
 		  //  printf("file doesn't exist\n");
 			frequency = 1000000;
-
 			f_i2c = fopen(i2c_file, "w");
-
-
 			sc_livetime (file, &lt);	// check if slow control is dead or alive
 
 			usleep(10000);
 			fclose(f_i2c);
 			close(file);
-
 			usleep(200000);
 			ret = remove(i2c_file);
 
-
-
 //		printf("%d\n",lt);
 //		printf("%d\n",last_life_time);
-
 /*
 				if (lt != last_life_time){
 						counter = 0;
@@ -170,7 +158,7 @@ current_time(void){
 }
 
 
-
+/*
 void sc_livetime (int file , int *l)
 {char reg [6] = {0x03, 0x00, 0x0, 0x0, 0x0, 0x0};
  char b[4];
@@ -189,3 +177,45 @@ printf("0x%x 0x%x\n", b[0], b[1]);
 		+ ( b[2] << 16 )
 		+ ( b[3] << 24 );
 }
+
+*/
+
+void sc_livetime (int file , int *l)
+{
+    struct i2c_msg msgs[2];
+    struct i2c_rdwr_ioctl_data msgset[1];
+	unsigned char reg [6] = {0x03, 0x00, 0x0, 0x0, 0x0, 0x0};
+	unsigned char b[4];
+ msgs[0].addr = SC_ADDR;
+ msgs[0].flags = 0;
+ msgs[0].len = 2;
+ msgs[0].buf = reg;
+
+ msgs[1].addr = SC_ADDR;
+ msgs[1].flags = I2C_M_RD | I2C_M_NOSTART;
+ msgs[1].len = 4;
+ msgs[1].buf = b;
+
+ msgset[0].msgs = msgs;
+ msgset[0].nmsgs = 2;
+ if (ioctl(file, I2C_RDWR, &msgset) < 0) {
+         perror("ioctl(I2C_RDWR) in i2c_read");
+ //       return -1;
+         exit (3);
+     }
+
+ /* if (write(file, reg, 2) != 2) {
+        	 	exit(3);
+    }
+	usleep (100000);
+	if (read(file,b,4)!= 4) {
+		  	  	exit(4);
+	}
+*/
+//	printf("b: 0x%x 0x%x 0x%x 0x%x\n", b[0], b[1], b[2], b[3]);
+	*l =  b[0]
+		+ ( b[1] << 8 )
+		+ ( b[2] << 16 )
+		+ ( b[3] << 24 );
+}
+

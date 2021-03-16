@@ -4,9 +4,10 @@ sde_sc.h
 K.H. Becker
 */
 // adc channel mapping
-
-#define VERSION  " 1.2 "
-
+#include <inttypes.h>
+#define MAYOR_VERSION 3
+#define MINOR_VERSION 1
+#define VERSION (MAYOR_VERSION << 8 | MINOR_VERSION)
 #define PMT4_HVM  0  // chan 0
 #define PMT3_HVM  8
 #define PMT2_HVM  16
@@ -67,10 +68,10 @@ K.H. Becker
 #define PMT5_CM     30
 #define PMT6_TM     38
 #define PMT5_TM     46
-#define ADC9      54
+#define V_10V       54
 #define ADC8      62
 
-#define V_USB_5V  7 // chan 7                 range 0-5V
+#define I_24V_LED  7 // chan 7                 range 0-5V
 #define I_V_INPUTS  15
 #define I_3V3_SC    23
 #define I_1V0       31
@@ -81,20 +82,58 @@ K.H. Becker
 
 #define P_AIR	  64	//Air pressure
 #define T_AIR     65    //Air temperature
-#define T_SCU     66    //SCU temperature
+#define H_AIR     66    //SCU temperature
 #define T_WAT     67    //Water temperatur (0xffff if not present)
 #define MAX_VARS 68
-short int adc_buffer[MAX_VARS];
-
+uint8_t act_mask;
+#define UPD_PRESS 0x01
+#define UPD_ADC   0x02
+#define UPD_WAT	  0x04
+#define QSPI_RST_N_IRQ 0x08
+#define ADC_DELTA 300
+#define UPD_BME280_Delta 60
+uint32_t	bme280_update_time;
 // more to come .....
-//#define LSB_TO_5V 1.8814
-#define LSB_TO_5V 1.868
-#define LSB_TO_24V 8.88
-#define LSB_TO_12V 4.43
-#define LSB_TO_3V3 1.20
-#define LSB_TO_1V8 0.674
-#define LSB_TO_1V2 0.421
-#define LSB_TO_1V0 0.366
 
 
+// Port mapping
 
+
+#define PS_AN_E P1_0
+#define PS_GPS_E P1_1
+#define PS_USB_E P1_2
+#define PS_3V3_E P1_3
+#define PS_1V8_E P1_4
+#define PS_1V0_E P1_5
+#define PS_EXT1_E P1_6
+#define PS_EXT2_E P1_7
+
+#define PS_PMT_E P2_0
+#define PS_RADIO_E P2_1
+#define FPGA_DONE P2_2
+#define FPGA_PROG P2_3
+
+#define FPGA_BOOT_WAIT 5
+unsigned int status_reg;
+#define FPGA_DONE_STAT 0x8000
+#define PS_AN   0x0001
+#define PS_5V   0x0002
+#define PS_3V3  0x0008
+#define PS_1V8  0x0010
+#define PS_1V   0x0020
+#define PS_EXT1 0x0040
+#define PS_EXT2 0x0080
+#define BAT_LOW 0x0100
+#define CUR_ERR 0x0200
+#define TMP_ERR 0x0400
+#define PS_MAIN 0x0800
+#define WD_STAT 0x1000  // SC Watchdog active
+#define SRST_B  0x2000  // Reset Button released
+#define SC_WD_ENABLE    status_reg |= WD_STAT
+#define SC_WD_DISABLE   status_reg &= ~WD_STAT
+#define SC_WD_STATE     status_reg & WD_STAT
+#define SRST_B_STATE     status_reg & SRST_B
+
+unsigned long t0_srst_b;
+// Storage for adc_values
+volatile unsigned int adc_results[MAX_VARS];
