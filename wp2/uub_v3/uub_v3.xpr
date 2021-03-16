@@ -28,6 +28,18 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3_bd.tcl"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3.hwh"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_4/uub_v3_auto_pc_4.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_7/uub_v3_auto_pc_7.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_0_1/uub_v3_xlconcat_0_1.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_proc_sys_reset_0_0/uub_v3_proc_sys_reset_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_4_0/uub_v3_ddr_synchronizer_24bit_4_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_3_0/uub_v3_ddr_synchronizer_24bit_3_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_2_0/uub_v3_ddr_synchronizer_24bit_2_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_1_0/uub_v3_ddr_synchronizer_24bit_1_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_0_0/uub_v3_ddr_synchronizer_24bit_0_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_3_0/uub_v3_util_ds_buf_3_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_1_0/uub_v3_util_ds_buf_1_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_4_0/uub_v3_util_ds_buf_4_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_2_0/uub_v3_util_ds_buf_2_0.xci"/>
@@ -106,34 +118,22 @@
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xbar_0/uub_v3_xbar_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_processing_system7_0_0/uub_v3_processing_system7_0_0.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_axi_interconnect_0_0/uub_v3_axi_interconnect_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_xlconcat_0_1/uub_v3_xlconcat_0_1.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_proc_sys_reset_0_0/uub_v3_proc_sys_reset_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_4_0/uub_v3_ddr_synchronizer_24bit_4_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_3_0/uub_v3_ddr_synchronizer_24bit_3_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_2_0/uub_v3_ddr_synchronizer_24bit_2_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_1_0/uub_v3_ddr_synchronizer_24bit_1_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_ddr_synchronizer_24bit_0_0/uub_v3_ddr_synchronizer_24bit_0_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_util_ds_buf_3_0/uub_v3_util_ds_buf_3_0.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_12/uub_v3_auto_pc_12.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.v"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_6/uub_v3_auto_pc_6.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_10/uub_v3_auto_pc_10.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_5/uub_v3_auto_pc_5.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_7/uub_v3_auto_pc_7.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.hwdef"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_1/uub_v3_auto_pc_1.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_2/uub_v3_auto_pc_2.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_3/uub_v3_auto_pc_3.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_4/uub_v3_auto_pc_4.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_13/uub_v3_auto_pc_13.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_1/uub_v3_auto_pc_1.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_0/uub_v3_auto_pc_0.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_13/uub_v3_auto_pc_13.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.v"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_12/uub_v3_auto_pc_12.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_8/uub_v3_auto_pc_8.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_11/uub_v3_auto_pc_11.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_6/uub_v3_auto_pc_6.xci"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_9/uub_v3_auto_pc_9.xci"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3.hwh"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hw_handoff/uub_v3_bd.tcl"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="hdl/uub_v3.hwdef"/>
-        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="uub_v3_ooc.xdc"/>
         <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="uub_v3.bmm"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="uub_v3_ooc.xdc"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_11/uub_v3_auto_pc_11.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_5/uub_v3_auto_pc_5.xci"/>
+        <CompFileExtendedInfo CompFileName="uub_v3.bd" FileRelPathName="ip/uub_v3_auto_pc_10/uub_v3_auto_pc_10.xci"/>
       </File>
       <File Path="$PSRCDIR/sources_1/bd/uub_v3/ip/uub_v3_sde_trigger_0_0/uub_v3_sde_trigger_0_0.upgrade_log">
         <FileInfo>

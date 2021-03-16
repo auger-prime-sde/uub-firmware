@@ -174,6 +174,9 @@ wire [83:0] COMPATIBILITY_MOPS_DEBUG;
 `endif
 wire [4:0] RNDM_DEBUG;
 
+// Fixed bank of general purpose test registers
+reg [31:0] LCL_TEST[0:15];
+
 // Other registers
 reg LCL_RESET;
 
@@ -189,5 +192,6 @@ integer LINDEX0B;
 integer LINDEX0C;
 integer LINDEX1A;
 integer LINDEX1B;
+integer TINDEX;
 
 

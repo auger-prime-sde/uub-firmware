@@ -1,5 +1,6 @@
 //
 // 03-Dec-2019 DFN Add SHWR_BUF_LATENCY register.
+// 14-Mar-2021 DFN Add bank of TESTxx registers.
 
 `timescale 1 ns / 1 ps
 
@@ -269,6 +270,23 @@ module sde_trigger_S00_AXI #
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BASELINE2;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BASELINE3;
    wire [C_S_AXI_DATA_WIDTH-1:0]   SHWR_BASELINE4;
+
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST0;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST1;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST2;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST3;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST4;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST5;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST6;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST7;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST8;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST9;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST10;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST11;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST12;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST13;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST14;
+   wire [C_S_AXI_DATA_WIDTH-1:0]   TEST15;
 
    wire [C_S_AXI_DATA_WIDTH-1:0]   FILT_PMT0_TEST;
    wire [C_S_AXI_DATA_WIDTH-1:0]   FILT_PMT1_TEST;
@@ -1123,6 +1141,38 @@ module sde_trigger_S00_AXI #
                  reg_data_out <= SHWR_BASELINE3;
 	       `SHWR_BASELINE4_ADDR :
                  reg_data_out <= SHWR_BASELINE4;
+	       `TEST0_ADDR :
+		 reg_data_out <= TEST0;
+	       `TEST1_ADDR :
+		 reg_data_out <= TEST1;
+	       `TEST2_ADDR :
+		 reg_data_out <= TEST2;
+	       `TEST3_ADDR :
+		 reg_data_out <= TEST3;
+	       `TEST4_ADDR :
+		 reg_data_out <= TEST4;
+	       `TEST5_ADDR :
+		 reg_data_out <= TEST5;
+	       `TEST6_ADDR :
+		 reg_data_out <= TEST6;
+	       `TEST7_ADDR :
+		 reg_data_out <= TEST7;
+	       `TEST8_ADDR :
+		 reg_data_out <= TEST8;
+	       `TEST9_ADDR :
+		 reg_data_out <= TEST9;
+	       `TEST10_ADDR :
+		 reg_data_out <= TEST10;
+	       `TEST11_ADDR :
+		 reg_data_out <= TEST11;
+	       `TEST12_ADDR :
+		 reg_data_out <= TEST12;
+	       `TEST13_ADDR :
+		 reg_data_out <= TEST13;
+	       `TEST14_ADDR :
+		 reg_data_out <= TEST14;
+	       `TEST15_ADDR :
+		 reg_data_out <= TEST15;
                `FILT_PMT0_TEST_ADDR :
                  reg_data_out <= FILT_PMT0_TEST;
                `FILT_PMT1_TEST_ADDR :

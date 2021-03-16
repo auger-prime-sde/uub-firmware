@@ -213,6 +213,40 @@
                  4'b0000,ADC4[`ADC_WIDTH-1:0]}),
       .CLK(S_AXI_ACLK),.SYNC_OUT(ADC4_TEST));
 
+   // General purpose test registers
+    synchronizer_32bit test0_sync
+     (.ASYNC_IN(LCL_TEST[0]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST0));
+    synchronizer_32bit test1_sync
+     (.ASYNC_IN(LCL_TEST[1]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST1));
+    synchronizer_32bit test2_sync
+     (.ASYNC_IN(LCL_TEST[2]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST2));
+    synchronizer_32bit test3_sync
+     (.ASYNC_IN(LCL_TEST[3]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST3));
+    synchronizer_32bit test4_sync
+     (.ASYNC_IN(LCL_TEST[4]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST4));
+    synchronizer_32bit test5_sync
+     (.ASYNC_IN(LCL_TEST[5]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST5));
+    synchronizer_32bit test6_sync
+     (.ASYNC_IN(LCL_TEST[6]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST6));
+    synchronizer_32bit test7_sync
+     (.ASYNC_IN(LCL_TEST[7]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST7));
+    synchronizer_32bit test8_sync
+     (.ASYNC_IN(LCL_TEST[8]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST8));
+    synchronizer_32bit test9_sync
+     (.ASYNC_IN(LCL_TEST[9]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST9));
+    synchronizer_32bit test10_sync
+     (.ASYNC_IN(LCL_TEST[10]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST10));
+    synchronizer_32bit test11_sync
+     (.ASYNC_IN(LCL_TEST[11]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST11));
+    synchronizer_32bit test12_sync
+     (.ASYNC_IN(LCL_TEST[12]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST12));
+    synchronizer_32bit test13_sync
+     (.ASYNC_IN(LCL_TEST[13]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST13));
+    synchronizer_32bit test14_sync
+     (.ASYNC_IN(LCL_TEST[14]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST14));
+    synchronizer_32bit test15_sync
+     (.ASYNC_IN(LCL_TEST[15]),.CLK(S_AXI_ACLK),.SYNC_OUT(TEST15));
+
 `ifdef KEEP_FILTD
    // Test filtered ADC outputs
    synchronizer_32bit filt_pmt0_test_sync

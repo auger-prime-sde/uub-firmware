@@ -21,6 +21,8 @@
 //               Previously this was included by default.
 // 06-Apr-20 DFN Add extra latency counters to verify fclk_clk0 and fclk_clk1
 //               frequencies in running system.
+// 14-Mar-21 DFN Adjust SHWR_AREA_ADC_DLY to retime integral calculation for
+//               shower features; add bank of 16 TEST registers
 //
 // ADC channel usage:
 //  0 Low gain WCD PMT1
@@ -402,7 +404,8 @@
  `define SHWR_SATURATED (1<<`SHWR_SATURATED_SHIFT)
  `define SHWR_SATURATED_LEVEL ((1<<`ADC_WIDTH)-1)
  `define SHWR_AREA_BINS 100
- `define SHWR_AREA_ADC_DLY 20  // Delay to compensate for trigger formation dly
+// `define SHWR_AREA_ADC_DLY 20  // Delay to compensate for trigger formation dly
+ `define SHWR_AREA_ADC_DLY 34  // Delay to compensate for trigger formation dly
 `define SHWR_BASELINE0_ADDR 190
 `define SHWR_BASELINE1_ADDR 191
 `define SHWR_BASELINE2_ADDR 192
@@ -418,6 +421,24 @@
  `define BASELINEH_SAG_SHIFT1 14 // High gain channels - 100 Ohm input
  `define BASELINEH_SAG_SHIFT2 16 
  `define BASELINEH_SAG_SHIFT3 17 
+
+// Bank of registers to hold test information
+`define TEST0_ADDR 200
+`define TEST1_ADDR 201
+`define TEST2_ADDR 202
+`define TEST3_ADDR 203
+`define TEST4_ADDR 204
+`define TEST5_ADDR 205
+`define TEST6_ADDR 206
+`define TEST7_ADDR 207
+`define TEST8_ADDR 208
+`define TEST9_ADDR 209
+`define TEST10_ADDR 210
+`define TEST11_ADDR 211
+`define TEST12_ADDR 212
+`define TEST13_ADDR 213
+`define TEST14_ADDR 214
+`define TEST15_ADDR 215
 
 // Addresses to sample instantaneous filtered PMT values for setup, test, etc.
 `define FILT_PMT0_TEST_ADDR 247

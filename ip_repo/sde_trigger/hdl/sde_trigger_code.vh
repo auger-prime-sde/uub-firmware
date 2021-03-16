@@ -400,6 +400,8 @@ always @(posedge CLK120) begin
              LCL_SHWR_EVT_IDN[INDEX] <= 0;
         for (LINDEX = 0; LINDEX<`SHWR_MEM_NBUF; LINDEX=LINDEX+1)
           LCL_SHWR_BUF_LATENCY[LINDEX] <= 0;
+	for (TINDEX = 0; TINDEX<16; TINDEX=TINDEX+1)
+	  LCL_TEST[TINDEX] <= 0;
      end
    else
      begin
