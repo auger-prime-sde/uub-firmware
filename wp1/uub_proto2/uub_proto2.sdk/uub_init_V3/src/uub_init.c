@@ -4,7 +4,7 @@
  *  Created on: may 2019
  *      Author: Roberto Assiro
  */
-
+// revision April 2020 for jitter cleaner issue -
 // UUB initialization file
 #include <fcntl.h>
 #include <stdio.h>
@@ -19,20 +19,19 @@
 #include <string.h>
 
 
-#define IIC_SLAVE_SI5347         0x6C  // The slave address Cleaner Jitter on I2C-1
+#define IIC_SLAVE_SI5347         0x6C  // The slave address Cleaner Jitter
 #define BUF_SIZE                35 // Tansmit and receive buffer size
-#define RCV_BUF_SIZE           256 // Tansmit and receive buffer size
-#define nb_initData_SI5347    1560 // Nb init data for SI5347 component
+#define nb_initData_SI5347    1549 // Nb init data for SI5347 component
 
-//static u8 RecvBuffer[RCV_BUF_SIZE] = {0x00}; /* Buffer for Receiving Data */
-
+char RecvBuffer[256];
 char fake1[2];
 char fake2[2];
 
-char set[]={0xFE,0x01,0x00,0x1E,0x02};
+//char set[]={0xFE,0x01,0x00,0x1E,0x02};
+char set[]={0x01,0x00,0x1E,0x02};
 
-char buf[]=
-  { 0x0B,0x24,0xD8,0x0B,0x25,0x00,                                              // bank 0xB
+char buf[]={
+//	0x0B,0x24,0xD8,0x0B,0x25,0x00,                                              // bank 0xB
     0x00,0x0B,0x6C,0x00,0x16,0x0F,0x00,0x17,0x3C,0x00,0x18,0xFF,0x00,0x19,0xFF, // bank 0
     0x00,0x1A,0xFF,0x00,0x20,0x00,0x00,0x2B,0x0A,0x00,0x2C,0x01,0x00,0x2D,0x01,
     0x00,0x2E,0xE4,0x00,0x2F,0x00,0x00,0x30,0x00,0x00,0x31,0x00,0x00,0x32,0x00,
@@ -141,8 +140,9 @@ char buf[]=
     0x0B,0x44,0xEF,0x0B,0x45,0x0E,0x0B,0x46,0x00,0x0B,0x47,0x00,0x0B,0x48,0x0E,
     0x0B,0x4A,0x0E,                                                             // bank B
     0x04,0x14,0x01,                                                             // bank 4
-    0x00,0x1C,0x01,                                                             // bank 0
-    0x0B,0x24,0xDB,0x0B,0x25,0x02};                                             // bank B
+    0x00,0x1C,0x01};                                                             // bank 0
+//    0x0B,0x24,0xC0,0x0B,0x25,0x02};                                             // bank B
+
 
 char ADC_LVDS[3] = { 0x00, 0x14, 0xA0 }; // ADC bus configuration LVDS interleave
 char ADC_LVDS_INV[3] = { 0x00, 0x14, 0xA4 }; // ADC bus configuration LVDS interleave and inverted inputs enabled
@@ -206,33 +206,85 @@ int verifyCommand(int fd, char *command) {
 }
 
 int main() {
-	int file, k;
+	int file, k, length;
+	char reg[5];
+	char cmd[2];
 	char filename[20];
-
-
-	// enable of front-end prova effettuata il 5 luglio
-/*	system ("slowc -d 1");	// enable on
-	printf("Front end power... OK\n\r");
-	sleep(2);*/
 
 // JITTER CLEANER INITIALIZATION
 
-	int addr = 0x6C; /* The I2C address Jitter cleaner*/
+	int addr = 0x6C; // The I2C address Jitter cleaner
 	printf("Initialization of Jitter Cleaner..... ");
 	snprintf(filename, 19, "/dev/i2c-1");
 	file = open(filename, O_RDWR);
 	if (file < 0) {
-			exit(1);
+			printf("FAILS\n\r");
 	}
-
 	if (ioctl(file, I2C_SLAVE, addr) < 0) {
-			exit(2);
+			printf("FAILS\n\r");
 	}
-
-	write(file, set, sizeof(set)); // Hard reset generated
-	usleep (500); //RITARDO DA SOSTITUIRE CON LETTURA DEVICE READY
+//	else
+//	{
+//			printf("OK\n\r");
+//	}
 
 // register initialization for accessing to the Page 0x0 to make hard RESET
+//	write(file, set, sizeof(set)); // Hard reset generated
+
+	if (write(file, set, 4) != 4) {
+			printf("FAILS\n\r");
+		}
+		else
+		{
+			printf("OK\n\r");
+		}
+/*
+
+//	cmd[0] = 0xFE;
+//	write(file, cmd,1);
+//	usleep (3000);
+	cmd[0] = 0x01;
+	cmd[1] = 0x00;
+	write(file, cmd,2);
+	usleep (3000);
+	cmd[0] = 0x1E;
+	cmd[1] = 0x02;
+//	write(file, cmd,2);
+	if (write(file, cmd, 2) != 2) {
+		printf("FAILS\n\r");
+	}
+	else
+	{
+		printf("OK\n\r");
+	}
+*/
+
+/**/
+	// ERIC CONFIG MODIFICATIONS
+	cmd[0] = 0x01;
+	cmd[1] = 0x0B;
+	write(file, cmd,sizeof(cmd));
+	cmd[0] = 0x24;
+	cmd[1] = 0xc0;
+	write(file, cmd,sizeof(cmd));
+
+	cmd[0] = 0x01;
+	cmd[1] = 0x0B;
+	write(file, cmd,sizeof(cmd));
+	cmd[0] = 0x25;
+	cmd[1] = 0x02;
+	write(file, cmd,sizeof(cmd));
+
+	usleep (300000); //delay
+
+	cmd[0] = 0x01;
+	cmd[1] = 0x0B;
+	write(file, cmd,sizeof(cmd));
+	cmd[0] = 0x4E;
+	cmd[1] = 0x1A;
+	write(file, cmd,sizeof(cmd));
+
+	// registers config
 	for ( k = 0; k < nb_initData_SI5347; k=k+3)
 	    {
 		fake1[0]=0x01;
@@ -243,28 +295,21 @@ int main() {
 		write(file, fake2,sizeof(fake2));
 	    }
 
-	printf("OK\n\r");
+//////////// end of jitter cleaner setting ///////////////////
 
-
-//********************************************
-//*    Is Jitter Cleaner Ready ?
-//********************************************
-
-	usleep (200000);
-
+	usleep (300000);
+	// ADC POWER DOWN PIN
+	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
+	printf("Initialization of ADCs PWD... OK\n\r");
 
 //********************************************
 //		ADC power up
 //********************************************
 	system ("slowc -L 3");
-	usleep (100000);
+	usleep (200000);
 	system ("slowc -L 1");
 	printf("Initialization of ADCs power supply... OK\n\r");
-	usleep (500000);
-
-	// ADC POWER DOWN PIN
-	system ("power_down > /dev/null &");	// attivo il pwd pin degli adc
-	printf("Initialization of ADCs PWD... OK\n\r");
+	usleep (300000);
 
 //////////////////////// SPI CONFIGURATION ///////////////////////////////////////
 	int i, fd;
@@ -303,48 +348,57 @@ int main() {
 		if (ret == -1)
 			pabort("can't get max speed hz");
 
-		if (write(fd, cmd2channel, sizeof(cmd2channel))
-				!= sizeof(cmd2channel)) {
-			exit(3);
+		if (write(fd, cmd2channel, sizeof(cmd2channel)) != sizeof(cmd2channel)) {
+			printf("FAILS\n\r");
 		}
 		adc_ok &= verifyCommand(fd, cmd2channel);
 		if (write(fd, ADC_DIG_RES, sizeof(ADC_DIG_RES))
 				!= sizeof(ADC_DIG_RES)) {
-			exit(3);
+			printf("FAILS\n\r");
 		}
 		adc_ok &= verifyCommand(fd, ADC_DIG_RES);
 		if (write(fd, ADC_PDWN, sizeof(ADC_PDWN)) != sizeof(ADC_PDWN)) {
-			exit(3);
+			printf("FAILS\n\r");
 		}
 		adc_ok &= verifyCommand(fd, ADC_PDWN);
 		if (write(fd, ADC_RESET, sizeof(ADC_RESET)) != sizeof(ADC_RESET)) {
-			exit(3);
+			printf("FAILS\n\r");
 		}
 		ret = verifyCommand(fd, ADC_RESET);
-
 
 		// inversion
 	//	if (write(fd, ADC_LVDS, sizeof(ADC_LVDS)) != sizeof(ADC_LVDS)) {	// ADC input not inverted
 		if (write(fd, ADC_LVDS_INV, sizeof(ADC_LVDS_INV))!= sizeof(ADC_LVDS_INV)) {	// ADC input inverted
-			exit(3);
+			printf("FAILS\n\r");
 		}
 
 	//	adc_ok &= verifyCommand(fd, ADC_LVDS);
 		adc_ok &= verifyCommand(fd, ADC_LVDS_INV);
 
 		if (write(fd, ADC_VREF, sizeof(ADC_VREF)) != sizeof(ADC_VREF)) {
-			exit(3);
+			printf("FAILS\n\r");
 		}
 		adc_ok &= verifyCommand(fd, ADC_VREF);
 		if (write(fd, NormalMode, sizeof(NormalMode)) != sizeof(NormalMode)) {
-			exit(3);
+			printf("FAILS\n\r");
+		}
+		else
+		{
+			printf("OK. ");
 		}
 		adc_ok = verifyCommand(fd, NormalMode);
 	}
+	printf("\n\r");
 	close(fd);
 	usleep(100);
 
-	printf("OK\n\r");
+
+//********************************************
+//		FRONT-END power up
+//********************************************
+usleep (200000);
+system ("slowc -d 1");
+printf("Initialization of Front-end power supply... OK\n\r");
 
 system ("stty -F /dev/ttyUL1 9600");
 system ("stty -F /dev/ttyUL2 115200");
@@ -352,21 +406,31 @@ system ("stty -F /dev/ttyPS0 38400");
 printf("Initialization of UARTs: ttyUL1, ttyPS0, ttyUL2... OK\n\r");
 
 // Userspace I/O settings - november 2016
-system ("modprobe uio");
-system ("modprobe uio_pdrv_genirq");
-printf("Initialization of UIO... OK\n\r");
+//system ("modprobe uio");
+//system ("modprobe uio_pdrv_genirq");
+//printf("Initialization of UIO... OK\n\r");
 
 // Clock setting - DAC7551 init - (removed on UUB_V3)
 //system ("dac7551");
 
 // WATCHDOG - february 2018 - NEW WATCHDOG SYSTEM UUB V2
-system ("slowc -w 0 > /dev/null &");	// attivo il watchdog sullo slowc
-system ("watchd > /dev/null &");		// lancio processo di gestione watchdog
+system ("slowc -w 0 > /dev/null &");	// get ready watchdog by slowc
+system ("watchd > /dev/null &");		//  watchdog process running
 printf("Initialization of Watchdog... OK\n\r");
 
 
-system ("check-boot");		// control if started from recovery to run auto fixing
+system ("checkweb > /dev/null &");		// control browser connected and daq on/off
+printf("Initialization of CheckWeb... OK\n\r");
+
+system ("uio");			// Creation UIO symlink in /dev/UIO
+
+system ("check-boot");		// control if system started from recovery to run auto fixing of main boot volume
+
+
+//system ("adc-stuck 150 300 0.01 5 1 > /dev/null &");
+
+system ("test-adc");
+
+system ("lv-measure test");
 
 }
-
-
